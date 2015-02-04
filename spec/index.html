@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../node_modules/leaflet/dist/leaflet.css"/>
+    <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
+    <script src="../dist/Leaflet-WFST-src.js"></script>
+    <title></title>
+    <style>
+        html, body, #map {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map', {crs: L.CRS.EPSG4326});
+    // add an OpenStreetMap tile layer
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var wfst = new L.WFST({
+        url: 'http://isogd:8082/geoserver/topp/ows',
+        typeName: 'topp:tasmania_state_boundaries',
+        requestParams: {maxFeatures: 50},
+        crs: L.CRS.EPSG4326
+    }).addTo(map);
+    var bounds = wfst.getBounds();
+    map.fitBounds(bounds);
+</script>
+</body>
+</html>
