@@ -29,7 +29,11 @@ L.WFST = L.FeatureGroup.extend({
         this.requestParams = L.extend(
             this.defaultRequestParams,
             this.options.requestParams,
-            {version: this.options.version, typeName: this.options.typeName});
+            {
+                version: this.options.version,
+                typeName: this.options.typeName,
+                srsName: this.options.crs.code
+            });
 
         if (this.options.showExisting) {
             this._loadExistingFeatures();
@@ -47,6 +51,8 @@ L.WFST = L.FeatureGroup.extend({
                 layers.forEach(function (element) {
                     self.addLayer(element);
                 });
+                self.setStyle(self.options.style);
+                return self.fire('load');
             }
         });
     }

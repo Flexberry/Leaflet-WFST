@@ -17,20 +17,43 @@
 <body>
 <div id="map"></div>
 <script>
-    var map = L.map('map', {crs: L.CRS.EPSG4326});
+    var map = L.map('map').setView([0, 0], 2);
+
     // add an OpenStreetMap tile layer
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var wfst = new L.WFST({
+    var boundaries = new L.WFST({
         url: 'http://isogd:8082/geoserver/topp/ows',
         typeName: 'topp:tasmania_state_boundaries',
-        requestParams: {maxFeatures: 50},
+        crs: L.CRS.EPSG4326,
+        style: {
+            color: 'blue',
+            weight: 2
+        }
+    }).addTo(map)
+            .on('load', function () {
+                map.fitBounds(boundaries);
+            });
+
+    var roads = new L.WFST({
+        url: 'http://isogd:8082/geoserver/topp/ows',
+        typeName: 'topp:tasmania_roads',
+        crs: L.CRS.EPSG4326,
+        style: {
+            color: 'black',
+            weight: 1
+        }
+    }).addTo(map);
+
+    var cities = new L.WFST({
+        url: 'http://isogd:8082/geoserver/topp/ows',
+        typeName: 'topp:tasmania_cities',
         crs: L.CRS.EPSG4326
     }).addTo(map);
-    var bounds = wfst.getBounds();
-    map.fitBounds(bounds);
+
+
 </script>
 </body>
 </html>
