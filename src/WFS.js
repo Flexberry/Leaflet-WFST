@@ -1,7 +1,7 @@
 /**
  * Created by PRadostev on 28.01.2015.
  */
-L.WFST = L.FeatureGroup.extend({
+L.WFS = L.FeatureGroup.extend({
 
     defaultWFSParams: {
         crs: L.CRS.EPSG3857,
@@ -21,14 +21,18 @@ L.WFST = L.FeatureGroup.extend({
         request: 'GetCapabilities'
     },
 
+    state: {exist: 'exist'},
+
     initialize: function (options, readFormat) {
         L.setOptions(this, L.extend(this.defaultWFSParams, options));
 
         this._layers = {};
         this.readFormat = readFormat || new L.Format.GeoJSON({crs: this.options.crs});
+
         this.requestParams = L.extend(
             this.defaultRequestParams,
             this.options.requestParams,
+            this.readFormat.requestParams,
             {
                 version: this.options.version,
                 typeName: this.options.typeName,
@@ -36,28 +40,38 @@ L.WFST = L.FeatureGroup.extend({
             });
 
         if (this.options.showExisting) {
-            this._loadExistingFeatures();
+            this.loadFeatures();
         }
     },
 
-    _loadExistingFeatures: function () {
-        var requestParams = L.extend(this.requestParams, this.readFormat.requestParams, {request: 'GetFeature'});
+    loadFeatures: function () {
+        var requestParams = L.extend(this.requestParams, {request: 'GetFeature'});
         var self = this;
         L.Util.request({
-            url: self.options.url,
+            url: this.options.url,
             params: requestParams,
             success: function (data) {
                 var layers = self.readFormat.responseToLayers(data);
                 layers.forEach(function (element) {
+                    element.state = true;
                     self.addLayer(element);
                 });
+
                 self.setStyle(self.options.style);
                 return self.fire('load');
             }
         });
+    },
+
+    describeFeatureType: function () {
+        var requestParams = L.extend(this.requestParams, {request: 'DescribeFeatureType'});
+        L.Util.request({
+            url: this.options.url,
+            params: requestParams
+        });
     }
 });
 
-L.wfst = function (options, readFormat) {
-    return new L.WFST(options, readFormat);
+L.wfs = function (options, readFormat) {
+    return new L.WFS(options, readFormat);
 };

@@ -19,9 +19,8 @@ L.Format = L.Class.extend({
         }
     },
 
-    initialize: function (options) {
-        L.setOptions(this, L.extend(this.defaultOptions, options));
-        var crs = this.options.crs;
+    setCRS: function (crs) {
+        this.options.crs = crs;
         if (crs !== undefined) {
             this.options.coordsToLatLng = function (coords) {
                 var point = L.point(coords[0], coords[1]);
@@ -32,5 +31,10 @@ L.Format = L.Class.extend({
                 return crs.projection.project(point);
             };
         }
+    },
+
+    initialize: function (options) {
+        L.setOptions(this, L.extend(this.defaultOptions, options));
+        this.setCRS(this.options.crs);
     }
 });

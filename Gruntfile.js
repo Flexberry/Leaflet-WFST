@@ -22,7 +22,8 @@ module.exports = function (grunt) {
                 footer: '\n\n})(window, document);'
             },
             dist: {
-                src: ['src/Request.js', 'src/Format.js', 'src/Format.GeoJSON.js', 'src/WFST.js'],
+                src: ['src/Request.js', 'src/Format.js', 'src/Format.GeoJSON.js', 'src/Format.GML.js', 'src/WFS.js',
+                    'src/WFS.Transaction.js'],
                 dest: 'dist/<%= pkg.name %>-src.js'
             }
         },
@@ -37,7 +38,7 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['src/*.js'],
-                tasks: ['jshint', 'concat'],
+                tasks: ['concat', 'jshint'],
                 options: {
                     spawn: false
                 }

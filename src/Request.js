@@ -6,6 +6,7 @@ L.Util.request = function (options) {
     options = L.extend({
         async: true,
         method: 'GET',
+        data: '',
         params: {},
         headers: {},
         url: window.location.href,

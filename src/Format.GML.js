@@ -3,4 +3,10 @@
  */
 
 
-L.Format.GML = L.Class.extend({});
+L.Format.GML = L.Format.extend({});
+
+L.Marker.include({
+    toGml: function () {
+
+    }
+});

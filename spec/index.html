@@ -24,7 +24,7 @@
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var boundaries = new L.WFST({
+    var boundaries = new L.WFS({
         url: 'http://isogd:8082/geoserver/topp/ows',
         typeName: 'topp:tasmania_state_boundaries',
         crs: L.CRS.EPSG4326,
@@ -37,7 +37,7 @@
                 map.fitBounds(boundaries);
             });
 
-    var roads = new L.WFST({
+    var roads = new L.WFS({
         url: 'http://isogd:8082/geoserver/topp/ows',
         typeName: 'topp:tasmania_roads',
         crs: L.CRS.EPSG4326,
@@ -47,7 +47,7 @@
         }
     }).addTo(map);
 
-    var cities = new L.WFST({
+    var cities = new L.WFS({
         url: 'http://isogd:8082/geoserver/topp/ows',
         typeName: 'topp:tasmania_cities',
         crs: L.CRS.EPSG4326
