@@ -2,7 +2,7 @@
   "name": "Leaflet-WFST",
   "version": "0.0.1",
   "description": "WFST plugin for Leaflet",
-  "main": "wfst.js",
+  "main": "WFS.js",
   "directories": {
     "example": "./examples",
     "source": "./src",
@@ -16,7 +16,9 @@
     "url": "https://github.com/Flexberry/Leaflet-WFST.git"
   },
   "keywords": [
+    "maps",
     "leaflet",
+    "edit",
     "wfs",
     "ogc"
   ],
@@ -32,6 +34,8 @@
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-uglify": "^0.7.0",
     "grunt-contrib-watch": "^0.6.1",
-    "leaflet": "^0.7.3"
+    "leaflet": "^0.7.3",
+    "leaflet-draw": "^0.2.3",
+    "proj4leaflet": "^0.7.0"
   }
 }

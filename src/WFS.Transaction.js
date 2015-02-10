@@ -9,18 +9,24 @@ L.WFS.Transaction = L.WFS.extend({
     writers: {
         insert: function (layer) {
             var node = L.XmlUtil.createElementNS('wfs:Insert');
-            if (typeof layer.toGml === 'function') {
-                node.appendChild(layer.toGml());
-            }
-            else {
-                throw new Error('Unknown type for wfs');
-            }
+            node.appendChild(layer.toGml());
+            return node;
         },
 
         update: function (layer) {
+            var node = L.XmlUtil.createElementNS('wfs:Update');
+            node.appendChild(layer.toGml());
+
+            var filter = new L.Filter.GmlObjectID(layer.feature);
+            node.appendChild(filter.toGml());
+            return node;
         },
 
         remove: function (layer) {
+            var node = L.XmlUtil.createElementNS('wfs:Delete');
+            var filter = new L.Filter.GmlObjectID(layer.feature);
+            node.appendChild(filter.toGml());
+            return node;
         },
 
         transaction: function () {
@@ -49,7 +55,7 @@ L.WFS.Transaction = L.WFS.extend({
         L.Util.request({
             url: this.options.url,
             method: 'POST',
-            data: L.XmlUtil.createXmlString(transaction)
+            data: L.XmlUtil.createXmlDocumentString(transaction)
         });
         this.changes = {};
     },

@@ -15,6 +15,7 @@ L.Format.GeoJSON = L.Format.extend({
         var geoJson = JSON.parse(rawData);
         for (var i = 0; i < geoJson.features.length; i++) {
             var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], null, this.options.coordsToLatLng, null);
+            layer.feature = geoJson.features[i];
             layers.push(layer);
         }
 

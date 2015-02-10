@@ -31,14 +31,21 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: true
             },
-            scripts: {
-                src: ['src/*.js']
+            def: {
+                files: {
+                    src: ['src/*.js']
+                }
+            },
+            min: {
+                files: {
+                    src: ['dist/leaflet-WFST.min.js']
+                }
             }
         },
         watch: {
             scripts: {
                 files: ['src/*.js'],
-                tasks: ['concat', 'jshint'],
+                tasks: ['concat', 'jshint:def'],
                 options: {
                     spawn: false
                 }
@@ -52,6 +59,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    // Default task(s).
-    grunt.registerTask('default', ['jshint', 'concat']);
+    grunt.registerTask('minification', ['uglify', 'jshint:min']);
 };

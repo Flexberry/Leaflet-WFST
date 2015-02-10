@@ -53,7 +53,8 @@ L.WFS = L.FeatureGroup.extend({
             success: function (data) {
                 var layers = self.readFormat.responseToLayers(data);
                 layers.forEach(function (element) {
-                    element.state = true;
+                    element.state = self.state.exist;
+                    L.setOptions(element, L.extend({}, element.options));
                     self.addLayer(element);
                 });
 

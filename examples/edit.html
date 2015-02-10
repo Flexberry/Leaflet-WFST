@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../node_modules/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" type="text/css" href="../node_modules/leaflet-draw/dist/leaflet.draw.css"/>
+
+    <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
+    <script src="../node_modules/leaflet-draw/dist/leaflet.draw-src.js"></script>
+    <script src="../node_modules/proj4leaflet/lib/proj4-compressed.js"></script>
+    <script src="../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+    <script src="../dist/Leaflet-WFST-src.js"></script>
+    <title></title>
+    <style>
+        html, body, #map {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map').setView([0, 0], 2);
+
+    // add an OpenStreetMap tile layer
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var crs32640 = L.extend({}, L.CRS, new L.Proj.CRS("EPSG:32640", "+proj=utm +zone=40 +datum=WGS84 +units=m +no_defs"));
+
+    var boundaries = new L.WFS.Transaction({
+        url: 'http://isogd:8082/geoserver/isogd/ows',
+        typeName: 'isogd:livingdist_Project',
+        crs: crs32640,
+        style: {
+            color: 'blue',
+            weight: 2
+        }
+    }).addTo(map)
+            .on('load', function () {
+                map.fitBounds(boundaries);
+            });
+
+    var drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: boundaries
+        },
+        draw: {
+            polyline: false,
+            circle: false,
+            marker: false
+        }
+    });
+
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (e) {
+        boundaries.addLayer(e.layer);
+    });
+
+    map.on('draw:edited', function (e) {
+        boundaries.editLayers(e.layers);
+    });
+
+    map.on('draw:editstop', function () {
+        boundaries.save();
+    });
+</script>
+</body>
+</html>

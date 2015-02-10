@@ -14,8 +14,6 @@ L.XmlUtil = {
         xmlns: "http://www.w3.org/2000/xmlns/"
     },
 
-    defaultNS: 'wfs',
-
     setAttributes: function (node, attributes) {
         for (var name in attributes) {
             if (attributes[name] != null && attributes[name].toString) {
@@ -26,13 +24,15 @@ L.XmlUtil = {
         }
     },
 
-    createElementNS: function (name, options) {
+    createElementNS: function (name, attributes, options) {
         var uri = this.namespaces[name.substring(0, name.indexOf(":"))];
-        if (!uri) uri = this.namespaces[this.defaultNS];
+        if (!uri) {
+            uri = this.namespaces[options.uri];
+        }
 
         var node = document.createElementNS(uri, name);
-        if (options.attributes) {
-            this.setAttributes(node, options.attributes);
+        if (attributes) {
+            this.setAttributes(node, attributes);
         }
 
         if (options.value != null) {
@@ -43,10 +43,15 @@ L.XmlUtil = {
 
     },
 
-    createXmlString: function (node) {
+    createXmlDocumentString: function (node) {
         var doc = document.implementation.createDocument("", "", null);
         doc.appendChild(node);
         var serializer = new XMLSerializer();
         return serializer.serializeToString(doc);
+    },
+
+    createXmlString: function (node) {
+        var serializer = new XMLSerializer();
+        return serializer.serializeToString(node);
     }
 };
