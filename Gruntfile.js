@@ -22,7 +22,15 @@ module.exports = function (grunt) {
                 footer: '\n\n})(window, document);'
             },
             dist: {
-                src: ['src/Request.js', 'src/Format.js', 'src/Format.GeoJSON.js', 'src/Format.GML.js', 'src/WFS.js',
+                src: [
+                    'src/XmlUtil.js',
+                    'src/Request.js',
+                    'src/Filter.js',
+                    'src/Filter.GmlObjectID.js',
+                    'src/Format.js',
+                    'src/Format.GeoJSON.js',
+                    'src/Format.GML.js',
+                    'src/WFS.js',
                     'src/WFS.Transaction.js'],
                 dest: 'dist/<%= pkg.name %>-src.js'
             }

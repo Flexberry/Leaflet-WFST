@@ -1,0 +1,20 @@
+{
+  "name": "Leaflet-WFST",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Flexberry/Leaflet-WFST",
+  "description": "WFST plugin for Leaflet",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "spec"
+  ],
+  "devDependencies": {
+    "leaflet": "~0.7.3",
+    "Leaflet.Editable": "https://github.com/yohanboniface/Leaflet.Editable.git#~0.6.0",
+    "proj4leaflet": "~0.7.0",
+    "leaflet.draw": "~0.2.3"
+  }
+}

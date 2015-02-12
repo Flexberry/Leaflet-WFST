@@ -33,9 +33,6 @@
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-uglify": "^0.7.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "leaflet": "^0.7.3",
-    "leaflet-draw": "^0.2.3",
-    "proj4leaflet": "^0.7.0"
+    "grunt-contrib-watch": "^0.6.1"
   }
 }

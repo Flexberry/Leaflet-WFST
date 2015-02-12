@@ -3,41 +3,56 @@
  */
 L.WFS = L.FeatureGroup.extend({
 
-    defaultWFSParams: {
+    options: {
         crs: L.CRS.EPSG3857,
         showExisting: true,
-        geometryField: 'shape',
+        geometryField: 'Shape',
         url: '',
         version: '1.1.0',
         typeName: '',
         style: {
             color: 'black',
             weight: 1
-        }
-    },
-
-    defaultRequestParams: {
-        service: 'WFS',
-        request: 'GetCapabilities'
+        },
+        namespaceUri: ''
     },
 
     state: {exist: 'exist'},
 
+
     initialize: function (options, readFormat) {
-        L.setOptions(this, L.extend(this.defaultWFSParams, options));
+        L.setOptions(this, options);
+
+        var crs = this.options.crs;
+
+        this.options.coordsToLatLng = function (coords) {
+            var point = L.point(coords[0], coords[1]);
+            return crs.projection.unproject(point);
+        };
+
+        this.options.latLngToCoords = function (latlng) {
+            var coords = crs.projection.project(latlng);
+
+            if (latlng.alt !== undefined) {
+                coords.push(latlng.alt);
+            }
+            return coords;
+        };
 
         this._layers = {};
-        this.readFormat = readFormat || new L.Format.GeoJSON({crs: this.options.crs});
+
+        this.readFormat = readFormat || new L.Format.GeoJSON();
 
         this.requestParams = L.extend(
-            this.defaultRequestParams,
-            this.options.requestParams,
-            this.readFormat.requestParams,
             {
+                service: 'WFS',
                 version: this.options.version,
                 typeName: this.options.typeName,
                 srsName: this.options.crs.code
-            });
+            },
+            this.options.requestParams);
+
+        this.describeFeatureType();
 
         if (this.options.showExisting) {
             this.loadFeatures();
@@ -45,30 +60,38 @@ L.WFS = L.FeatureGroup.extend({
     },
 
     loadFeatures: function () {
-        var requestParams = L.extend(this.requestParams, {request: 'GetFeature'});
-        var self = this;
+        var requestParams = L.extend(this.requestParams, this.readFormat.requestParams, {request: 'GetFeature'});
+        var that = this;
         L.Util.request({
             url: this.options.url,
             params: requestParams,
             success: function (data) {
-                var layers = self.readFormat.responseToLayers(data);
+                var layers = that.readFormat.responseToLayers(data, that.options.coordsToLatLng);
                 layers.forEach(function (element) {
-                    element.state = self.state.exist;
+                    element.state = that.state.exist;
                     L.setOptions(element, L.extend({}, element.options));
-                    self.addLayer(element);
+                    that.addLayer(element);
                 });
 
-                self.setStyle(self.options.style);
-                return self.fire('load');
+                that.setStyle(that.options.style);
+                that.fire('load');
+                return that;
             }
         });
     },
 
     describeFeatureType: function () {
         var requestParams = L.extend(this.requestParams, {request: 'DescribeFeatureType'});
+        var that = this;
         L.Util.request({
             url: this.options.url,
-            params: requestParams
+            params: requestParams,
+            success: function (data) {
+                //TODO to XPath
+                var parser = new DOMParser();
+                var featureInfo = parser.parseFromString(data, "text/xml");
+                that.options.namespaceUri = featureInfo.documentElement.attributes.targetNamespace.value;
+            }
         });
     }
 });

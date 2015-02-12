@@ -25,22 +25,29 @@ L.XmlUtil = {
     },
 
     createElementNS: function (name, attributes, options) {
-        var uri = this.namespaces[name.substring(0, name.indexOf(":"))];
+        options = options || {};
+
+        var uri = options.uri;
+
         if (!uri) {
-            uri = this.namespaces[options.uri];
+            uri = this.namespaces[name.substring(0, name.indexOf(":"))];
         }
 
-        var node = document.createElementNS(uri, name);
+        if (!uri) {
+            uri = this.namespaces[options.prefix];
+        }
+
+        var node = uri ? document.createElementNS(uri, name) : document.createElement(name);
+
         if (attributes) {
             this.setAttributes(node, attributes);
         }
 
         if (options.value != null) {
-            node.appendChild(this.createTextNode(options.value));
+            node.appendChild(document.createTextNode(options.value));
         }
 
         return node;
-
     },
 
     createXmlDocumentString: function (node) {

@@ -35,6 +35,5 @@ L.Format = L.Class.extend({
 
     initialize: function (options) {
         L.setOptions(this, L.extend(this.defaultOptions, options));
-        this.setCRS(this.options.crs);
     }
 });

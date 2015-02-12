@@ -7,9 +7,19 @@ L.WFS.Transaction = L.WFS.extend({
     changes: {},
 
     writers: {
-        insert: function (layer) {
+        insert: function (layer, options) {
+            var layerGml = layer.toGml(options.latLngToCoords);
+            L.XmlUtil.setAttributes(layerGml, {srsName: options.crs.code});
+
+            var fieldNode = document.createElementNS(options.namespaceUri, options.featureNS + ':' + options.geometryField);
+            fieldNode.appendChild(layerGml);
+
+            var feature = document.createElementNS(options.namespaceUri, options.typeName);
+            feature.appendChild(fieldNode);
+
             var node = L.XmlUtil.createElementNS('wfs:Insert');
-            node.appendChild(layer.toGml());
+            node.appendChild(feature);
+
             return node;
         },
 
@@ -29,13 +39,15 @@ L.WFS.Transaction = L.WFS.extend({
             return node;
         },
 
-        transaction: function () {
-            return L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
+        transaction: function (options) {
+            return L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: options.version});
         }
     },
 
     initialize: function (options, readFormat) {
         L.WFS.prototype.initialize.call(this, options, readFormat);
+        var name = this.options.typeName;
+        this.options.featureNS = name.substring(0, name.indexOf(":"));
         this.state = L.extend(this.state, {
             insert: 'insert',
             update: 'update',
@@ -44,11 +56,11 @@ L.WFS.Transaction = L.WFS.extend({
     },
 
     save: function () {
-        var transaction = this.writers.transaction();
+        var transaction = this.writers.transaction({version: this.options.version});
 
         for (var id in this.changes) {
             var layer = this.changes[id];
-            var action = this.writers[layer.state](layer);
+            var action = this.writers[layer.state](layer, this.options);
             transaction.appendChild(action);
         }
 
@@ -92,17 +104,14 @@ L.WFS.Transaction = L.WFS.extend({
         return this;
     },
 
-    editLayers: function (layers) {
-        for (var layer in layers) {
-            var id = layer in this._layers ? layer : this.getLayerId(layer);
-            var lyr = this._layers[id];
-            if (lyr.state !== this.state.insert) {
-                lyr.state = this.state.update;
-            }
-
-            this.changes[id] = lyr;
+    editLayer: function (layer) {
+        var id = layer in this._layers ? layer : this.getLayerId(layer);
+        var lyr = this._layers[id];
+        if (lyr.state !== this.state.insert) {
+            lyr.state = this.state.update;
         }
 
+        this.changes[id] = lyr;
         return this;
     }
 });

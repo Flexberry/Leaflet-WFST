@@ -5,7 +5,7 @@
 L.Util.request = function (options) {
     options = L.extend({
         async: true,
-        method: 'GET',
+        method: 'POST',
         data: '',
         params: {},
         headers: {},

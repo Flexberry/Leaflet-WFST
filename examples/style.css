@@ -1,0 +1,10 @@
+.storage-control {
+    background: none no-repeat scroll center center #F8F8F9;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+}
+
+.leaflet-control-edit-enable a {
+    background-image: url("img/24.png");
+    background-position: -1px -1px;
+}

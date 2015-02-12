@@ -14,9 +14,10 @@ L.GMLUtil = {
 L.coornidateNode = L.GMLUtil.coordinateNode;
 
 L.Marker.include({
-    toGml: function (crs) {
-        var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
-        node.appendChild(L.coornidateNode(this.getLatLng().lng + ',' + this.getLatLng().lat));
-        return L.XmlUtil.createXmlString(node);
+    toGml: function (latLongToCoords) {
+        var node = L.XmlUtil.createElementNS('gml:Point');
+        var coords = latLongToCoords(this.getLatLng());
+        node.appendChild(L.coornidateNode(coords.x + ',' + coords.y));
+        return node;
     }
 });
