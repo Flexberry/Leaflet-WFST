@@ -39,9 +39,14 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: true
             },
-            def: {
+            dev: {
                 files: {
                     src: ['src/*.js']
+                }
+            },
+            spec: {
+                files: {
+                    src: ['spec/*.js']
                 }
             },
             min: {
@@ -53,10 +58,14 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['src/*.js'],
-                tasks: ['concat', 'jshint:def'],
+                tasks: ['concat', 'jshint:dev'],
                 options: {
                     spawn: false
                 }
+            },
+            spec: {
+                files: ['spec/*.js'],
+                tasks: ['jshint:spec']
             }
         }
     });

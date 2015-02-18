@@ -14,6 +14,9 @@ L.XmlUtil = {
         xmlns: "http://www.w3.org/2000/xmlns/"
     },
 
+    //TODO: есть ли нормальная реализация для создания нового документа с doctype text/xml?
+    xmldoc: (new DOMParser()).parseFromString('<root />', 'text/xml'),
+
     setAttributes: function (node, attributes) {
         for (var name in attributes) {
             if (attributes[name] != null && attributes[name].toString) {
@@ -37,17 +40,23 @@ L.XmlUtil = {
             uri = this.namespaces[options.prefix];
         }
 
-        var node = uri ? document.createElementNS(uri, name) : document.createElement(name);
+        var node = uri ? this.xmldoc.createElementNS(uri, name) : this.xmldoc.createElement(name);
 
         if (attributes) {
             this.setAttributes(node, attributes);
         }
 
         if (options.value != null) {
-            node.appendChild(document.createTextNode(options.value));
+            node.appendChild(this.xmldoc.createTextNode(options.value));
         }
 
         return node;
+    },
+
+    appendChild: function (node, name, attributes, options) {
+        var childNode = this.createElementNS(name, attributes, options);
+        node.appendChild(childNode);
+        return childNode;
     },
 
     createXmlDocumentString: function (node) {
@@ -61,4 +70,7 @@ L.XmlUtil = {
         var serializer = new XMLSerializer();
         return serializer.serializeToString(node);
     }
+
 };
+
+L.appendChild = L.XmlUtil.appendChild;

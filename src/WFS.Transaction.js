@@ -6,48 +6,49 @@ L.WFS.Transaction = L.WFS.extend({
 
     changes: {},
 
-    writers: {
-        insert: function (layer, options) {
-            var layerGml = layer.toGml(options.latLngToCoords);
-            L.XmlUtil.setAttributes(layerGml, {srsName: options.crs.code});
+    insert: function (layer) {
 
-            var fieldNode = document.createElementNS(options.namespaceUri, options.featureNS + ':' + options.geometryField);
-            fieldNode.appendChild(layerGml);
+        var layerGml = layer.toGml(this.options.latLngToCoords);
+        L.XmlUtil.setAttributes(layerGml, {srsName: this.options.crs.code});
 
-            var feature = document.createElementNS(options.namespaceUri, options.typeName);
-            feature.appendChild(fieldNode);
+        var fieldNode = document.createElementNS(this.options.namespaceUri,
+            this.options.featureNS + ':' + this.options.geometryField);
+        fieldNode.appendChild(layerGml);
 
-            var node = L.XmlUtil.createElementNS('wfs:Insert');
-            node.appendChild(feature);
+        var feature = document.createElementNS(this.options.namespaceUri, this.options.typeName);
+        feature.appendChild(fieldNode);
 
-            return node;
-        },
+        var node = L.XmlUtil.createElementNS('wfs:Insert');
+        node.appendChild(feature);
 
-        update: function (layer) {
-            var node = L.XmlUtil.createElementNS('wfs:Update');
-            node.appendChild(layer.toGml());
+        return node;
+    },
 
-            var filter = new L.Filter.GmlObjectID(layer.feature);
-            node.appendChild(filter.toGml());
-            return node;
-        },
+    update: function (layer) {
+        var node = L.XmlUtil.createElementNS('wfs:Update');
+        node.appendChild(layer.toGml());
 
-        remove: function (layer) {
-            var node = L.XmlUtil.createElementNS('wfs:Delete');
-            var filter = new L.Filter.GmlObjectID(layer.feature);
-            node.appendChild(filter.toGml());
-            return node;
-        },
+        var filter = new L.Filter.GmlObjectID(layer.feature);
+        node.appendChild(filter.toGml());
+        return node;
+    },
 
-        transaction: function (options) {
-            return L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: options.version});
-        }
+    remove: function (layer) {
+        var node = L.XmlUtil.createElementNS('wfs:Delete');
+        var filter = new L.Filter.GmlObjectID(layer.feature);
+        node.appendChild(filter.toGml());
+        return node;
+    },
+
+    transaction: function (options) {
+        return L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: options.version});
     },
 
     initialize: function (options, readFormat) {
         L.WFS.prototype.initialize.call(this, options, readFormat);
+
+        this.describeFeatureType();
         var name = this.options.typeName;
-        this.options.featureNS = name.substring(0, name.indexOf(":"));
         this.state = L.extend(this.state, {
             insert: 'insert',
             update: 'update',
@@ -55,18 +56,33 @@ L.WFS.Transaction = L.WFS.extend({
         });
     },
 
+    describeFeatureType: function () {
+        var requestParams = L.extend({}, this.requestParams, {request: 'DescribeFeatureType'});
+        var that = this;
+        L.Util.request({
+            url: this.options.url,
+            params: requestParams,
+            responseXml: true,
+            success: function (xmlDocument) {
+                //TODO to XPath
+                //var parser = new DOMParser();
+                //var featureInfo = parser.parseFromString(data, "text/xml");
+                that.options.namespaceUri = xmlDocument.documentElement.attributes.targetNamespace.value;
+            }
+        });
+    },
+
     save: function () {
-        var transaction = this.writers.transaction({version: this.options.version});
+        var transaction = this.transaction({version: this.options.version});
 
         for (var id in this.changes) {
             var layer = this.changes[id];
-            var action = this.writers[layer.state](layer, this.options);
+            var action = this[layer.state](layer, this.options);
             transaction.appendChild(action);
         }
 
         L.Util.request({
             url: this.options.url,
-            method: 'POST',
             data: L.XmlUtil.createXmlDocumentString(transaction)
         });
         this.changes = {};

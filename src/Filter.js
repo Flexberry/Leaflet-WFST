@@ -13,6 +13,6 @@ L.Filter = L.Class.extend({
      * {XmlElement} Gml representation of this filter
      */
     toGml: function () {
-        return L.XmlUtil.createElementNS('Filter');
+        return L.XmlUtil.createElementNS('ogc:Filter');
     }
 });

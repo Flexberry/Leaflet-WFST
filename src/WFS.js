@@ -9,6 +9,7 @@ L.WFS = L.FeatureGroup.extend({
         geometryField: 'Shape',
         url: '',
         version: '1.1.0',
+        typeNS: '',
         typeName: '',
         style: {
             color: 'black',
@@ -47,12 +48,10 @@ L.WFS = L.FeatureGroup.extend({
             {
                 service: 'WFS',
                 version: this.options.version,
-                typeName: this.options.typeName,
+                typeName: (this.options.typeNS ? this.options.typeNS + ':' : '') + this.options.typeName,
                 srsName: this.options.crs.code
             },
             this.options.requestParams);
-
-        this.describeFeatureType();
 
         if (this.options.showExisting) {
             this.loadFeatures();
@@ -60,7 +59,7 @@ L.WFS = L.FeatureGroup.extend({
     },
 
     loadFeatures: function () {
-        var requestParams = L.extend(this.requestParams, this.readFormat.requestParams, {request: 'GetFeature'});
+        var requestParams = L.extend({}, this.requestParams, this.readFormat.requestParams, {request: 'GetFeature'});
         var that = this;
         L.Util.request({
             url: this.options.url,
@@ -76,21 +75,6 @@ L.WFS = L.FeatureGroup.extend({
                 that.setStyle(that.options.style);
                 that.fire('load');
                 return that;
-            }
-        });
-    },
-
-    describeFeatureType: function () {
-        var requestParams = L.extend(this.requestParams, {request: 'DescribeFeatureType'});
-        var that = this;
-        L.Util.request({
-            url: this.options.url,
-            params: requestParams,
-            success: function (data) {
-                //TODO to XPath
-                var parser = new DOMParser();
-                var featureInfo = parser.parseFromString(data, "text/xml");
-                that.options.namespaceUri = featureInfo.documentElement.attributes.targetNamespace.value;
             }
         });
     }
