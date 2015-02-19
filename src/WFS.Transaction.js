@@ -46,9 +46,7 @@ L.WFS.Transaction = L.WFS.extend({
 
     initialize: function (options, readFormat) {
         L.WFS.prototype.initialize.call(this, options, readFormat);
-
         this.describeFeatureType();
-        var name = this.options.typeName;
         this.state = L.extend(this.state, {
             insert: 'insert',
             update: 'update',

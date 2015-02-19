@@ -12,7 +12,6 @@
   "unused": true,
   "eqnull": true,
   "globals": {
-    "define": true,
-    "L": true
+    "L": false
   }
 }

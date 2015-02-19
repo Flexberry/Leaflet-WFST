@@ -2,10 +2,10 @@
  * Created by PRadostev on 18.02.2015.
  */
 describe('WFS.Transaction', function () {
-    var wfst, layer, xhr, requests;
+    var wfst, layer, xhr;
 
     before(function () {
-        xhr = sinon.useFakeXMLHttpRequest()
+        xhr = sinon.useFakeXMLHttpRequest();
     });
 
     beforeEach(function () {
@@ -16,7 +16,6 @@ describe('WFS.Transaction', function () {
             featureNS: 'test'
         });
         layer = {};
-
     });
 
     it('should be initialized', function () {
