@@ -6,7 +6,6 @@ L.Util.request = function (options) {
     options = L.extend({
         async: true,
         method: 'POST',
-        responseXML: false,
         data: '',
         params: {},
         headers: {},
@@ -26,7 +25,7 @@ L.Util.request = function (options) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                options.success(options.responseXML ? xhr.responseXML : xhr.responseText);
+                options.success(xhr.responseText);
             } else {
                 options.error(xhr.responseText);
             }

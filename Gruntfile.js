@@ -48,11 +48,6 @@ module.exports = function (grunt) {
                 files: {
                     src: ['spec/*.js']
                 }
-            },
-            min: {
-                files: {
-                    src: ['dist/leaflet-WFST.min.js']
-                }
             }
         },
         watch: {
@@ -75,6 +70,4 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-
-    grunt.registerTask('minification', ['uglify', 'jshint:min']);
 };

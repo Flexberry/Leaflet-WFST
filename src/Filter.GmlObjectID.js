@@ -10,10 +10,7 @@ L.Filter.GmlObjectID = L.Filter.extend({
         this.feature = feature;
     },
 
-    toGml: function () {
-        var node = L.XmlUtil.createElementNS('GmlObjectID', {'gml:id': this.feature.id});
-        var filter = L.Filter.prototype.toGml.call(this);
-        filter.appendChild(node);
-        return filter;
+    innerGml: function () {
+        return L.XmlUtil.createElementNS('GmlObjectID', {'gml:id': this.feature.id});
     }
 });

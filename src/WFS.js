@@ -20,10 +20,8 @@ L.WFS = L.FeatureGroup.extend({
 
     state: {exist: 'exist'},
 
-
     initialize: function (options, readFormat) {
         L.setOptions(this, options);
-
         var crs = this.options.crs;
 
         this.options.coordsToLatLng = function (coords) {

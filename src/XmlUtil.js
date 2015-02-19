@@ -53,12 +53,6 @@ L.XmlUtil = {
         return node;
     },
 
-    appendChild: function (node, name, attributes, options) {
-        var childNode = this.createElementNS(name, attributes, options);
-        node.appendChild(childNode);
-        return childNode;
-    },
-
     createXmlDocumentString: function (node) {
         var doc = document.implementation.createDocument("", "", null);
         doc.appendChild(node);
@@ -72,5 +66,3 @@ L.XmlUtil = {
     }
 
 };
-
-L.appendChild = L.XmlUtil.appendChild;

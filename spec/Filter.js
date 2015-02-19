@@ -11,11 +11,8 @@ describe('Filter', function () {
             filter = new L.Filter();
         });
 
-        it('should return Element object', function () {
+        it('should return Element object with tagName ogc:Filter', function () {
             expect(filter.toGml()).to.be.instanceOf(Element);
-        });
-
-        it('should return a elemenet named Filter', function () {
             expect(filter.toGml().tagName).to.be.equal('ogc:Filter');
         });
     });
@@ -28,12 +25,6 @@ describe('Filter', function () {
         });
 
         describe('#toGml', function () {
-            it('should return Element object with name Filter', function () {
-                var gml = filter.toGml();
-                expect(gml).to.be.instanceOf(Element);
-                expect(gml.tagName).to.be.equal('ogc:Filter');
-            });
-
             it('must have child element with Name="GmlObjectID" and attribute "gml:id" = 1', function () {
                 var gml = filter.toGml().firstChild;
                 expect(gml.tagName).to.be.equal('GmlObjectID');
