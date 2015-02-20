@@ -30,8 +30,13 @@ module.exports = function (grunt) {
                     'src/Format.js',
                     'src/Format.GeoJSON.js',
                     'src/Format.GML.js',
+                    'src/GmlUtil.js',
+                    'src/GML/*.js',
                     'src/WFS.js',
-                    'src/WFS.Transaction.js'],
+                    'src/WFS.Transaction.js',
+                    'src/WFS.Transaction.Helpers.js',
+                    'src/WFS.Transaction.Requests.js'
+                ],
                 dest: 'dist/<%= pkg.name %>-src.js'
             }
         },
@@ -41,25 +46,25 @@ module.exports = function (grunt) {
             },
             dev: {
                 files: {
-                    src: ['src/*.js']
+                    src: ['src/**/*.js']
                 }
             },
             spec: {
                 files: {
-                    src: ['spec/*.js']
+                    src: ['spec/**/*.js']
                 }
             }
         },
         watch: {
             scripts: {
-                files: ['src/*.js'],
+                files: ['src/**/*.js'],
                 tasks: ['concat', 'jshint:dev'],
                 options: {
                     spawn: false
                 }
             },
             spec: {
-                files: ['spec/*.js'],
+                files: ['spec/**/*.js'],
                 tasks: ['jshint:spec']
             }
         }

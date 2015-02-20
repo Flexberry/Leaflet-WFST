@@ -19,7 +19,7 @@ L.Filter = L.Class.extend({
     },
 
     innerGml: function () {
-        return L.XmlUtil.createElementNS('dummy');
+        return document.createTextNode('');
     }
 
 
