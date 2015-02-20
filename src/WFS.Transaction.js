@@ -32,6 +32,8 @@ L.WFS.Transaction = L.WFS.extend({
 
     addLayer: function (layer) {
         L.FeatureGroup.prototype.addLayer.call(this, layer);
+
+        layer.feature = {properties: {}};
         if (!layer.state) {
             layer.state = this.state.insert;
             var id = this.getLayerId(layer);
@@ -41,9 +43,8 @@ L.WFS.Transaction = L.WFS.extend({
     },
 
     removeLayer: function (layer) {
-        L.FeatureGroup.prototype.removeLayer.call(this, layer);
 
-        var id = layer in this._layers ? layer : this.getLayerId(layer);
+        var id = this.getLayerId(layer);
 
         if (id in this.changes) {
             var change = this.changes[id];
@@ -59,24 +60,24 @@ L.WFS.Transaction = L.WFS.extend({
             this.changes[id] = layer;
         }
 
+        L.FeatureGroup.prototype.removeLayer.call(this, layer);
         return this;
     },
 
     editLayer: function (layer) {
-        var id = layer in this._layers ? layer : this.getLayerId(layer);
-        var lyr = this._layers[id];
-        if (lyr.state !== this.state.insert) {
-            lyr.state = this.state.update;
+        if (layer.state !== this.state.insert) {
+            layer.state = this.state.update;
         }
 
-        this.changes[id] = lyr;
+        var id = this.getLayerId(layer);
+        this.changes[id] = layer;
         return this;
     },
 
     save: function () {
         var transaction = this.transaction({version: this.options.version});
 
-        for (var id in Object.keys(this.changes)) {
+        for (var id in this.changes) {
             var layer = this.changes[id];
             var action = this[layer.state](layer);
             transaction.appendChild(action);

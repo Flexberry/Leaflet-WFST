@@ -10,7 +10,7 @@ L.WFS.Transaction.include({
     gmlFeature: function (layer) {
         var featureNode = L.XmlUtil.createElementNS(this.requestParams.typeName);
         var feature = layer.feature;
-        for (var propertyName in Object.keys(feature.properties)) {
+        for (var propertyName in feature.properties) {
             featureNode.appendChild(this.gmlProperty(this.namespaceName(propertyName),
                 feature.properties[propertyName]));
         }
@@ -26,7 +26,7 @@ L.WFS.Transaction.include({
             propertyNode.appendChild(value);
         }
         else {
-            value.appendChild(L.XmlUtil.createTextNode(value || ''));
+            propertyNode.appendChild(L.XmlUtil.createTextNode(value || ''));
         }
 
         return propertyNode;
@@ -42,6 +42,8 @@ L.WFS.Transaction.include({
         else {
             valueNode.appendChild(L.XmlUtil.createTextNode(value || ''));
         }
+
+        propertyNode.appendChild(valueNode);
 
         return propertyNode;
     }

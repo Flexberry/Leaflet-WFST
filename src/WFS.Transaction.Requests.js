@@ -13,11 +13,12 @@ L.WFS.Transaction.include({
     update: function (layer) {
         var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.requestParams.typeName});
         var feature = layer.feature;
-        for (var propertyName in Object.keys(feature.properties)) {
+        for (var propertyName in feature.properties) {
             node.appendChild(this.wfsProperty(propertyName, feature.properties[propertyName]));
         }
 
-        node.appendChild(this.namespaceName(this.options.geometryField), layer.toGml(this.options.crs));
+        node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
+            layer.toGml(this.options.crs)));
 
         var filter = new L.Filter.GmlObjectID(layer.feature);
         node.appendChild(filter.toGml());
