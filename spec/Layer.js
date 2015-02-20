@@ -5,11 +5,8 @@
 describe("L.Marker", function () {
     describe("#toGml", function () {
         it('should return Element object', function () {
-            var latlng = function () {
-                return new L.Point(1, 1);
-            };
-            var marker = new L.Marker();
-            expect(marker.toGml(latlng)).to.be.instanceOf(Element);
+            var marker = new L.Marker([0, 0]);
+            expect(marker.toGml(L.CRS.EPSG3395)).to.be.instanceOf(Element);
         });
     });
 });

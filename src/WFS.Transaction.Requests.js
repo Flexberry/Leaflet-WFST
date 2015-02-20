@@ -17,7 +17,7 @@ L.WFS.Transaction.include({
             node.appendChild(this.wfsProperty(propertyName, feature.properties[propertyName]));
         }
 
-        node.appendChild(this.namespaceName(this.options.geometryField), this.layerGml(layer));
+        node.appendChild(this.namespaceName(this.options.geometryField), layer.toGml(this.options.crs));
 
         var filter = new L.Filter.GmlObjectID(layer.feature);
         node.appendChild(filter.toGml());

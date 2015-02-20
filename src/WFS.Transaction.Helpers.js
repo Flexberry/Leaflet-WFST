@@ -7,10 +7,6 @@ L.WFS.Transaction.include({
         return this.options.typeNS + ':' + name;
     },
 
-    layerGml: function (layer) {
-        return layer.toGml(this.options.coordsToLatLng, this.options.crs);
-    },
-
     gmlFeature: function (layer) {
         var featureNode = L.XmlUtil.createElementNS(this.requestParams.typeName);
         var feature = layer.feature;
@@ -20,7 +16,7 @@ L.WFS.Transaction.include({
         }
 
         featureNode.appendChild(this.gmlProperty(this.namespaceName(this.options.geometryField),
-            this.layerGml(layer)));
+            layer.toGml(this.options.crs)));
         return featureNode;
     },
 

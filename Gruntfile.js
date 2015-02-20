@@ -30,6 +30,7 @@ module.exports = function (grunt) {
                     'src/Format.js',
                     'src/Format.GeoJSON.js',
                     'src/Format.GML.js',
+                    'src/Util.js',
                     'src/GmlUtil.js',
                     'src/GML/*.js',
                     'src/WFS.js',

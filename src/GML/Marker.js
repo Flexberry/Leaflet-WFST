@@ -3,10 +3,9 @@
  */
 
 L.Marker.include({
-    toGml: function (latLongToCoords) {
-        var node = L.XmlUtil.createElementNS('gml:Point');
-        var coords = latLongToCoords(this.getLatLng());
-        node.appendChild(L.coornidateNode(coords.x + ',' + coords.y));
+    toGml: function (crs) {
+        var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code})
+            .appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
         return node;
     }
 });

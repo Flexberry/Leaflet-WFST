@@ -66,7 +66,6 @@ L.WFS = L.FeatureGroup.extend({
                 var layers = that.readFormat.responseToLayers(data, that.options.coordsToLatLng);
                 layers.forEach(function (element) {
                     element.state = that.state.exist;
-                    L.setOptions(element, L.extend({}, element.options));
                     that.addLayer(element);
                 });
 

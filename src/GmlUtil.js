@@ -3,9 +3,21 @@
  */
 
 L.GMLUtil = {
-    coordinateNode: function (value) {
-        return L.XmlUtil.createElementNS('gml:coordinates', {cs: ',', decimal: '.', ts: ' '}, {value: value});
+    posNode: function (coord) {
+        return L.XmlUtil.createElementNS('gml:pos', {srsDimension: 2}, {value: coord.x + ' ' + coord.y});
+    },
+
+    posListNode: function (coords, close) {
+        var localcoords = [];
+        coords.forEach(function (coord) {
+            localcoords.push(coord.x + ' ' + coord.y);
+        });
+        if (close) {
+            var coord = coords[0];
+            localcoords.push(coord.x + ' ' + coord.y);
+        }
+
+        var posList = localcoords.join(' ');
+        return L.XmlUtil.createElementNS('gml:posList', {}, {value: posList});
     }
 };
-
-L.coornidateNode = L.GMLUtil.coordinateNode;
