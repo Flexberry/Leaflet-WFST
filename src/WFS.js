@@ -18,11 +18,13 @@ L.WFS = L.FeatureGroup.extend({
         namespaceUri: ''
     },
 
-    state: {exist: 'exist'},
+    state: {},
 
     initialize: function (options, readFormat) {
         L.setOptions(this, options);
         var crs = this.options.crs;
+
+        this.state =  {exist: 'exist'};
 
         this.options.coordsToLatLng = function (coords) {
             var point = L.point(coords[0], coords[1]);

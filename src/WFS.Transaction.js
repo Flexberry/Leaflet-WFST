@@ -8,6 +8,7 @@ L.WFS.Transaction = L.WFS.extend({
 
     initialize: function (options, readFormat) {
         L.WFS.prototype.initialize.call(this, options, readFormat);
+        this.changes = {};
         this.describeFeatureType();
         this.state = L.extend(this.state, {
             insert: 'insert',
@@ -43,6 +44,7 @@ L.WFS.Transaction = L.WFS.extend({
     },
 
     removeLayer: function (layer) {
+        L.FeatureGroup.prototype.removeLayer.call(this, layer);
 
         var id = this.getLayerId(layer);
 
@@ -60,8 +62,7 @@ L.WFS.Transaction = L.WFS.extend({
             this.changes[id] = layer;
         }
 
-        L.FeatureGroup.prototype.removeLayer.call(this, layer);
-        return this;
+        //return
     },
 
     editLayer: function (layer) {
