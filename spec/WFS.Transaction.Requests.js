@@ -2,7 +2,7 @@
  * Created by PRadostev on 20.02.2015.
  */
 
-describe('WFS.Transaction', function () {
+describe('WFS.Transaction.Requests', function () {
     var wfst, layer, xhr;
 
     before(function () {

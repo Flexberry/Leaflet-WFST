@@ -37,6 +37,12 @@ describe('WFS.Transaction', function () {
             expect(layer.state).to.be.equal('insert');
             expect(wfst.changes[id]).to.be.equal(layer);
         });
+
+        it('should not change feature if that already exists', function () {
+            var feature = layer.feature;
+            wfst.addLayer(layer);
+            expect(layer.feature).to.be.equal(feature);
+        });
     });
 
     describe('#editLayer', function () {

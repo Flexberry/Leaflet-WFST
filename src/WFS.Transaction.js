@@ -33,8 +33,10 @@ L.WFS.Transaction = L.WFS.extend({
 
     addLayer: function (layer) {
         L.FeatureGroup.prototype.addLayer.call(this, layer);
+        if (!layer.feature) {
+            layer.feature = {properties: {}};
+        }
 
-        layer.feature = {properties: {}};
         if (!layer.state) {
             layer.state = this.state.insert;
             var id = this.getLayerId(layer);

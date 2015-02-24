@@ -11,6 +11,6 @@ L.Filter.GmlObjectID = L.Filter.extend({
     },
 
     innerGml: function () {
-        return L.XmlUtil.createElementNS('GmlObjectID', {'gml:id': this.feature.id});
+        return L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': this.feature.id});
     }
 });

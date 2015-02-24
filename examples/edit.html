@@ -46,7 +46,8 @@
 
     var boundaries = new L.WFS.Transaction({
         url: 'http://isogd:8082/geoserver/ows',
-        typeName: 'isogd:POIPOINT',
+        typeNS: 'isogd',
+        typeName: 'POIPOINT',
         crs: crs32640,
         style: {
             color: 'blue',

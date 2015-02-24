@@ -8,14 +8,14 @@ L.WFS.Transaction.include({
     },
 
     gmlFeature: function (layer) {
-        var featureNode = L.XmlUtil.createElementNS(this.requestParams.typeName);
+        var featureNode = L.XmlUtil.createElementNS(this.requestParams.typeName, {}, {uri: this.options.namespaceUri});
         var feature = layer.feature;
         for (var propertyName in feature.properties) {
-            featureNode.appendChild(this.gmlProperty(this.namespaceName(propertyName),
+            featureNode.appendChild(this.gmlProperty(propertyName,
                 feature.properties[propertyName]));
         }
 
-        featureNode.appendChild(this.gmlProperty(this.namespaceName(this.options.geometryField),
+        featureNode.appendChild(this.gmlProperty(this.options.geometryField,
             layer.toGml(this.options.crs)));
         return featureNode;
     },

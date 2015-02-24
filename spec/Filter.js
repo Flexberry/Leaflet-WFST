@@ -25,9 +25,9 @@ describe('Filter', function () {
         });
 
         describe('#toGml', function () {
-            it('must have child element with Name="GmlObjectID" and attribute "gml:id" = 1', function () {
+            it('must have child element with Name="ogc:GmlObjectId" and attribute "gml:id" = 1', function () {
                 var gml = filter.toGml().firstChild;
-                expect(gml.tagName).to.be.equal('GmlObjectID');
+                expect(gml.tagName).to.be.equal('ogc:GmlObjectId');
                 expect(gml.attributes['gml:id'].value).to.be.equal('1');
             });
         });
