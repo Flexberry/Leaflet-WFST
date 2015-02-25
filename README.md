@@ -3,7 +3,7 @@
 OGC WFS-T client layer for leaflet.
 
 #Initialization options
-```
+```javascript
    options: {
         crs: L.CRS.EPSG3857,
         showExisting: true,
@@ -30,7 +30,7 @@ OGC WFS-T client layer for leaflet.
 |style|-|leaflet vector style|
 
 #Basic WFS example
-```
+```javascript
 var map = L.map('map').setView([0, 0], 2);
 
 // add an OpenStreetMap tile layer
@@ -62,7 +62,7 @@ Extends leaflet classes with toGml(crs) function:
 OGC Filter realization:
 ##GmlFeatureId filter
 Example:
-```
+```javascript
 var feature = {id: 1};
 var filter = new L.Filter.GmlFeatureID(feature);
 filter.toGml()
@@ -70,7 +70,7 @@ filter.toGml()
 
 #WFST Example
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
-```
+```javascript
 L.WFS.Transaction.include(MultiEditableMixin);
 
 var wfst = new L.WFS.Transaction({
@@ -95,7 +95,7 @@ map.on('editable:editing', function (e) {
 });
 ```
 to make "wfs:Transaction" POST request call
-```
+```javascript
 wfst.save()
 ```
 
