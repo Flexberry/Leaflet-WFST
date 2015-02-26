@@ -103,14 +103,10 @@
 </table>
 
 <h1>
-<a id="basic-wfs-example" class="anchor" href="#basic-wfs-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic WFS example</h1>
+<a id="basic-wfs-example---view" class="anchor" href="#basic-wfs-example---view" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic WFS example - <a href="http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html">view</a>
+</h1>
 
 <div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> map <span class="pl-k">=</span> L.map(<span class="pl-s1"><span class="pl-pds">'</span>map<span class="pl-pds">'</span></span>).setView([<span class="pl-c1">0</span>, <span class="pl-c1">0</span>], <span class="pl-c1">2</span>);
-
-<span class="pl-c">// add an OpenStreetMap tile layer</span>
-L.tileLayer(<span class="pl-s1"><span class="pl-pds">'</span>http://{s}.tile.osm.org/{z}/{x}/{y}.png<span class="pl-pds">'</span></span>, {
-    attribution<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>&amp;copy; &lt;a href="http://osm.org/copyright"&gt;OpenStreetMap&lt;/a&gt; contributors<span class="pl-pds">'</span></span>
-}).addTo(map);
 
 <span class="pl-s">var</span> boundaries <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.WFS</span>({
     url<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>http://demo.opengeo.org/geoserver/ows<span class="pl-pds">'</span></span>,
@@ -151,7 +147,8 @@ L.tileLayer(<span class="pl-s1"><span class="pl-pds">'</span>http://{s}.tile.osm
 filter.toGml()</pre></div>
 
 <h1>
-<a id="wfst-example" class="anchor" href="#wfst-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>WFST Example</h1>
+<a id="wfst-example---view" class="anchor" href="#wfst-example---view" aria-hidden="true"><span class="octicon octicon-link"></span></a>WFST Example - <a href="http://flexberry.github.io/Leaflet-WFST/examples/edit.html">view</a>
+</h1>
 
 <p>Editing plugin - <a href="https://github.com/yohanboniface/Leaflet.Editable">Leaflet.Editable</a></p>
 
@@ -171,16 +168,18 @@ filter.toGml()</pre></div>
         });
 
 map.on(<span class="pl-s1"><span class="pl-pds">'</span>editable:created<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> (<span class="pl-vpf">e</span>) {
-    boundaries.addLayer(e.layer);
+    wfst.addLayer(e.layer);
 });
 
 map.on(<span class="pl-s1"><span class="pl-pds">'</span>editable:editing<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> (<span class="pl-vpf">e</span>) {
-    boundaries.editLayer(e.layer);
+    wfst.editLayer(e.layer);
 });</pre></div>
 
-<p>to make "wfs:Transaction" POST request call</p>
+<p>to make "wfs:Transaction" POST request call save() method, example with <a href="https://github.com/CliffCloud/Leaflet.EasyButton">Leaflet.EasyButton</a></p>
 
-<div class="highlight highlight-javascript"><pre>wfst.save()</pre></div>
+<div class="highlight highlight-javascript"><pre> L.easyButton(<span class="pl-s1"><span class="pl-pds">'</span>fa-save<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
+     wfst.save();
+ }, <span class="pl-s1"><span class="pl-pds">'</span>Save changes<span class="pl-pds">'</span></span>);</pre></div>
 
 <h1>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h1>
