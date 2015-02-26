@@ -33,11 +33,6 @@ OGC WFS-T client layer for leaflet.
 ```javascript
 var map = L.map('map').setView([0, 0], 2);
 
-// add an OpenStreetMap tile layer
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
 var boundaries = new L.WFS({
     url: 'http://demo.opengeo.org/geoserver/ows',
     typeNS: 'topp',
@@ -87,16 +82,18 @@ var wfst = new L.WFS.Transaction({
         });
         
 map.on('editable:created', function (e) {
-    boundaries.addLayer(e.layer);
+    wfst.addLayer(e.layer);
 });
 
 map.on('editable:editing', function (e) {
-    boundaries.editLayer(e.layer);
+    wfst.editLayer(e.layer);
 });
 ```
-to make "wfs:Transaction" POST request call
+to make "wfs:Transaction" POST request call save() method, example with [Leaflet.EasyButton](https://github.com/CliffCloud/Leaflet.EasyButton)
 ```javascript
-wfst.save()
+ L.easyButton('fa-save', function () {
+     wfst.save();
+ }, 'Save changes');
 ```
 
 #License
