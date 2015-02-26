@@ -2,8 +2,9 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="../bower_components/leaflet/dist/leaflet.css"/>
-    <script src="../bower_components/leaflet/dist/leaflet-src.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
     <script src="../dist/Leaflet-WFST-src.js"></script>
     <title></title>
     <style>
@@ -25,7 +26,8 @@
     }).addTo(map);
 
     var boundaries = new L.WFS({
-        url: 'http://isogd:8082/geoserver/ows',
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
         typeName: 'tasmania_state_boundaries',
         crs: L.CRS.EPSG4326,
         style: {
@@ -38,7 +40,8 @@
             });
 
     var roads = new L.WFS({
-        url: 'http://isogd:8082/geoserver/ows',
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
         typeName: 'tasmania_roads',
         crs: L.CRS.EPSG4326,
         style: {
@@ -48,7 +51,8 @@
     }).addTo(map);
 
     var cities = new L.WFS({
-        url: 'http://isogd:8082/geoserver/ows',
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326
     }).addTo(map);

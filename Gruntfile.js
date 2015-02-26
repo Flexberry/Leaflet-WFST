@@ -10,7 +10,7 @@ module.exports = function (grunt) {
                 banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: 'src/*.js',
+                src: 'src/**/*.js',
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
         },
@@ -68,12 +68,41 @@ module.exports = function (grunt) {
                 files: ['spec/**/*.js'],
                 tasks: ['jshint:spec']
             }
+        },
+        copy: {
+            libs: {
+                cwd: 'bower_components/',
+                expand: true,
+                flatten: true,
+                src: [
+                    'L.EasyButton/easy-button.js',
+                    'Leaflet.Editable/src/Leaflet.Editable.js',
+                    'proj4leaflet/lib/proj4-compressed.js',
+                    'proj4leaflet/src/proj4leaflet.js'
+                ],
+                dest: 'examples/lib/'
+            }
+        },
+        'gh-pages': {
+            options: {
+                add: true,
+                push: false,
+                message: 'Auto update gh-pages'
+            },
+            examples: {
+                src: [
+                    'examples/*',
+                    'dist/Leaflet-WFST-src.js'
+                ]
+            }
         }
     });
 
-    // Load the plugin that provides the "uglify" task.
+    // Load tasks
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-gh-pages');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 };
