@@ -86,12 +86,11 @@ module.exports = function (grunt) {
         'gh-pages': {
             options: {
                 add: true,
-                push: false,
                 message: 'Auto update gh-pages'
             },
             examples: {
                 src: [
-                    'examples/*',
+                    'examples/**/*',
                     'dist/Leaflet-WFST-src.js'
                 ]
             }
@@ -105,4 +104,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-gh-pages');
     grunt.loadNpmTasks('grunt-contrib-copy');
+
+    grunt.registerTask('publish', ['copy:libs', 'gh-pages:examples']);
 };

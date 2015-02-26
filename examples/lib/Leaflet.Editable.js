@@ -27,7 +27,7 @@ L.Editable = L.Class.extend({
     },
 
     fireAndForward: function (type, e) {
-        e = e || {};
+        e = e || {};
         e.editTools = this;
         this.fire(type, e);
         this.map.fire(type, e);
@@ -51,11 +51,11 @@ L.Editable = L.Class.extend({
     },
 
     createEditLayer: function () {
-        return this.options.editLayer || new L.LayerGroup().addTo(this.map);
+        return this.options.editLayer || new L.LayerGroup().addTo(this.map);
     },
 
     createFeaturesLayer: function () {
-        return this.options.featuresLayer || new L.LayerGroup().addTo(this.map);
+        return this.options.featuresLayer || new L.LayerGroup().addTo(this.map);
     },
 
     moveForwardLineGuide: function (latlng) {
@@ -156,7 +156,7 @@ L.Editable = L.Class.extend({
     },
 
     startMarker: function (latlng) {
-        latlng = latlng || this.map.getCenter();
+        latlng = latlng || this.map.getCenter();
         var marker = this.createMarker(latlng);
         this.connectCreatedToMap(marker);
         var editor = marker.enableEdit();
@@ -342,7 +342,7 @@ L.Editable.VertexMarker = L.Marker.extend({
     },
 
     addMiddleMarker: function (previous) {
-        previous = previous || this.getPrevious();
+        previous = previous || this.getPrevious();
         if (previous && !this.middleMarker) this.middleMarker = this.editor.addMiddleMarker(previous, this, this.latlngs, this.editor);
     },
 
@@ -365,9 +365,7 @@ L.Editable.VertexMarker = L.Marker.extend({
 
     _initInteraction: function () {
         L.Marker.prototype._initInteraction.call(this);
-        L.DomEvent.on(this._icon, 'touchstart', function (e) {
-            this._fireMouseEvent(e);
-        }, this);
+        L.DomEvent.on(this._icon, 'touchstart', function (e) {this._fireMouseEvent(e);}, this);
     }
 
 });
@@ -457,9 +455,7 @@ L.Editable.MiddleMarker = L.Marker.extend({
 
     _initInteraction: function () {
         L.Marker.prototype._initInteraction.call(this);
-        L.DomEvent.on(this._icon, 'touchstart', function (e) {
-            this._fireMouseEvent(e);
-        }, this);
+        L.DomEvent.on(this._icon, 'touchstart', function (e) {this._fireMouseEvent(e);}, this);
     }
 
 });
@@ -499,7 +495,7 @@ L.Editable.BaseEditor = L.Class.extend({
     },
 
     fireAndForward: function (type, e) {
-        e = e || {};
+        e = e || {};
         e.layer = this.feature;
         this.feature.fire(type, e);
         if (this.feature.multi) this.feature.multi.fire(type, e);
@@ -894,8 +890,8 @@ L.Map.mergeOptions({
 var EditableMixin = {
 
     createEditor: function (map) {
-        map = map || this._map;
-        var Klass = this.options.editorClass || this.getEditorClass(map);
+        map = map || this._map;
+        var Klass = this.options.editorClass || this.getEditorClass(map);
         return new Klass(map, this, this.options.editOptions);
     },
 
@@ -918,11 +914,11 @@ var EditableMixin = {
     },
 
     toggleEdit: function () {
-        if (this.editEnabled()) {
-            this.disableEdit();
-        } else {
-            this.enableEdit();
-        }
+      if (this.editEnabled()) {
+        this.disableEdit();
+      } else {
+        this.enableEdit();
+      }
     }
 
 };
@@ -988,7 +984,7 @@ L.Polygon.include({
                 p2 = part[k];
 
                 if (((p1.y > p.y) !== (p2.y > p.y)) &&
-                    (p.x < (p2.x - p1.x) * (p.y - p1.y) / (p2.y - p1.y) + p1.x)) {
+                        (p.x < (p2.x - p1.x) * (p.y - p1.y) / (p2.y - p1.y) + p1.x)) {
                     inside = !inside;
                 }
             }
@@ -1014,14 +1010,14 @@ L.Marker.include({
 var MultiEditableMixin = {
 
     enableEdit: function () {
-        this.eachLayer(function (layer) {
+        this.eachLayer(function(layer) {
             layer.multi = this;
             layer.enableEdit();
         }, this);
     },
 
     disableEdit: function () {
-        this.eachLayer(function (layer) {
+        this.eachLayer(function(layer) {
             layer.disableEdit();
         });
     },
