@@ -29,7 +29,7 @@ OGC WFS-T client layer for leaflet.
 |typeName|-|type name|
 |style|-|leaflet vector style|
 
-#Basic WFS example
+#Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
 ```javascript
 var map = L.map('map').setView([0, 0], 2);
 
@@ -63,7 +63,7 @@ var filter = new L.Filter.GmlFeatureID(feature);
 filter.toGml()
 ```
 
-#WFST Example
+#WFST Example - [view](http://flexberry.github.io/Leaflet-WFST/examples/edit.html)
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
 ```javascript
 L.WFS.Transaction.include(MultiEditableMixin);
