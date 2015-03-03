@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-02-24 */
+/*! Leaflet-WFST 0.0.1 2015-03-03 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -26,6 +26,15 @@ L.XmlUtil = {
                 node.setAttributeNS(uri, name, value);
             }
         }
+    },
+
+    evaluate: function (xpath, rawxml) {
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(rawxml, 'text/xml');
+        var xpe = new XPathEvaluator();
+        var nsResolver = xpe.createNSResolver(xmlDoc.documentElement);
+
+        return xpe.evaluate(xpath, xmlDoc, nsResolver, XPathResult.ANY_TYPE, null);
     },
 
     createElementNS: function (name, attributes, options) {
@@ -64,7 +73,6 @@ L.XmlUtil = {
         var serializer = new XMLSerializer();
         return serializer.serializeToString(doc);
     },
-
 
     createXmlString: function (node) {
         var serializer = new XMLSerializer();
@@ -112,6 +120,9 @@ L.Util.request = function (options) {
     xhr.send(options.data);
 };
 L.Filter = L.Class.extend({
+    initialize: function () {
+        this.filter = L.XmlUtil.createElementNS('ogc:Filter');
+    },
 
     /**
      * Represents this filter as GML node
@@ -120,32 +131,20 @@ L.Filter = L.Class.extend({
      * {XmlElement} Gml representation of this filter
      */
     toGml: function () {
-        var filter = L.XmlUtil.createElementNS('ogc:Filter');
-        filter.appendChild(this.innerGml());
-        return filter;
+        return this.filter;
     },
 
-    innerGml: function () {
-        return document.createTextNode('');
+    append: function () {
+        return this;
     }
-
-
 });
 L.Filter.GmlObjectID = L.Filter.extend({
-
-    feature: {},
-
-    initialize: function (feature) {
-        this.feature = feature;
-    },
-
-    innerGml: function () {
-        return L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': this.feature.id});
+    append: function (id) {
+        this.filter.appendChild(L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': id}));
+        return this;
     }
 });
 L.Format = L.Class.extend({
-    requestParams: {},
-
     defaultOptions: {
         crs: L.CRS.EPSG3857,
         coordsToLatLng: function (coords) {
@@ -182,7 +181,7 @@ L.Format.GeoJSON = L.Format.extend({
 
     initialize: function (options) {
         L.Format.prototype.initialize.call(this, options);
-        this.requestParams = L.extend(this.requestParams, {outputFormat: 'application/json'});
+        this.outputFormat = 'application/json';
     },
 
     responseToLayers: function (rawData, coordsToLatLng) {
@@ -268,6 +267,7 @@ L.WFS = L.FeatureGroup.extend({
         version: '1.1.0',
         typeNS: '',
         typeName: '',
+        typeNSName: '',
         style: {
             color: 'black',
             weight: 1
@@ -301,26 +301,44 @@ L.WFS = L.FeatureGroup.extend({
 
         this.readFormat = readFormat || new L.Format.GeoJSON();
 
-        this.requestParams = L.extend(
-            {
-                service: 'WFS',
-                version: this.options.version,
-                typeName: (this.options.typeNS ? this.options.typeNS + ':' : '') + this.options.typeName,
-                srsName: this.options.crs.code
-            },
-            this.options.requestParams);
+        this.options.typeNSName = this.namespaceName(this.options.typeName);
+        this.options.srsName = this.options.crs.code;
 
         if (this.options.showExisting) {
             this.loadFeatures();
         }
     },
 
-    loadFeatures: function () {
-        var requestParams = L.extend({}, this.requestParams, this.readFormat.requestParams, {request: 'GetFeature'});
+    namespaceName: function (name) {
+        return this.options.typeNS + ':' + name;
+    },
+
+    getFeature: function (filter) {
+        var request = L.XmlUtil.createElementNS('wfs:GetFeature',
+            {
+                service: 'WFS',
+                version: this.options.version,
+                outputFormat: this.readFormat.outputFormat
+            });
+
+        var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query',
+            {
+                typeName: this.options.typeNSName,
+                srsName: this.options.srsName
+            }));
+
+        if (filter && filter.toGml) {
+            query.appendChild(filter.toGml());
+        }
+
+        return request;
+    },
+
+    loadFeatures: function (filter) {
         var that = this;
         L.Util.request({
             url: this.options.url,
-            params: requestParams,
+            data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
             success: function (data) {
                 var layers = that.readFormat.responseToLayers(data, that.options.coordsToLatLng);
                 layers.forEach(function (element) {
@@ -340,30 +358,34 @@ L.wfs = function (options, readFormat) {
     return new L.WFS(options, readFormat);
 };
 L.WFS.Transaction = L.WFS.extend({
-
-    changes: {},
-
     initialize: function (options, readFormat) {
         L.WFS.prototype.initialize.call(this, options, readFormat);
-        this.changes = {};
         this.describeFeatureType();
         this.state = L.extend(this.state, {
             insert: 'insert',
             update: 'update',
             remove: 'remove'
         });
+
+        this.changes = {};
+        var that = this;
+        this.on('save:success', function () {
+            that.changes = {};
+        });
     },
 
     describeFeatureType: function () {
-        var requestParams = L.extend({}, this.requestParams, {request: 'DescribeFeatureType'});
+        var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {service: 'WFS', version: this.options.version});
+        requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
+
         var that = this;
         L.Util.request({
             url: this.options.url,
-            params: requestParams,
+            data: L.XmlUtil.createXmlDocumentString(requestData),
             success: function (data) {
                 var parser = new DOMParser();
-                var featureInfo = parser.parseFromString(data, "text/xml");
-                that.options.namespaceUri = featureInfo.documentElement.attributes.targetNamespace.value;
+                var featureInfo = parser.parseFromString(data, "text/xml").documentElement;
+                that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
             }
         });
     },
@@ -400,8 +422,6 @@ L.WFS.Transaction = L.WFS.extend({
             layer.state = this.state.remove;
             this.changes[id] = layer;
         }
-
-        //return
     },
 
     editLayer: function (layer) {
@@ -415,29 +435,52 @@ L.WFS.Transaction = L.WFS.extend({
     },
 
     save: function () {
-        var transaction = this.transaction({version: this.options.version});
+        var transaction = L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
+
+        var inserted = [];
 
         for (var id in this.changes) {
             var layer = this.changes[id];
             var action = this[layer.state](layer);
             transaction.appendChild(action);
+
+            if (layer.state === this.state.insert) {
+                inserted.push(layer);
+            }
         }
+
+        var that = this;
 
         L.Util.request({
             url: this.options.url,
-            data: L.XmlUtil.createXmlDocumentString(transaction)
+            data: L.XmlUtil.createXmlDocumentString(transaction),
+            success: function (data) {
+                var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId[@fid!="none"]/@fid', data);
+                var filter = new L.Filter.GmlObjectID();
+                var id = insertResult.iterateNext();
+                while (id) {
+                    filter.append(id.value);
+                    id = insertResult.iterateNext();
+                }
+
+                inserted.forEach(function (layer) {
+                    L.FeatureGroup.prototype.removeLayer.call(that, layer);
+                });
+
+                that.once('load', function () {
+                    that.fire('save:success');
+                });
+
+                that.loadFeatures(filter);
+            }
         });
-        this.changes = {};
+
         return this;
     }
 });
 L.WFS.Transaction.include({
-    namespaceName: function (name) {
-        return this.options.typeNS + ':' + name;
-    },
-
     gmlFeature: function (layer) {
-        var featureNode = L.XmlUtil.createElementNS(this.requestParams.typeName, {}, {uri: this.options.namespaceUri});
+        var featureNode = L.XmlUtil.createElementNS(this.options.typeNSName, {}, {uri: this.options.namespaceUri});
         var feature = layer.feature;
         for (var propertyName in feature.properties) {
             featureNode.appendChild(this.gmlProperty(propertyName,
@@ -487,7 +530,7 @@ L.WFS.Transaction.include({
     },
 
     update: function (layer) {
-        var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.requestParams.typeName});
+        var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.options.typeNSName});
         var feature = layer.feature;
         for (var propertyName in feature.properties) {
             node.appendChild(this.wfsProperty(propertyName, feature.properties[propertyName]));
@@ -496,20 +539,16 @@ L.WFS.Transaction.include({
         node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
             layer.toGml(this.options.crs)));
 
-        var filter = new L.Filter.GmlObjectID(layer.feature);
+        var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
         node.appendChild(filter.toGml());
         return node;
     },
 
     remove: function (layer) {
-        var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.requestParams.typeName});
-        var filter = new L.Filter.GmlObjectID(layer.feature);
+        var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
+        var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
         node.appendChild(filter.toGml());
         return node;
-    },
-
-    transaction: function () {
-        return L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
     }
 });
 
