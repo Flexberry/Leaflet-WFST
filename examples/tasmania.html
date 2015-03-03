@@ -35,7 +35,7 @@
             weight: 2
         }
     }).addTo(map)
-            .on('load', function () {
+            .once('load', function () {
                 map.fitBounds(boundaries);
             });
 

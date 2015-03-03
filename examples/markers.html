@@ -51,8 +51,11 @@
             color: 'blue',
             weight: 2
         }
-    }).addTo(map).on('load', function () {
+    }).addTo(map)
+            .once('load', function () {
                 map.fitBounds(wfst);
+            })
+            .on('load', function () {
                 wfst.enableEdit();
             });
 
@@ -63,8 +66,6 @@
     map.on('editable:editing', function (e) {
         wfst.editLayer(e.layer);
     });
-
-    //map.on('draw:deleted', function (layerGroup) {    });
 
     L.easyButton('fa-edit', function () {
         map.editTools.startMarker();
