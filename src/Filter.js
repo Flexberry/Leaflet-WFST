@@ -5,6 +5,9 @@
  */
 
 L.Filter = L.Class.extend({
+    initialize: function () {
+        this.filter = L.XmlUtil.createElementNS('ogc:Filter');
+    },
 
     /**
      * Represents this filter as GML node
@@ -13,14 +16,10 @@ L.Filter = L.Class.extend({
      * {XmlElement} Gml representation of this filter
      */
     toGml: function () {
-        var filter = L.XmlUtil.createElementNS('ogc:Filter');
-        filter.appendChild(this.innerGml());
-        return filter;
+        return this.filter;
     },
 
-    innerGml: function () {
-        return document.createTextNode('');
+    append: function () {
+        return this;
     }
-
-
 });

@@ -5,7 +5,7 @@
   "eqeqeq": true,
   "indent": 4,
   "latedef": "nofunc",
-  "maxlen": 120,
+  "maxlen": 160,
   "newcap": true,
   "strict": false,
   "undef": true,

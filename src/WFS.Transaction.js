@@ -3,30 +3,34 @@
  */
 
 L.WFS.Transaction = L.WFS.extend({
-
-    changes: {},
-
     initialize: function (options, readFormat) {
         L.WFS.prototype.initialize.call(this, options, readFormat);
-        this.changes = {};
         this.describeFeatureType();
         this.state = L.extend(this.state, {
             insert: 'insert',
             update: 'update',
             remove: 'remove'
         });
+
+        this.changes = {};
+        var that = this;
+        this.on('save:success', function () {
+            that.changes = {};
+        });
     },
 
     describeFeatureType: function () {
-        var requestParams = L.extend({}, this.requestParams, {request: 'DescribeFeatureType'});
+        var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {service: 'WFS', version: this.options.version});
+        requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
+
         var that = this;
         L.Util.request({
             url: this.options.url,
-            params: requestParams,
+            data: L.XmlUtil.createXmlDocumentString(requestData),
             success: function (data) {
                 var parser = new DOMParser();
-                var featureInfo = parser.parseFromString(data, "text/xml");
-                that.options.namespaceUri = featureInfo.documentElement.attributes.targetNamespace.value;
+                var featureInfo = parser.parseFromString(data, "text/xml").documentElement;
+                that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
             }
         });
     },
@@ -63,8 +67,6 @@ L.WFS.Transaction = L.WFS.extend({
             layer.state = this.state.remove;
             this.changes[id] = layer;
         }
-
-        //return
     },
 
     editLayer: function (layer) {
@@ -78,19 +80,46 @@ L.WFS.Transaction = L.WFS.extend({
     },
 
     save: function () {
-        var transaction = this.transaction({version: this.options.version});
+        var transaction = L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
+
+        var inserted = [];
 
         for (var id in this.changes) {
             var layer = this.changes[id];
             var action = this[layer.state](layer);
             transaction.appendChild(action);
+
+            if (layer.state === this.state.insert) {
+                inserted.push(layer);
+            }
         }
+
+        var that = this;
 
         L.Util.request({
             url: this.options.url,
-            data: L.XmlUtil.createXmlDocumentString(transaction)
+            data: L.XmlUtil.createXmlDocumentString(transaction),
+            success: function (data) {
+                var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId[@fid!="none"]/@fid', data);
+                var filter = new L.Filter.GmlObjectID();
+                var id = insertResult.iterateNext();
+                while (id) {
+                    filter.append(id.value);
+                    id = insertResult.iterateNext();
+                }
+
+                inserted.forEach(function (layer) {
+                    L.FeatureGroup.prototype.removeLayer.call(that, layer);
+                });
+
+                that.once('load', function () {
+                    that.fire('save:success');
+                });
+
+                that.loadFeatures(filter);
+            }
         });
-        this.changes = {};
+
         return this;
     }
 });

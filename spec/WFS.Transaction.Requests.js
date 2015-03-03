@@ -60,25 +60,6 @@ describe('WFS.Transaction.Requests', function () {
         });
     });
 
-    describe('#transaction', function () {
-        it('should return Element object with tagName "wfs:Transaction"', function () {
-            var result = wfst.transaction();
-            expect(result).to.be.instanceOf(Element);
-            expect(result.tagName).to.be.equal('wfs:Transaction');
-        });
-
-        it('must have attribute "service" with value "WFS"', function () {
-            var result = wfst.transaction();
-            expect(result.attributes.service.value).to.be.equal('WFS');
-        });
-
-        it('must have attribute "version"', function () {
-            var version = wfst.options.version = '100500';
-            var result = wfst.transaction();
-            expect(result.attributes.version.value).to.be.equal(version);
-        });
-    });
-
     after(function () {
         xhr.restore();
     });

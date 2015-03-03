@@ -11,6 +11,7 @@ L.WFS = L.FeatureGroup.extend({
         version: '1.1.0',
         typeNS: '',
         typeName: '',
+        typeNSName: '',
         style: {
             color: 'black',
             weight: 1
@@ -44,26 +45,44 @@ L.WFS = L.FeatureGroup.extend({
 
         this.readFormat = readFormat || new L.Format.GeoJSON();
 
-        this.requestParams = L.extend(
-            {
-                service: 'WFS',
-                version: this.options.version,
-                typeName: (this.options.typeNS ? this.options.typeNS + ':' : '') + this.options.typeName,
-                srsName: this.options.crs.code
-            },
-            this.options.requestParams);
+        this.options.typeNSName = this.namespaceName(this.options.typeName);
+        this.options.srsName = this.options.crs.code;
 
         if (this.options.showExisting) {
             this.loadFeatures();
         }
     },
 
-    loadFeatures: function () {
-        var requestParams = L.extend({}, this.requestParams, this.readFormat.requestParams, {request: 'GetFeature'});
+    namespaceName: function (name) {
+        return this.options.typeNS + ':' + name;
+    },
+
+    getFeature: function (filter) {
+        var request = L.XmlUtil.createElementNS('wfs:GetFeature',
+            {
+                service: 'WFS',
+                version: this.options.version,
+                outputFormat: this.readFormat.outputFormat
+            });
+
+        var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query',
+            {
+                typeName: this.options.typeNSName,
+                srsName: this.options.srsName
+            }));
+
+        if (filter && filter.toGml) {
+            query.appendChild(filter.toGml());
+        }
+
+        return request;
+    },
+
+    loadFeatures: function (filter) {
         var that = this;
         L.Util.request({
             url: this.options.url,
-            params: requestParams,
+            data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
             success: function (data) {
                 var layers = that.readFormat.responseToLayers(data, that.options.coordsToLatLng);
                 layers.forEach(function (element) {

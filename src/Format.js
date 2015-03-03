@@ -3,8 +3,6 @@
  */
 
 L.Format = L.Class.extend({
-    requestParams: {},
-
     defaultOptions: {
         crs: L.CRS.EPSG3857,
         coordsToLatLng: function (coords) {

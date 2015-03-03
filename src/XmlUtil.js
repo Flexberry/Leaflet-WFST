@@ -27,6 +27,15 @@ L.XmlUtil = {
         }
     },
 
+    evaluate: function (xpath, rawxml) {
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(rawxml, 'text/xml');
+        var xpe = new XPathEvaluator();
+        var nsResolver = xpe.createNSResolver(xmlDoc.documentElement);
+
+        return xpe.evaluate(xpath, xmlDoc, nsResolver, XPathResult.ANY_TYPE, null);
+    },
+
     createElementNS: function (name, attributes, options) {
         options = options || {};
 
@@ -63,7 +72,6 @@ L.XmlUtil = {
         var serializer = new XMLSerializer();
         return serializer.serializeToString(doc);
     },
-
 
     createXmlString: function (node) {
         var serializer = new XMLSerializer();

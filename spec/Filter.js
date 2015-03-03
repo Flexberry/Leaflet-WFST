@@ -21,7 +21,7 @@ describe('Filter', function () {
         var filter;
 
         beforeEach(function () {
-            filter = new L.Filter.GmlObjectID({id: 1});
+            filter = new L.Filter.GmlObjectID().append(1);
         });
 
         describe('#toGml', function () {

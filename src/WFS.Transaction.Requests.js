@@ -11,7 +11,7 @@ L.WFS.Transaction.include({
     },
 
     update: function (layer) {
-        var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.requestParams.typeName});
+        var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.options.typeNSName});
         var feature = layer.feature;
         for (var propertyName in feature.properties) {
             node.appendChild(this.wfsProperty(propertyName, feature.properties[propertyName]));
@@ -20,19 +20,15 @@ L.WFS.Transaction.include({
         node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
             layer.toGml(this.options.crs)));
 
-        var filter = new L.Filter.GmlObjectID(layer.feature);
+        var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
         node.appendChild(filter.toGml());
         return node;
     },
 
     remove: function (layer) {
-        var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.requestParams.typeName});
-        var filter = new L.Filter.GmlObjectID(layer.feature);
+        var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
+        var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
         node.appendChild(filter.toGml());
         return node;
-    },
-
-    transaction: function () {
-        return L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
     }
 });

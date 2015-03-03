@@ -58,12 +58,18 @@ OGC Filter realization:
 ##GmlFeatureId filter
 Example:
 ```javascript
-var feature = {id: 1};
-var filter = new L.Filter.GmlFeatureID(feature);
+var filter = new L.Filter.GmlFeatureID();
+filter.append(1);
 filter.toGml()
 ```
+code above will return:
+```xml
+<ogc:Filter>
+    <ogc:GmlFeatureId gml:id=1/>
+</ogc:Filter>
+```
 
-#WFST Example - [view](http://flexberry.github.io/Leaflet-WFST/examples/edit.html)
+#WFST Example - [view](http://flexberry.github.io/Leaflet-WFST/examples/markers.html)
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
 ```javascript
 L.WFS.Transaction.include(MultiEditableMixin);
@@ -76,7 +82,7 @@ var wfst = new L.WFS.Transaction({
         color: 'blue',
         weight: 2
     }
-}).addTo(map).on('load', function () {
+}).addTo(map).once('load', function () {
             map.fitBounds(wfst);
             wfst.enableEdit();
         });

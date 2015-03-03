@@ -7,7 +7,7 @@ L.Format.GeoJSON = L.Format.extend({
 
     initialize: function (options) {
         L.Format.prototype.initialize.call(this, options);
-        this.requestParams = L.extend(this.requestParams, {outputFormat: 'application/json'});
+        this.outputFormat = 'application/json';
     },
 
     responseToLayers: function (rawData, coordsToLatLng) {
