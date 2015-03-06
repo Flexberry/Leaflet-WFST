@@ -18,7 +18,7 @@
     <script src="lib/proj4leaflet.js"></script>
 
 
-    <script src="../dist/Leaflet-WFST-src.js"></script>
+    <script src="../dist/Leaflet-WFST.src.js"></script>
     <title></title>
     <style>
         html, body, #map {
@@ -56,12 +56,17 @@
     }).addTo(map)
             .once('load', function () {
                 map.fitBounds(wfst);
-            })
-            .on('load', function () {
-                wfst.enableEdit();
             });
 
+    var editingFeature;
+
     map.on('editable:created', function (e) {
+
+        if (editingFeature) {
+            editingFeature.disableEdit();
+        }
+        editingFeature = e.layer;
+
         wfst.addLayer(e.layer);
     });
 
@@ -69,13 +74,54 @@
         wfst.editLayer(e.layer);
     });
 
-    L.easyButton('fa-edit', function () {
+    L.easyButton('fa-crosshairs', function () {
         map.editTools.startPolygon();
-    }, 'Создать');
+    }, 'Create new');
+
+    var switchEdit = function (enable) {
+        var editClick = function (e) {
+            if (e.layer === editingFeature) return;
+
+            if (editingFeature) {
+                editingFeature.disableEdit();
+            }
+
+            editingFeature = e.layer;
+
+            if (editingFeature.enableEdit) {
+                editingFeature.enableEdit();
+            }
+        };
+
+        if (enable) {
+            wfst.on('click', editClick);
+        }
+        else {
+            if (editingFeature) {
+                editingFeature.disableEdit();
+            }
+
+            wfst.off('click', editClick);
+        }
+    };
+
+    var deleteClick = function (e) {
+        wfst.removeLayer(e.layer);
+    };
+
+    L.easyButton('fa-edit', function () {
+        switchEdit(true);
+        wfst.off('click', deleteClick);
+    }, 'Edit');
+
+    L.easyButton('fa-ban', function () {
+        switchEdit(false);
+        wfst.on('click', deleteClick);
+    }, 'Remove');
 
     L.easyButton('fa-save', function () {
         wfst.save();
-    }, 'Сохранить изменения');
+    }, 'Save changes');
 
 </script>
 </body>
