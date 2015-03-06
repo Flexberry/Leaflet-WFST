@@ -142,13 +142,18 @@
 
 <p>Example:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> feature <span class="pl-k">=</span> {id<span class="pl-k">:</span> <span class="pl-c1">1</span>};
-<span class="pl-s">var</span> filter <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.Filter</span>.GmlFeatureID(feature);
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> filter <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.Filter</span>.GmlFeatureID();
+filter.append(<span class="pl-c1">1</span>);
 filter.toGml()</pre></div>
 
+<p>code above will return:</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">Filter</span>&gt;
+    &lt;<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">GmlFeatureId</span> <span class="pl-e">gml</span><span class="pl-e">:</span><span class="pl-e">id</span>=1/&gt;
+&lt;/<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">Filter</span>&gt;</pre></div>
+
 <h1>
-<a id="wfst-example---view" class="anchor" href="#wfst-example---view" aria-hidden="true"><span class="octicon octicon-link"></span></a>WFST Example - <a href="http://flexberry.github.io/Leaflet-WFST/examples/edit.html">view</a>
-</h1>
+<a id="wfst-example" class="anchor" href="#wfst-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>WFST Example</h1>
 
 <p>Editing plugin - <a href="https://github.com/yohanboniface/Leaflet.Editable">Leaflet.Editable</a></p>
 
@@ -162,7 +167,7 @@ filter.toGml()</pre></div>
         color<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>blue<span class="pl-pds">'</span></span>,
         weight<span class="pl-k">:</span> <span class="pl-c1">2</span>
     }
-}).addTo(map).on(<span class="pl-s1"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
+}).addTo(map).once(<span class="pl-s1"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
             map.fitBounds(wfst);
             wfst.enableEdit();
         });
@@ -180,6 +185,11 @@ map.on(<span class="pl-s1"><span class="pl-pds">'</span>editable:editing<span cl
 <div class="highlight highlight-javascript"><pre> L.easyButton(<span class="pl-s1"><span class="pl-pds">'</span>fa-save<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
      wfst.save();
  }, <span class="pl-s1"><span class="pl-pds">'</span>Save changes<span class="pl-pds">'</span></span>);</pre></div>
+
+<h1>
+<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo</h1>
+
+<p><a href="http://flexberry.github.io/Leaflet-WFST/examples/markers.html">Markers</a>, <a href="http://flexberry.github.io/Leaflet-WFST/examples/polygon.html">Polygons</a></p>
 
 <h1>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h1>
