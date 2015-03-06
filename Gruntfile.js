@@ -38,7 +38,7 @@ module.exports = function (grunt) {
                     'src/WFS.Transaction.Helpers.js',
                     'src/WFS.Transaction.Requests.js'
                 ],
-                dest: 'dist/<%= pkg.name %>-src.js'
+                dest: 'dist/<%= pkg.name %>.src.js'
             }
         },
         jshint: {
@@ -86,12 +86,13 @@ module.exports = function (grunt) {
         'gh-pages': {
             options: {
                 add: true,
+                push: false,
                 message: 'Auto update gh-pages'
             },
             examples: {
                 src: [
                     'examples/**/*',
-                    'dist/Leaflet-WFST-src.js'
+                    'dist/Leaflet-WFST.src.js'
                 ]
             }
         }
