@@ -257,6 +257,12 @@ L.Polygon.include({
     }
 });
 
+L.Polyline.include({
+   toGml: function(crs){
+
+   }
+});
+
 L.WFS = L.FeatureGroup.extend({
 
     options: {
@@ -455,7 +461,7 @@ L.WFS.Transaction = L.WFS.extend({
             url: this.options.url,
             data: L.XmlUtil.createXmlDocumentString(transaction),
             success: function (data) {
-                var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId[@fid!="none"]/@fid', data);
+                var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
                 var filter = new L.Filter.GmlObjectID();
                 var id = insertResult.iterateNext();
                 while (id) {
