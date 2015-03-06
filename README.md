@@ -69,7 +69,8 @@ code above will return:
 </ogc:Filter>
 ```
 
-#WFST Example - [view](http://flexberry.github.io/Leaflet-WFST/examples/markers.html)
+#WFST Example
+[Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html), [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygon.html)
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
 ```javascript
 L.WFS.Transaction.include(MultiEditableMixin);
