@@ -70,7 +70,6 @@ code above will return:
 ```
 
 #WFST Example
-[Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html), [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygon.html)
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
 ```javascript
 L.WFS.Transaction.include(MultiEditableMixin);
@@ -96,12 +95,16 @@ map.on('editable:editing', function (e) {
     wfst.editLayer(e.layer);
 });
 ```
+
 to make "wfs:Transaction" POST request call save() method, example with [Leaflet.EasyButton](https://github.com/CliffCloud/Leaflet.EasyButton)
 ```javascript
  L.easyButton('fa-save', function () {
      wfst.save();
  }, 'Save changes');
 ```
+
+#Demo
+[Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html), [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygon.html)
 
 #License
 MIT
