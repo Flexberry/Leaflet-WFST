@@ -5,10 +5,12 @@
   "description": "WFST plugin for Leaflet",
   "license": "MIT",
   "private": true,
+  "main": "dist/Leaflet-WFST.src.js",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
+    "examples",
     "spec"
   ],
   "devDependencies": {
