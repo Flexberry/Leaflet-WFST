@@ -75,6 +75,7 @@ module.exports = function (grunt) {
                 expand: true,
                 flatten: true,
                 src: [
+                    'Leaflet.Toolbar/dist/leaflet.toolbar.*',
                     'L.EasyButton/easy-button.js',
                     'Leaflet.Editable/src/Leaflet.Editable.js',
                     'proj4leaflet/lib/proj4-compressed.js',

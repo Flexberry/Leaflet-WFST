@@ -18,6 +18,7 @@
     "Leaflet.Editable": "yohanboniface/Leaflet.Editable",
     "proj4leaflet": "~0.7.0",
     "leaflet.draw": "~0.2.3",
-    "L.EasyButton": "CliffCloud/Leaflet.EasyButton"
+    "L.EasyButton": "CliffCloud/Leaflet.EasyButton",
+    "Leaflet.Toolbar": "leaflet/Leaflet.Toolbar#~0.1.2"
   }
 }
