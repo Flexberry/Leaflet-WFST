@@ -3,20 +3,16 @@
 <head lang="en">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/leaflet.toolbar.css"/>
 
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
-
-    <script src="lib/easy-button.js" type="text/javascript"></script>
-
+    <script src="lib/leaflet.toolbar.js"></script>
     <script src="lib/Leaflet.Editable.js"></script>
-
+    <script src="EditToolbar.js"></script>
 
     <script src="lib/proj4-compressed.js"></script>
     <script src="lib/proj4leaflet.js"></script>
-
 
     <script src="../dist/Leaflet-WFST.src.js"></script>
     <title></title>
@@ -58,15 +54,37 @@
                 map.fitBounds(wfst);
             });
 
-    var editingFeature;
+    new L.Toolbar.Control({
+        position: 'topleft',
+        actions: [
+            L.ToolbarAction.extend({
+                options: {
+                    toolbarIcon: {
+                        className: 'fa fa-lg fa-square'
+                    }
+                },
+                addHooks: function () {
+                    map.editTools.startPolygon();
+                }
+            }),
+            L.ToolbarAction.extend({
+                options: {
+                    toolbarIcon: {
+                        className: 'fa fa-lg fa-save'
+                    }
+                },
+                addHooks: function () {
+                    wfst.save();
+                }
+            })
+        ]
+    }).addTo(map);
+
+    wfst.on('click', function (event) {
+        new L.EditPopupToolbar(event.latlng).addTo(map, event.layer);
+    });
 
     map.on('editable:created', function (e) {
-
-        if (editingFeature) {
-            editingFeature.disableEdit();
-        }
-        editingFeature = e.layer;
-
         wfst.addLayer(e.layer);
     });
 
@@ -74,55 +92,9 @@
         wfst.editLayer(e.layer);
     });
 
-    L.easyButton('fa-crosshairs', function () {
-        map.editTools.startPolygon();
-    }, 'Create new');
-
-    var switchEdit = function (enable) {
-        var editClick = function (e) {
-            if (e.layer === editingFeature) return;
-
-            if (editingFeature) {
-                editingFeature.disableEdit();
-            }
-
-            editingFeature = e.layer;
-
-            if (editingFeature.enableEdit) {
-                editingFeature.enableEdit();
-            }
-        };
-
-        if (enable) {
-            wfst.on('click', editClick);
-        }
-        else {
-            if (editingFeature) {
-                editingFeature.disableEdit();
-            }
-
-            wfst.off('click', editClick);
-        }
-    };
-
-    var deleteClick = function (e) {
+    map.on('editable:delete', function (e) {
         wfst.removeLayer(e.layer);
-    };
-
-    L.easyButton('fa-edit', function () {
-        switchEdit(true);
-        wfst.off('click', deleteClick);
-    }, 'Edit');
-
-    L.easyButton('fa-ban', function () {
-        switchEdit(false);
-        wfst.on('click', deleteClick);
-    }, 'Remove');
-
-    L.easyButton('fa-save', function () {
-        wfst.save();
-    }, 'Save changes');
-
+    });
 </script>
 </body>
 </html>

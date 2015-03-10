@@ -258,9 +258,9 @@ L.Polygon.include({
 });
 
 L.Polyline.include({
-    toGml: function (crs) {
+   toGml: function(crs){
 
-    }
+   }
 });
 
 L.WFS = L.FeatureGroup.extend({
