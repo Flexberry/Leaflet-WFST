@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-03-06 */
+/*! Leaflet-WFST 0.0.1 2015-03-23 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -184,11 +184,13 @@ L.Format.GeoJSON = L.Format.extend({
         this.outputFormat = 'application/json';
     },
 
-    responseToLayers: function (rawData, coordsToLatLng) {
+    responseToLayers: function (options) {
+        options = options || {};
         var layers = [];
-        var geoJson = JSON.parse(rawData);
+        var geoJson = JSON.parse(options.rawData);
+
         for (var i = 0; i < geoJson.features.length; i++) {
-            var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], null, coordsToLatLng, null);
+            var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], options.pointToLayer || null, options.coordsToLatLng, null);
             layer.feature = geoJson.features[i];
             layers.push(layer);
         }
@@ -258,9 +260,9 @@ L.Polygon.include({
 });
 
 L.Polyline.include({
-   toGml: function(crs){
+    toGml: function (crs) {
 
-   }
+    }
 });
 
 L.WFS = L.FeatureGroup.extend({
@@ -346,7 +348,11 @@ L.WFS = L.FeatureGroup.extend({
             url: this.options.url,
             data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
             success: function (data) {
-                var layers = that.readFormat.responseToLayers(data, that.options.coordsToLatLng);
+                var layers = that.readFormat.responseToLayers({
+                    rawData: data,
+                    coordsToLatLng: that.options.coordsToLatLng,
+                    pointToLayer: that.options.pointToLayer
+                });
                 layers.forEach(function (element) {
                     element.state = that.state.exist;
                     that.addLayer(element);
@@ -354,6 +360,7 @@ L.WFS = L.FeatureGroup.extend({
 
                 that.setStyle(that.options.style);
                 that.fire('load');
+
                 return that;
             }
         });

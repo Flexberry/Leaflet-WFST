@@ -10,11 +10,13 @@ L.Format.GeoJSON = L.Format.extend({
         this.outputFormat = 'application/json';
     },
 
-    responseToLayers: function (rawData, coordsToLatLng) {
+    responseToLayers: function (options) {
+        options = options || {};
         var layers = [];
-        var geoJson = JSON.parse(rawData);
+        var geoJson = JSON.parse(options.rawData);
+
         for (var i = 0; i < geoJson.features.length; i++) {
-            var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], null, coordsToLatLng, null);
+            var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], options.pointToLayer || null, options.coordsToLatLng, null);
             layer.feature = geoJson.features[i];
             layers.push(layer);
         }
