@@ -5,15 +5,6 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
-            build: {
-                src: 'src/**/*.js',
-                dest: 'dist/<%= pkg.name %>.min.js'
-            }
-        },
         concat: {
             options: {
                 stripBanners: true,
@@ -21,7 +12,7 @@ module.exports = function (grunt) {
                 '(function(window, document, undefined) {\n\n"use strict";\n\n',
                 footer: '\n\n})(window, document);'
             },
-            dist: {
+            main: {
                 src: [
                     'src/XmlUtil.js',
                     'src/Request.js',
@@ -41,13 +32,22 @@ module.exports = function (grunt) {
                 dest: 'dist/<%= pkg.name %>.src.js'
             }
         },
+        uglify: {
+            options: {
+                banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+            },
+            main: {
+                src: '<%= concat.main.dest %>',
+                dest: 'dist/<%= pkg.name %>.min.js'
+            }
+        },
         jshint: {
             options: {
                 jshintrc: true
             },
-            dev: {
+            scripts: {
                 files: {
-                    src: ['src/**/*.js']
+                    src: '<%= concat.main.src %>'
                 }
             },
             spec: {
@@ -56,10 +56,69 @@ module.exports = function (grunt) {
                 }
             }
         },
+        copy: {
+            libs: {
+                files: [{
+                    cwd: 'bower_components/',
+                    expand: true,
+                    src: [
+                        'font-awesome/**/*',
+                        '!font-awesome/.bower.json',
+                        '!font-awesome/.gitignore',
+                        '!font-awesome/.npmignore',
+                        '!font-awesome/bower.json'
+                    ],
+                    dest: 'examples/lib/'
+                }, {
+                    cwd: 'bower_components/',
+                    expand: true,
+                    flatten: true,
+                    src: [
+                        'leaflet/dist/*',
+                        '!leaflet/dist/leaflet-src.js'
+                    ],
+                    dest: 'examples/lib/leaflet'
+                }, {
+                    cwd: 'bower_components/',
+                    expand: true,
+                    flatten: true,
+                    src: [
+                        'leaflet/dist/images/**/*',
+                    ],
+                    dest: 'examples/lib/leaflet/images'
+                }, {
+                    cwd: 'bower_components/',
+                    expand: true,
+                    flatten: true,
+                    src: [
+                        'spin.js/spin.js',
+
+                        'Leaflet.toolbar/dist/leaflet.toolbar.css',
+                        'Leaflet.toolbar/dist/leaflet.toolbar.js',
+
+                        'Leaflet.label/dist/leaflet.label.css',
+                        'Leaflet.label/dist/leaflet.label.js',
+
+                        'leaflet.markercluster/dist/MarkerCluster.css',
+                        'leaflet.markercluster/dist/MarkerCluster.Default.css',
+                        'leaflet.markercluster/dist/leaflet.markercluster.js',
+
+                        'leaflet-sidebar/src/L.Control.Sidebar.css',
+                        'leaflet-sidebar/src/L.Control.Sidebar.js',
+
+                        'leaflet.editable/src/Leaflet.Editable.js',
+
+                        'proj4leaflet/lib/proj4-compressed.js',
+                        'proj4leaflet/src/proj4leaflet.js'
+                    ],
+                    dest: 'examples/lib/'
+                }]
+            }
+        },
         watch: {
             scripts: {
-                files: ['src/**/*.js'],
-                tasks: ['concat', 'jshint:dev'],
+                files: '<%= concat.main.src %>',
+                tasks: ['jshint:scripts', 'concat', 'uglify'],
                 options: {
                     spawn: false
                 }
@@ -67,21 +126,10 @@ module.exports = function (grunt) {
             spec: {
                 files: ['spec/**/*.js'],
                 tasks: ['jshint:spec']
-            }
-        },
-        copy: {
+            },
             libs: {
-                cwd: 'bower_components/',
-                expand: true,
-                flatten: true,
-                src: [
-                    'Leaflet.Toolbar/dist/leaflet.toolbar.*',
-                    'L.EasyButton/easy-button.js',
-                    'Leaflet.Editable/src/Leaflet.Editable.js',
-                    'proj4leaflet/lib/proj4-compressed.js',
-                    'proj4leaflet/src/proj4leaflet.js'
-                ],
-                dest: 'examples/lib/'
+                files: ['bower_components/**/*'],
+                tasks: ['copy:libs']
             }
         },
         'gh-pages': {
@@ -107,5 +155,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-gh-pages');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
+    grunt.registerTask('default', ['jshint:scripts', 'jshint:spec', 'concat', 'uglify', 'copy:libs']);
+    grunt.registerTask('watchAll', ['watch:scripts', 'watch:spec', 'watch:libs']);
     grunt.registerTask('publish', ['copy:libs', 'gh-pages:examples']);
 };

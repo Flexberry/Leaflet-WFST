@@ -14,11 +14,14 @@
     "spec"
   ],
   "devDependencies": {
+    "font-awesome": "~4.3.0",
+    "spin.js": "~2.0.1",
     "leaflet": "~0.7.3",
-    "Leaflet.Editable": "yohanboniface/Leaflet.Editable",
     "proj4leaflet": "~0.7.0",
-    "leaflet.draw": "~0.2.3",
-    "L.EasyButton": "CliffCloud/Leaflet.EasyButton",
-    "Leaflet.Toolbar": "leaflet/Leaflet.Toolbar#~0.1.2"
+    "leaflet.markercluster": "~0.4.0",
+    "leaflet-sidebar": "~0.1.6",
+    "Leaflet.label": "~0.2.1",
+    "leaflet.editable": "~0.6.0",
+    "Leaflet.toolbar": "Leaflet/Leaflet.toolbar#~0.1.2"
   }
 }
