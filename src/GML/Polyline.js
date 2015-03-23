@@ -4,6 +4,7 @@
 
 L.Polyline.include({
     toGml: function (crs) {
-
+        // Added temporarily to avoid jshint errors.
+        console.log(crs);
     }
 });
