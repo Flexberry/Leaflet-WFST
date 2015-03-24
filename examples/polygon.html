@@ -37,9 +37,9 @@
     L.WFS.Transaction.include(MultiEditableMixin);
 
     var wfst = new L.WFS.Transaction({
-        url: 'http://isogd:8082/geoserver/ows',
-        typeNS: 'isogd',
-        typeName: 'water_polygon',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
+        typeNS: 'osm_perm_region',
+        typeName: 'perm_water_polygon',
         crs: L.CRS.EPSG4326,
         geometryField: 'ogr_geometry',
         style: {

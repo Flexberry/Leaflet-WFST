@@ -176,15 +176,15 @@
     var isFirstLoad = true;
 
     var wfst = new L.WFS.Transaction({
-        url: 'http://geoserver.ics.perm.ru/geoserver/wfs',
-        typeNS: 'dis_web_sql',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
+        typeNS: 'osm_perm_region',
         typeName: 'perm_points_of_interest',
         crs: L.CRS.EPSG4326,
         geometryField: 'ogr_geometry',
         pointToLayer: function(featureData, latlng) {
             return createEditableMarker(latlng);
         }
-    })
+    });
 
     var showSidebar = function(marker) {
         sidebar._marker = marker;
