@@ -5,8 +5,8 @@
 L.Util.project = function (crs, latlngs) {
     if (L.Util.isArray(latlngs)) {
         var result = [];
-        latlngs.forEach(function (ll) {
-            result.push(crs.projection.project(ll));
+        latlngs.forEach(function (latlng) {
+            result.push(crs.projection.project(latlng));
         });
 
         return result;

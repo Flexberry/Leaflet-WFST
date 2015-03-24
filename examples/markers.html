@@ -2,8 +2,8 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css"/>
-    <link rel="stylesheet" type="text/css" href="lib/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
     <link rel="stylesheet" type="text/css" href="lib/leaflet.toolbar.css"/>
     <link rel="stylesheet" type="text/css" href="lib/leaflet.label.css" />
     <link rel="stylesheet" type="text/css" href="lib/MarkerCluster.css" />
@@ -67,7 +67,7 @@
 </div>
 
 <script src="lib/spin.js"></script>
-<script src="lib/leaflet/leaflet.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script src="lib/leaflet.toolbar.js"></script>
 <script src="lib/leaflet.label.js"></script>
 <script src="lib/leaflet.markercluster.js"></script>
@@ -172,7 +172,8 @@
         return marker;
     };
 
-    var loaded = false;
+    var loadFinished = false;
+    var isFirstLoad = true;
 
     var wfst = new L.WFS.Transaction({
         url: 'http://geoserver.ics.perm.ru/geoserver/wfs',
@@ -297,8 +298,12 @@
             addWfstMarker(layer);
         });
 
-        map.fitBounds(markers);
-        loaded = true;
+        if (isFirstLoad) {
+            map.fitBounds(markers);
+            isFirstLoad = false;
+        }
+
+        loadFinished = true;
     });
 
     wfst.on('save:success', function(data) {
@@ -323,7 +328,7 @@
                     }
                 },
                 addHooks: function () {
-                    if (!loaded) {
+                    if (!loadFinished) {
                         return;
                     }
 
@@ -397,11 +402,11 @@
                     }
                 },
                 addHooks: function () {
-                    if (!loaded) {
+                    if (!loadFinished) {
                         return;
                     }
 
-                    loaded = false;
+                    loadFinished = false;
                     disableMapInteractions();
                     spinner.spin(spinnerContainer);
 

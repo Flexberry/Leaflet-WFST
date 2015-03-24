@@ -14,9 +14,7 @@
     "spec"
   ],
   "devDependencies": {
-    "font-awesome": "~4.3.0",
     "spin.js": "~2.0.1",
-    "leaflet": "~0.7.3",
     "proj4leaflet": "~0.7.0",
     "leaflet.markercluster": "~0.4.0",
     "leaflet-sidebar": "~0.1.6",

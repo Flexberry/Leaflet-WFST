@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-03-23 */
+/*! Leaflet-WFST 0.0.1 2015-03-24 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -203,8 +203,8 @@ L.Format.GML = L.Format.extend({});
 L.Util.project = function (crs, latlngs) {
     if (L.Util.isArray(latlngs)) {
         var result = [];
-        latlngs.forEach(function (ll) {
-            result.push(crs.projection.project(ll));
+        latlngs.forEach(function (latlng) {
+            result.push(crs.projection.project(latlng));
         });
 
         return result;
