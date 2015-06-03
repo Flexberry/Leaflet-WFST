@@ -12,7 +12,7 @@ L.GMLUtil = {
         coords.forEach(function (coord) {
             localcoords.push(coord.x + ' ' + coord.y);
         });
-        if (close) {
+        if (close && coords.length > 0) {
             var coord = coords[0];
             localcoords.push(coord.x + ' ' + coord.y);
         }

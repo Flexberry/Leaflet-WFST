@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-03-24 */
+/*! Leaflet-WFST 0.0.1 2015-06-03 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -224,7 +224,7 @@ L.GMLUtil = {
         coords.forEach(function (coord) {
             localcoords.push(coord.x + ' ' + coord.y);
         });
-        if (close) {
+        if (close && coords.length > 0) {
             var coord = coords[0];
             localcoords.push(coord.x + ' ' + coord.y);
         }
@@ -237,6 +237,28 @@ L.Marker.include({
     toGml: function (crs) {
         var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
         node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+        return node;
+    }
+});
+L.MultiPolygon.include({
+    toGml: function (crs) {
+        var node = L.XmlUtil.createElementNS('gml:MultiPolygon', {srsName: crs.code, srsDimension: 2});
+        var collection = node.appendChild(L.XmlUtil.createElementNS('gml:polygonMembers'));
+        this.eachLayer(function (polygon) {
+            collection.appendChild(polygon.toGml(crs));
+        });
+
+        return node;
+    }
+});
+L.MultiPolyline.include({
+    toGml: function (crs) {
+        var node = L.XmlUtil.createElementNS('gml:MultiLineString', {srsName: crs.code, srsDimension: 2});
+        var collection = node.appendChild(L.XmlUtil.createElementNS('gml:lineStringMembers'));
+        this.eachLayer(function (polyline) {
+            collection.appendChild(polyline.toGml(crs));
+        });
+
         return node;
     }
 });
@@ -261,8 +283,9 @@ L.Polygon.include({
 
 L.Polyline.include({
     toGml: function (crs) {
-        // Added temporarily to avoid jshint errors.
-        console.log(crs);
+        var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
+        node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, this.getLatLngs()), true));
+        return node;
     }
 });
 

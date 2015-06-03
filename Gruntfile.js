@@ -28,9 +28,7 @@ module.exports = function (grunt) {
                     '<%= srcPath %>/Format.GML.js',
                     '<%= srcPath %>/Util.js',
                     '<%= srcPath %>/GmlUtil.js',
-                    '<%= srcPath %>/GML/Marker.js',
-                    '<%= srcPath %>/GML/Polygon.js',
-                    '<%= srcPath %>/GML/Polyline.js',
+                    '<%= srcPath %>/GML/*.js',
                     '<%= srcPath %>/WFS.js',
                     '<%= srcPath %>/WFS.Transaction.js',
                     '<%= srcPath %>/WFS.Transaction.Helpers.js',
@@ -114,11 +112,11 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: '<%= concat.main.src %>',
-                tasks: ['jshint:scripts', 'concat', 'uglify', 'karma:continuous:run']
+                tasks: ['jshint:scripts', 'concat', 'uglify']
             },
             specs: {
                 files: ['<%= specs %>'],
-                tasks: ['jshint:specs', 'karma:continuous:run']
+                tasks: ['jshint:specs']
             },
             libs: {
                 files: ['bower_components/**/*'],
