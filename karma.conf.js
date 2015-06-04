@@ -18,7 +18,8 @@ module.exports = function (config) {
             'bower_components/leaflet/dist/leaflet.js',
             'dist/Leaflet-WFST.src.js',
             'spec/**/*.js',
-            {pattern: 'spec/Format/*.xml', autoWatch: true, included: false, served: true}
+            {pattern: 'spec/Format/*.xml', autoWatch: true, included: false, served: true},
+            {pattern: 'spec/Format/*.json', autoWatch: true, included: false, served: true}
         ],
 
 

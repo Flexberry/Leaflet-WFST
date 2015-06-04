@@ -16,6 +16,8 @@ L.Util.request = function (options) {
         error: function (data) {
             console.log('Ajax fail');
             console.log(data);
+        },
+        complete: function () {
         }
     }, options);
 
@@ -29,6 +31,7 @@ L.Util.request = function (options) {
             } else {
                 options.error(xhr.responseText);
             }
+            options.complete();
         }
     };
 

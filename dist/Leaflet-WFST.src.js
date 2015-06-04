@@ -106,6 +106,8 @@ L.Util.request = function (options) {
         error: function (data) {
             console.log('Ajax fail');
             console.log(data);
+        },
+        complete: function () {
         }
     }, options);
 
@@ -119,6 +121,7 @@ L.Util.request = function (options) {
             } else {
                 options.error(xhr.responseText);
             }
+            options.complete();
         }
     };
 
@@ -202,17 +205,24 @@ L.Format.GeoJSON = L.Format.extend({
         var geoJson = JSON.parse(rawData);
 
         for (var i = 0; i < geoJson.features.length; i++) {
-            var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], options.pointToLayer || null, options.coordsToLatLng, null);
-            layer.feature = geoJson.features[i];
-            layers.push(layer);
+            layers.push(this.processFeature(geoJson.features[i], options));
         }
 
         return layers;
+    },
+
+    processFeature: function (feature, options) {
+        var layer = this.generateLayer(feature, options);
+        layer.feature = feature;
+        return layer;
+    },
+
+    generateLayer: function (feature, options) {
+        return L.GeoJSON.geometryToLayer(feature, options.pointToLayer || null, options.coordsToLatLng, null);
     }
 });
 
 L.Format.GML = L.Format.extend({
-
     initialize: function (options) {
         L.Format.prototype.initialize.call(this, options);
         this.outputFormat = 'text/xml; subtype=gml/3.1.1';
@@ -225,7 +235,7 @@ L.Format.GML = L.Format.extend({
         var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
         for (var i = 0; i < featureMemberNodes.length; i++) {
             var feature = featureMemberNodes[i].firstChild;
-            layers.push(this.processFeature(feature));
+            layers.push(this.processFeature(feature, options));
         }
 
         var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
@@ -234,7 +244,7 @@ L.Format.GML = L.Format.extend({
             for (var j = 0; j < features.length; j++) {
                 var node = features[j];
                 if (node.nodeType === document.ELEMENT_NODE) {
-                    layers.push(this.processFeature(node));
+                    layers.push(this.processFeature(node, options));
                 }
             }
         }
@@ -242,9 +252,26 @@ L.Format.GML = L.Format.extend({
         return layers;
     },
 
-    processFeature: function (feature) {
+    processFeature: function (feature, options) {
+        var geometry = feature.getElementsByTagName(options.geometryField)[0];
+        var layer = this.generateLayer(geometry, options);
+        var properties = {};
+        for (var i = 0; i < feature.childNodes.length; i++) {
+            var node = feature.childNodes[i];
+            if (node.nodeType === document.ELEMENT_NODE && node !== geometry) {
+                var propertyName = node.tagName.split(':').pop();
+                properties[propertyName] = node.innerHTML;
+            }
+        }
+        layer.feature = {properties: properties};
+        return layer;
+    },
+
+    generateLayer: function (geometry, options) {
 
     }
+
+
 });
 L.Util.project = function (crs, latlngs) {
     if (L.Util.isArray(latlngs)) {
@@ -451,10 +478,6 @@ L.WFS.Transaction = L.WFS.extend({
         });
 
         this.changes = {};
-        var that = this;
-        this.on('save:success', function () {
-            that.changes = {};
-        });
     },
 
     describeFeatureType: function () {
@@ -552,6 +575,7 @@ L.WFS.Transaction = L.WFS.extend({
 
                 that.once('load', function () {
                     that.fire('save:success');
+                    that.changes = {};
                 });
 
                 that.loadFeatures(filter);

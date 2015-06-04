@@ -16,11 +16,19 @@ L.Format.GeoJSON = L.Format.extend({
         var geoJson = JSON.parse(rawData);
 
         for (var i = 0; i < geoJson.features.length; i++) {
-            var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], options.pointToLayer || null, options.coordsToLatLng, null);
-            layer.feature = geoJson.features[i];
-            layers.push(layer);
+            layers.push(this.processFeature(geoJson.features[i], options));
         }
 
         return layers;
+    },
+
+    processFeature: function (feature, options) {
+        var layer = this.generateLayer(feature, options);
+        layer.feature = feature;
+        return layer;
+    },
+
+    generateLayer: function (feature, options) {
+        return L.GeoJSON.geometryToLayer(feature, options.pointToLayer || null, options.coordsToLatLng, null);
     }
 });

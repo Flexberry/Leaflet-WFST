@@ -4,7 +4,6 @@
 
 
 L.Format.GML = L.Format.extend({
-
     initialize: function (options) {
         L.Format.prototype.initialize.call(this, options);
         this.outputFormat = 'text/xml; subtype=gml/3.1.1';
@@ -17,7 +16,7 @@ L.Format.GML = L.Format.extend({
         var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
         for (var i = 0; i < featureMemberNodes.length; i++) {
             var feature = featureMemberNodes[i].firstChild;
-            layers.push(this.processFeature(feature));
+            layers.push(this.processFeature(feature, options));
         }
 
         var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
@@ -26,7 +25,7 @@ L.Format.GML = L.Format.extend({
             for (var j = 0; j < features.length; j++) {
                 var node = features[j];
                 if (node.nodeType === document.ELEMENT_NODE) {
-                    layers.push(this.processFeature(node));
+                    layers.push(this.processFeature(node, options));
                 }
             }
         }
@@ -34,7 +33,24 @@ L.Format.GML = L.Format.extend({
         return layers;
     },
 
-    processFeature: function (feature) {
+    processFeature: function (feature, options) {
+        var geometry = feature.getElementsByTagName(options.geometryField)[0];
+        var layer = this.generateLayer(geometry, options);
+        var properties = {};
+        for (var i = 0; i < feature.childNodes.length; i++) {
+            var node = feature.childNodes[i];
+            if (node.nodeType === document.ELEMENT_NODE && node !== geometry) {
+                var propertyName = node.tagName.split(':').pop();
+                properties[propertyName] = node.innerHTML;
+            }
+        }
+        layer.feature = {properties: properties};
+        return layer;
+    },
+
+    generateLayer: function (geometry, options) {
 
     }
+
+
 });

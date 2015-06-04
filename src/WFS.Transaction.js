@@ -13,10 +13,6 @@ L.WFS.Transaction = L.WFS.extend({
         });
 
         this.changes = {};
-        var that = this;
-        this.on('save:success', function () {
-            that.changes = {};
-        });
     },
 
     describeFeatureType: function () {
@@ -114,6 +110,7 @@ L.WFS.Transaction = L.WFS.extend({
 
                 that.once('load', function () {
                     that.fire('save:success');
+                    that.changes = {};
                 });
 
                 that.loadFeatures(filter);

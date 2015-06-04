@@ -1,0 +1,107 @@
+/**
+ * Created by PRadostev on 04.06.2015.
+ */
+
+/** Common format tests, such as count of processing objects, properties, etc. */
+describe("Format", function () {
+    var loadData = function (url, done, callback) {
+        L.Util.request({
+            url: url,
+            success: callback,
+            error: function () {
+                assert.fail('not found test data');
+            },
+            complete: function () {
+                done();
+            }
+        });
+    };
+
+    var formats = [
+        {
+            name: "GML",
+            format: new L.Format.GML(),
+            collectionFile: 'featurecollection.xml',
+            featureFile: 'feature.xml',
+            prepareData: function (data) {
+                return L.XmlUtil.parseXml(data).documentElement;
+            }
+        },
+        {
+            name: "GeoJSON",
+            format: new L.Format.GeoJSON(),
+            collectionFile: 'featurecollection.json',
+            featureFile: 'feature.json',
+            prepareData: function (data) {
+                return JSON.parse(data);
+            }
+        }
+    ];
+
+    formats.forEach(function (kind) {
+        describe(kind.name, function () {
+            var format = kind.format;
+
+            describe("#responseToLayers", function () {
+                var testData;
+                before(function (done) {
+                    loadData('/base/spec/Format/' + kind.collectionFile, done, function (data) {
+                        testData = data;
+                    });
+                });
+
+                it('should return array with 10 elements', function () {
+                    var stub = sinon.stub(format, 'processFeature', function () {
+                        return 0;
+                    });
+
+                    var layers = format.responseToLayers(testData, {});
+                    expect(layers.length).to.equal(10);
+                    stub.restore();
+                });
+            });
+
+            describe("#processFeature", function () {
+                var layer;
+
+                before(function (done) {
+                    loadData('/base/spec/Format/' + kind.featureFile, done, function (data) {
+                        var testData = kind.prepareData(data);
+                        var stub = sinon.stub(format, 'generateLayer', function () {
+                            return {};
+                        });
+                        layer = format.processFeature(testData, {geometryField: 'the_geom'});
+                        stub.restore();
+                    });
+                });
+
+                describe("feature", function () {
+                    var feature;
+                    before(function () {
+                        feature = layer.feature;
+                    });
+
+                    it('should have feature property', function () {
+                        expect(feature).to.not.be.undefined;
+                    });
+
+                    it('feature must have "properties" field object', function () {
+                        expect(feature.properties).to.not.be.undefined;
+                    });
+
+                    it('should not have propetry "the_geom"', function () {
+                        expect(feature.properties.the_geom).to.be.undefined;
+                    });
+
+                    it('should have property cat with value 5, and property label with value "unimproved road"', function () {
+                        var cat = feature.properties.cat;
+                        expect(cat).to.equal(5);
+
+                        var label = feature.properties.label;
+                        expect(label).to.equal("unimproved road");
+                    });
+                });
+            });
+        });
+    });
+});
