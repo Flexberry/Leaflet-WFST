@@ -52,6 +52,11 @@ var boundaries = new L.WFS({
 Extends leaflet classes with toGml(crs) function:
 * L.Marker
 * L.Polygon
+* L.Polyline
+* L.MultiPolygon
+* L.MultiPolyline
+
+Markers geometry writes as posNode, for all other layers geometry writes as posList
 
 #Filter
 OGC Filter realization:
