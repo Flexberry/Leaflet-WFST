@@ -84,11 +84,11 @@ L.WFS = L.FeatureGroup.extend({
             url: this.options.url,
             data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
             success: function (data) {
-                var layers = that.readFormat.responseToLayers({
-                    rawData: data,
-                    coordsToLatLng: that.options.coordsToLatLng,
-                    pointToLayer: that.options.pointToLayer
-                });
+                var layers = that.readFormat.responseToLayers(data,
+                    {
+                        coordsToLatLng: that.options.coordsToLatLng,
+                        pointToLayer: that.options.pointToLayer
+                    });
                 layers.forEach(function (element) {
                     element.state = that.state.exist;
                     that.addLayer(element);

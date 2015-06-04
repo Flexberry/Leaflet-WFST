@@ -23,9 +23,9 @@ module.exports = function (grunt) {
                     '<%= srcPath %>/Request.js',
                     '<%= srcPath %>/Filter.js',
                     '<%= srcPath %>/Filter.GmlObjectID.js',
-                    '<%= srcPath %>/Format.js',
-                    '<%= srcPath %>/Format.GeoJSON.js',
-                    '<%= srcPath %>/Format.GML.js',
+                    '<%= srcPath %>/Format/Format.js',
+                    '<%= srcPath %>/Format/Format.GeoJSON.js',
+                    '<%= srcPath %>/Format/Format.GML.js',
                     '<%= srcPath %>/Util.js',
                     '<%= srcPath %>/GmlUtil.js',
                     '<%= srcPath %>/GML/*.js',
@@ -104,6 +104,9 @@ module.exports = function (grunt) {
             single: {
                 singleRun: true
             },
+            dev: {
+                browsers: ['PhantomJS', 'Chrome']
+            },
             continuous: {
                 background: true,
                 browsers: ['PhantomJS']
@@ -112,7 +115,7 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: '<%= concat.main.src %>',
-                tasks: ['jshint:scripts', 'concat', 'uglify']
+                tasks: ['concat', 'uglify', 'jshint:scripts']
             },
             specs: {
                 files: ['<%= specs %>'],

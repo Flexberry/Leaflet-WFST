@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-06-03 */
+/*! Leaflet-WFST 0.0.1 2015-06-04 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -77,8 +77,20 @@ L.XmlUtil = {
     createXmlString: function (node) {
         var serializer = new XMLSerializer();
         return serializer.serializeToString(node);
-    }
+    },
 
+    parseXml: function (rawXml) {
+        if (typeof window.DOMParser !== "undefined") {
+            return ( new window.DOMParser() ).parseFromString(rawXml, "text/xml");
+        } else if (typeof window.ActiveXObject !== "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
+            var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false";
+            xmlDoc.loadXML(rawXml);
+            return xmlDoc;
+        } else {
+            throw new Error("No XML parser found");
+        }
+    }
 };
 L.Util.request = function (options) {
     options = L.extend({
@@ -184,10 +196,10 @@ L.Format.GeoJSON = L.Format.extend({
         this.outputFormat = 'application/json';
     },
 
-    responseToLayers: function (options) {
+    responseToLayers: function (rawData, options) {
         options = options || {};
         var layers = [];
-        var geoJson = JSON.parse(options.rawData);
+        var geoJson = JSON.parse(rawData);
 
         for (var i = 0; i < geoJson.features.length; i++) {
             var layer = L.GeoJSON.geometryToLayer(geoJson.features[i], options.pointToLayer || null, options.coordsToLatLng, null);
@@ -199,7 +211,41 @@ L.Format.GeoJSON = L.Format.extend({
     }
 });
 
-L.Format.GML = L.Format.extend({});
+L.Format.GML = L.Format.extend({
+
+    initialize: function (options) {
+        L.Format.prototype.initialize.call(this, options);
+        this.outputFormat = 'text/xml; subtype=gml/3.1.1';
+    },
+
+    responseToLayers: function (rawData, options) {
+        var layers = [];
+        var xmlDoc = L.XmlUtil.parseXml(rawData);
+        var featureCollection = xmlDoc.documentElement;
+        var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
+        for (var i = 0; i < featureMemberNodes.length; i++) {
+            var feature = featureMemberNodes[i].firstChild;
+            layers.push(this.processFeature(feature));
+        }
+
+        var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
+        if (featureMembersNode.length > 0) {
+            var features = featureMembersNode[0].childNodes;
+            for (var j = 0; j < features.length; j++) {
+                var node = features[j];
+                if (node.nodeType === document.ELEMENT_NODE) {
+                    layers.push(this.processFeature(node));
+                }
+            }
+        }
+
+        return layers;
+    },
+
+    processFeature: function (feature) {
+
+    }
+});
 L.Util.project = function (crs, latlngs) {
     if (L.Util.isArray(latlngs)) {
         var result = [];
@@ -372,11 +418,11 @@ L.WFS = L.FeatureGroup.extend({
             url: this.options.url,
             data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
             success: function (data) {
-                var layers = that.readFormat.responseToLayers({
-                    rawData: data,
-                    coordsToLatLng: that.options.coordsToLatLng,
-                    pointToLayer: that.options.pointToLayer
-                });
+                var layers = that.readFormat.responseToLayers(data,
+                    {
+                        coordsToLatLng: that.options.coordsToLatLng,
+                        pointToLayer: that.options.pointToLayer
+                    });
                 layers.forEach(function (element) {
                     element.state = that.state.exist;
                     that.addLayer(element);

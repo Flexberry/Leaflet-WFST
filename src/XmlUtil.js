@@ -76,6 +76,18 @@ L.XmlUtil = {
     createXmlString: function (node) {
         var serializer = new XMLSerializer();
         return serializer.serializeToString(node);
-    }
+    },
 
+    parseXml: function (rawXml) {
+        if (typeof window.DOMParser !== "undefined") {
+            return ( new window.DOMParser() ).parseFromString(rawXml, "text/xml");
+        } else if (typeof window.ActiveXObject !== "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
+            var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false";
+            xmlDoc.loadXML(rawXml);
+            return xmlDoc;
+        } else {
+            throw new Error("No XML parser found");
+        }
+    }
 };

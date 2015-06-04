@@ -14,7 +14,12 @@ module.exports = function (config) {
 
 
         // list of files / patterns to load in the browser
-        files: ['bower_components/leaflet/dist/leaflet.js', 'dist/Leaflet-WFST.src.js', 'spec/**/*.js'],
+        files: [
+            'bower_components/leaflet/dist/leaflet.js',
+            'dist/Leaflet-WFST.src.js',
+            'spec/**/*.js',
+            {pattern: 'spec/Format/*.xml', autoWatch: true, included: false, served: true}
+        ],
 
 
         // list of files to exclude
@@ -53,6 +58,19 @@ module.exports = function (config) {
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: ['PhantomJS', 'Chrome'],
 
+        customLaunchers: {
+            'PhantomJS_debug': {
+                base: 'PhantomJS',
+                options: {
+                    windowName: 'my-window',
+                    settings: {
+                        webSecurityEnabled: false
+                    }
+                },
+                flags: ['--load-images=true'],
+                debug: true
+            }
+        },
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
