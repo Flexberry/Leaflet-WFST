@@ -221,10 +221,73 @@ L.Format.GeoJSON = L.Format.extend({
     }
 });
 
+L.GML = L.GML || {};
+
+L.GML.ParserContainerMixin = {
+    parsers: {},
+    appendParser: function (parser) {
+        this.parsers[parser.elementTag] = parser;
+    },
+
+    parseElement: function (element) {
+        var parser = this.parsers[element.tagName];
+        if (!parser) throw('unknown element' + element.tagName);
+
+        return parser.parse(element);
+    }
+};
+L.GML.ElementParser = L.Class.extend({
+    elementTag: '',
+    parse: function (element, options) {
+    }
+});
+L.GML.CoordinatesParser = L.GML.ElementParser.extend({
+    initialize: function () {
+        this.elementTag = 'gml:coordinates';
+    }
+});
+L.GML.PosListParser = L.GML.ElementParser.extend({
+    initialize: function () {
+        this.elementTag = 'gml:posList';
+    }
+});
+L.GML.PosParser = L.GML.ElementParser.extend({
+    initialize: function () {
+        this.elementTag = 'gml:pos';
+    }
+});
+L.GML.GeometryParser = L.GML.ElementParser.extend({
+    includes: L.GML.ParserContainerMixin,
+    dimensions: 2,
+    parse: function (element, options) {
+        this.dimensions = parseInt(element.attributes.srsDimesion);
+    }
+});
+L.GML.PointParser = L.GML.GeometryParser.extend({
+    initialize: function () {
+        this.elementTag = 'gml:Point';
+        this.appendParser(new L.GML.PosParser());
+        this.appendParser(new L.GML.CoordinatesParser());
+    },
+
+    parse: function (element) {
+        L.GML.GeometryParser.prototype.parse.call(this, element);
+        var layer = new L.Marker();
+        layer.setLatLng(this.parseElement(element.firstChild, {dimensions: this.dimensions}));
+        return layer;
+    }
+});
+L.GML.LineStringParser = L.GML.GeometryParser.extend({});
 L.Format.GML = L.Format.extend({
+
+    includes: L.GML.ParserContainerMixin,
+
     initialize: function (options) {
         L.Format.prototype.initialize.call(this, options);
         this.outputFormat = 'text/xml; subtype=gml/3.1.1';
+
+        this.appendParser(new L.GML.PointParser());
+        this.appendParser(new L.GML.LineStringParser());
     },
 
     responseToLayers: function (rawData) {
@@ -267,10 +330,8 @@ L.Format.GML = L.Format.extend({
     },
 
     generateLayer: function (geometry) {
-
+        return this.parseElement(geometry);
     }
-
-
 });
 L.Util.project = function (crs, latlngs) {
     if (L.Util.isArray(latlngs)) {

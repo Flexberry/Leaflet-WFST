@@ -4,9 +4,15 @@
 
 
 L.Format.GML = L.Format.extend({
+
+    includes: L.GML.ParserContainerMixin,
+
     initialize: function (options) {
         L.Format.prototype.initialize.call(this, options);
         this.outputFormat = 'text/xml; subtype=gml/3.1.1';
+
+        this.appendParser(new L.GML.PointParser());
+        this.appendParser(new L.GML.LineStringParser());
     },
 
     responseToLayers: function (rawData) {
@@ -49,8 +55,6 @@ L.Format.GML = L.Format.extend({
     },
 
     generateLayer: function (geometry) {
-
+        return this.parseElement(geometry);
     }
-
-
 });
