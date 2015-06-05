@@ -10,25 +10,24 @@ L.Format.GeoJSON = L.Format.extend({
         this.outputFormat = 'application/json';
     },
 
-    responseToLayers: function (rawData, options) {
-        options = options || {};
+    responseToLayers: function (rawData) {
         var layers = [];
         var geoJson = JSON.parse(rawData);
 
         for (var i = 0; i < geoJson.features.length; i++) {
-            layers.push(this.processFeature(geoJson.features[i], options));
+            layers.push(this.processFeature(geoJson.features[i]));
         }
 
         return layers;
     },
 
-    processFeature: function (feature, options) {
-        var layer = this.generateLayer(feature, options);
+    processFeature: function (feature) {
+        var layer = this.generateLayer(feature);
         layer.feature = feature;
         return layer;
     },
 
-    generateLayer: function (feature, options) {
-        return L.GeoJSON.geometryToLayer(feature, options.pointToLayer || null, options.coordsToLatLng, null);
+    generateLayer: function (feature) {
+        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng, null);
     }
 });

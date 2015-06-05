@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-06-04 */
+/*! Leaflet-WFST 0.0.1 2015-06-05 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -199,26 +199,25 @@ L.Format.GeoJSON = L.Format.extend({
         this.outputFormat = 'application/json';
     },
 
-    responseToLayers: function (rawData, options) {
-        options = options || {};
+    responseToLayers: function (rawData) {
         var layers = [];
         var geoJson = JSON.parse(rawData);
 
         for (var i = 0; i < geoJson.features.length; i++) {
-            layers.push(this.processFeature(geoJson.features[i], options));
+            layers.push(this.processFeature(geoJson.features[i]));
         }
 
         return layers;
     },
 
-    processFeature: function (feature, options) {
-        var layer = this.generateLayer(feature, options);
+    processFeature: function (feature) {
+        var layer = this.generateLayer(feature);
         layer.feature = feature;
         return layer;
     },
 
-    generateLayer: function (feature, options) {
-        return L.GeoJSON.geometryToLayer(feature, options.pointToLayer || null, options.coordsToLatLng, null);
+    generateLayer: function (feature) {
+        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng, null);
     }
 });
 
@@ -228,14 +227,14 @@ L.Format.GML = L.Format.extend({
         this.outputFormat = 'text/xml; subtype=gml/3.1.1';
     },
 
-    responseToLayers: function (rawData, options) {
+    responseToLayers: function (rawData) {
         var layers = [];
         var xmlDoc = L.XmlUtil.parseXml(rawData);
         var featureCollection = xmlDoc.documentElement;
         var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
         for (var i = 0; i < featureMemberNodes.length; i++) {
             var feature = featureMemberNodes[i].firstChild;
-            layers.push(this.processFeature(feature, options));
+            layers.push(this.processFeature(feature));
         }
 
         var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
@@ -244,7 +243,7 @@ L.Format.GML = L.Format.extend({
             for (var j = 0; j < features.length; j++) {
                 var node = features[j];
                 if (node.nodeType === document.ELEMENT_NODE) {
-                    layers.push(this.processFeature(node, options));
+                    layers.push(this.processFeature(node));
                 }
             }
         }
@@ -252,9 +251,9 @@ L.Format.GML = L.Format.extend({
         return layers;
     },
 
-    processFeature: function (feature, options) {
-        var geometry = feature.getElementsByTagName(options.geometryField)[0];
-        var layer = this.generateLayer(geometry, options);
+    processFeature: function (feature) {
+        var geometry = feature.getElementsByTagName(this.options.geometryField)[0];
+        var layer = this.generateLayer(geometry);
         var properties = {};
         for (var i = 0; i < feature.childNodes.length; i++) {
             var node = feature.childNodes[i];
@@ -267,7 +266,7 @@ L.Format.GML = L.Format.extend({
         return layer;
     },
 
-    generateLayer: function (geometry, options) {
+    generateLayer: function (geometry) {
 
     }
 

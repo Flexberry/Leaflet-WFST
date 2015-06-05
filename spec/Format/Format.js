@@ -20,7 +20,7 @@ describe("Format", function () {
     var formats = [
         {
             name: "GML",
-            format: new L.Format.GML(),
+            format: new L.Format.GML({geometryField: 'the_geom'}),
             collectionFile: 'featurecollection.xml',
             featureFile: 'feature.xml',
             prepareData: function (data) {
@@ -29,7 +29,7 @@ describe("Format", function () {
         },
         {
             name: "GeoJSON",
-            format: new L.Format.GeoJSON(),
+            format: new L.Format.GeoJSON({geometryField: 'the_geom'}),
             collectionFile: 'featurecollection.json',
             featureFile: 'feature.json',
             prepareData: function (data) {
@@ -55,7 +55,7 @@ describe("Format", function () {
                         return 0;
                     });
 
-                    var layers = format.responseToLayers(testData, {});
+                    var layers = format.responseToLayers(testData);
                     expect(layers.length).to.equal(10);
                     stub.restore();
                 });
@@ -70,7 +70,7 @@ describe("Format", function () {
                         var stub = sinon.stub(format, 'generateLayer', function () {
                             return {};
                         });
-                        layer = format.processFeature(testData, {geometryField: 'the_geom'});
+                        layer = format.processFeature(testData);
                         stub.restore();
                     });
                 });
