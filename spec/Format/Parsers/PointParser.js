@@ -2,14 +2,13 @@
  * Created by PRadostev on 05.06.2015.
  */
 
-
 describe("L.GML.PointParser", function () {
     it('should return L.Market object', function () {
         var pointXml = '<gml:Point srsDimension="2"></gml:Point>';
-        var pointElement = L.XmlUtil.parseXml(pointXml).documentElement;
+        var pointElement = parseXml(pointXml);
         var parser = new L.GML.PointParser();
         var stub = sinon.stub(parser, 'parseElement', function () {
-            return [0, 0]
+            return [0, 0];
         });
         var layer = parser.parse(pointElement);
         expect(layer).to.be.instanceOf(L.Marker);

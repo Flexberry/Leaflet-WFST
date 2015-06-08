@@ -5,7 +5,7 @@
 L.GML.GeometryParser = L.GML.ElementParser.extend({
     includes: L.GML.ParserContainerMixin,
     dimensions: 2,
-    parse: function (element, options) {
+    parse: function (element) {
         this.dimensions = parseInt(element.attributes.srsDimesion);
     }
 });

@@ -5,14 +5,15 @@ L.GML = L.GML || {};
 
 L.GML.ParserContainerMixin = {
     parsers: {},
+
     appendParser: function (parser) {
         this.parsers[parser.elementTag] = parser;
     },
 
-    parseElement: function (element) {
+    parseElement: function (element, options) {
         var parser = this.parsers[element.tagName];
         if (!parser) throw('unknown element' + element.tagName);
 
-        return parser.parse(element);
+        return parser.parse(element, options);
     }
 };

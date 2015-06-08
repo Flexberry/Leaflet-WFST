@@ -4,6 +4,7 @@
 
 L.GML.ElementParser = L.Class.extend({
     elementTag: '',
-    parse: function (element, options) {
+    parse: function () {
+        throw('not implemented parse function in parser for ' + this.elementTag);
     }
 });
