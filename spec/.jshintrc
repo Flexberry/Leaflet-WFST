@@ -4,6 +4,8 @@
   "mocha": true,
   "globals": {
     "expect": false,
-    "sinon": false
+    "sinon": false,
+    "assert": false,
+    "parseXml": true
   }
 }

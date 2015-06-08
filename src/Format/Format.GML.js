@@ -47,9 +47,10 @@ L.Format.GML = L.Format.extend({
             var node = feature.childNodes[i];
             if (node.nodeType === document.ELEMENT_NODE && node !== geometry) {
                 var propertyName = node.tagName.split(':').pop();
-                properties[propertyName] = node.innerHTML;
+                properties[propertyName] = node.textContent;
             }
         }
+
         layer.feature = {properties: properties};
         return layer;
     },

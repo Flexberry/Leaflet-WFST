@@ -5,5 +5,20 @@
 L.GML.PosListParser = L.GML.ElementParser.extend({
     initialize: function () {
         this.elementTag = 'gml:posList';
+    },
+
+    parse: function (element, options) {
+        var result = [];
+        var dim = options.dimensions;
+        var coords = element.textContent.split(' ');
+        for (var i = 0; i < coords.length; i += dim) {
+            var coord = [];
+            for (var j = i; j < i + dim; j++) {
+                coord.push(parseFloat(coords[j]));
+            }
+            result.push(coord);
+        }
+
+        return result;
     }
 });
