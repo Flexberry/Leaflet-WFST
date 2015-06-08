@@ -28,6 +28,6 @@ L.Format.GeoJSON = L.Format.extend({
     },
 
     generateLayer: function (feature) {
-        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng, null);
+        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng || null, null);
     }
 });

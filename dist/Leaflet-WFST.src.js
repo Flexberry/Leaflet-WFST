@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-06-05 */
+/*! Leaflet-WFST 0.0.1 2015-06-08 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -174,22 +174,23 @@ L.Format = L.Class.extend({
         }
     },
 
-    setCRS: function (crs) {
-        this.options.crs = crs;
-        if (crs !== undefined) {
+    initialize: function (options) {
+        L.setOptions(this, L.extend({}, this.defaultOptions, options));
+        if (options.crs) {
+            var crs = options.crs;
             this.options.coordsToLatLng = function (coords) {
                 var point = L.point(coords[0], coords[1]);
-                return crs.projection.unproject(point);
+                var ll = crs.projection.unproject(point);
+                if (coords[2]) {
+                    ll.alt = coords[2];
+                }
+                return ll;
             };
             this.options.latLngToCoords = function (ll) {
-                var point = new L.latLng(ll[0], ll[1]);
-                return crs.projection.project(point);
+                var latLng = L.latLng(ll);
+                return crs.projection.project(latLng);
             };
         }
-    },
-
-    initialize: function (options) {
-        L.setOptions(this, L.extend(this.defaultOptions, options));
     }
 });
 L.Format.GeoJSON = L.Format.extend({
@@ -217,7 +218,7 @@ L.Format.GeoJSON = L.Format.extend({
     },
 
     generateLayer: function (feature) {
-        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng, null);
+        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng || null, null);
     }
 });
 
@@ -225,59 +226,197 @@ L.GML = L.GML || {};
 
 L.GML.ParserContainerMixin = {
     parsers: {},
+
     appendParser: function (parser) {
         this.parsers[parser.elementTag] = parser;
     },
 
-    parseElement: function (element) {
+    parseElement: function (element, options) {
         var parser = this.parsers[element.tagName];
-        if (!parser) throw('unknown element' + element.tagName);
+        if (!parser) throw('unknown child element ' + element.tagName);
 
-        return parser.parse(element);
+        return parser.parse(element, options);
     }
 };
 L.GML.ElementParser = L.Class.extend({
     elementTag: '',
-    parse: function (element, options) {
+    parse: function () {
+        throw('not implemented parse function in parser for ' + this.elementTag);
     }
 });
 L.GML.CoordinatesParser = L.GML.ElementParser.extend({
+
+    defaultSeparator: {
+        ds: '.', //decimal separator
+        cs: ',', // component separator
+        ts: ' ' // tuple separator
+    },
+
     initialize: function () {
         this.elementTag = 'gml:coordinates';
-    }
-});
-L.GML.PosListParser = L.GML.ElementParser.extend({
-    initialize: function () {
-        this.elementTag = 'gml:posList';
+    },
+
+    parse: function (element) {
+
+        var ds = this.defaultSeparator.ds;
+        if (element.attributes.decimal) {
+            ds = element.attributes.decimal.value;
+        }
+
+        var cs = this.defaultSeparator.cs;
+        if (element.attributes.cs) {
+            cs = element.attributes.cs.value;
+        }
+
+        var ts = this.defaultSeparator.ts;
+        if (element.attributes.ts) {
+            ts = element.attributes.ts.value;
+        }
+
+        var result = [];
+        var coords = element.textContent.split(ts);
+
+        var mapFunction = function (coord) {
+            if (ds !== '.') {
+                coord = coord.replace(ds, '.');
+            }
+
+            return parseFloat(coord);
+        };
+
+        for (var i = 0; i < coords.length; i++) {
+            result.push(coords[i].split(cs).map(mapFunction));
+        }
+
+        if (result.length === 1) {
+            return result[0];
+        }
+
+        return result;
     }
 });
 L.GML.PosParser = L.GML.ElementParser.extend({
     initialize: function () {
         this.elementTag = 'gml:pos';
+    },
+
+    parse: function (element) {
+        return element.textContent.split(' ').map(function (coord) {
+            return parseFloat(coord);
+        });
+    }
+});
+L.GML.PosListParser = L.GML.ElementParser.extend({
+    initialize: function () {
+        this.elementTag = 'gml:posList';
+    },
+
+    parse: function (element, options) {
+        var result = [];
+        var dim = options.dimensions;
+        var coords = element.textContent.split(' ');
+        for (var i = 0; i < coords.length; i += dim) {
+            var coord = [];
+            for (var j = i; j < i + dim; j++) {
+                coord.push(parseFloat(coords[j]));
+            }
+            result.push(coord);
+        }
+
+        return result;
+    }
+});
+L.GML.PointNodeParser = L.GML.ElementParser.extend({
+    includes: L.GML.ParserContainerMixin,
+    initialize: function () {
+        this.elementTag = 'gml:Point';
+        this.parsers = {};
+        this.appendParser(new L.GML.PosParser());
+        this.appendParser(new L.GML.CoordinatesParser());
+    },
+
+    parse: function (element) {
+        return this.parseElement(element.firstChild);
     }
 });
 L.GML.GeometryParser = L.GML.ElementParser.extend({
     includes: L.GML.ParserContainerMixin,
-    dimensions: 2,
-    parse: function (element, options) {
-        this.dimensions = parseInt(element.attributes.srsDimesion);
+
+    statics: {
+        DIM: 2
+    },
+
+    initialize: function () {
+        this.parsers = {};
+    },
+
+    dimensions: function (element) {
+        if (element.attributes.srsDimension) {
+            return parseInt(element.attributes.srsDimension.value);
+        }
+
+        return L.GML.GeometryParser.DIM;
     }
 });
 L.GML.PointParser = L.GML.GeometryParser.extend({
     initialize: function () {
+        L.GML.GeometryParser.prototype.initialize.call(this);
         this.elementTag = 'gml:Point';
         this.appendParser(new L.GML.PosParser());
         this.appendParser(new L.GML.CoordinatesParser());
     },
 
     parse: function (element) {
-        L.GML.GeometryParser.prototype.parse.call(this, element);
         var layer = new L.Marker();
-        layer.setLatLng(this.parseElement(element.firstChild, {dimensions: this.dimensions}));
+        layer.setLatLng(this.parseElement(element.firstChild, {dimensions: this.dimensions(element)}));
         return layer;
     }
 });
-L.GML.LineStringParser = L.GML.GeometryParser.extend({});
+L.GML.LineStringParser = L.GML.GeometryParser.extend({
+    initialize: function () {
+        L.GML.GeometryParser.prototype.initialize.call(this);
+        this.elementTag = 'gml:LineString';
+        this.appendParser(new L.GML.PosParser());
+        this.appendParser(new L.GML.PosListParser());
+        this.appendParser(new L.GML.CoordinatesParser());
+        this.appendParser(new L.GML.PointNodeParser());
+    },
+
+    parse: function (element, options) {
+        var layer = new L.Polyline([]);
+        var coordinates = this.getCoordinates(element);
+        var latLngs = this.transform(coordinates, options);
+        return layer.setLatLngs(latLngs);
+    },
+
+    transform: function (coordinates, options) {
+        var latLngs = [];
+        for (var i = 0; i < coordinates.length; i++) {
+            latLngs.push(options.coordsToLatLng(coordinates[i]));
+        }
+
+        return latLngs;
+    },
+
+    // returns raw coordinates array exactly its in response
+    getCoordinates: function (element) {
+        var firstChild = element.firstChild;
+        var coords = [];
+        var tagName = firstChild.tagName;
+        if (tagName === 'gml:pos' || tagName === 'gml:Point') {
+            var childParser = this.parsers[tagName];
+            var elements = element.getElementsByTagName(tagName.split(':')[1]);
+            for (var i = 0; i < elements.length; i++) {
+                coords.push(childParser.parse(elements[i]));
+            }
+        }
+        else {
+            coords = this.parseElement(firstChild, {dimensions: this.dimensions(element)});
+        }
+
+        return coords;
+    }
+});
 L.Format.GML = L.Format.extend({
 
     includes: L.GML.ParserContainerMixin,
@@ -322,15 +461,16 @@ L.Format.GML = L.Format.extend({
             var node = feature.childNodes[i];
             if (node.nodeType === document.ELEMENT_NODE && node !== geometry) {
                 var propertyName = node.tagName.split(':').pop();
-                properties[propertyName] = node.innerHTML;
+                properties[propertyName] = node.textContent;
             }
         }
+
         layer.feature = {properties: properties};
         return layer;
     },
 
     generateLayer: function (geometry) {
-        return this.parseElement(geometry);
+        return this.parseElement(geometry, this.options);
     }
 });
 L.Util.project = function (crs, latlngs) {
@@ -444,27 +584,12 @@ L.WFS = L.FeatureGroup.extend({
 
     initialize: function (options, readFormat) {
         L.setOptions(this, options);
-        var crs = this.options.crs;
 
         this.state =  {exist: 'exist'};
 
-        this.options.coordsToLatLng = function (coords) {
-            var point = L.point(coords[0], coords[1]);
-            return crs.projection.unproject(point);
-        };
-
-        this.options.latLngToCoords = function (latlng) {
-            var coords = crs.projection.project(latlng);
-
-            if (latlng.alt !== undefined) {
-                coords.push(latlng.alt);
-            }
-            return coords;
-        };
-
         this._layers = {};
 
-        this.readFormat = readFormat || new L.Format.GeoJSON();
+        this.readFormat = readFormat || new L.Format.GeoJSON({crs: this.options.crs});
 
         this.options.typeNSName = this.namespaceName(this.options.typeName);
         this.options.srsName = this.options.crs.code;

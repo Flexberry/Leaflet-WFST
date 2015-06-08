@@ -4,8 +4,20 @@
 
 L.GML.GeometryParser = L.GML.ElementParser.extend({
     includes: L.GML.ParserContainerMixin,
-    dimensions: 2,
-    parse: function (element) {
-        this.dimensions = parseInt(element.attributes.srsDimesion);
+
+    statics: {
+        DIM: 2
+    },
+
+    initialize: function () {
+        this.parsers = {};
+    },
+
+    dimensions: function (element) {
+        if (element.attributes.srsDimension) {
+            return parseInt(element.attributes.srsDimension.value);
+        }
+
+        return L.GML.GeometryParser.DIM;
     }
 });

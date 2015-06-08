@@ -23,27 +23,12 @@ L.WFS = L.FeatureGroup.extend({
 
     initialize: function (options, readFormat) {
         L.setOptions(this, options);
-        var crs = this.options.crs;
 
         this.state =  {exist: 'exist'};
 
-        this.options.coordsToLatLng = function (coords) {
-            var point = L.point(coords[0], coords[1]);
-            return crs.projection.unproject(point);
-        };
-
-        this.options.latLngToCoords = function (latlng) {
-            var coords = crs.projection.project(latlng);
-
-            if (latlng.alt !== undefined) {
-                coords.push(latlng.alt);
-            }
-            return coords;
-        };
-
         this._layers = {};
 
-        this.readFormat = readFormat || new L.Format.GeoJSON();
+        this.readFormat = readFormat || new L.Format.GeoJSON({crs: this.options.crs});
 
         this.options.typeNSName = this.namespaceName(this.options.typeName);
         this.options.srsName = this.options.crs.code;

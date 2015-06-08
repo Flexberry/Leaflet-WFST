@@ -18,14 +18,12 @@ describe("L.GML.PointParser", function () {
     it('should know how to parse gml:pos', function () {
         var parser = new L.GML.PointParser();
         var posParser = parser.parsers['gml:pos'];
-        expect(posParser).to.not.undefined;
         expect(posParser).to.be.instanceOf(L.GML.PosParser);
     });
 
     it('should know how to parse gml:coordinates', function () {
         var parser = new L.GML.PointParser();
         var posParser = parser.parsers['gml:coordinates'];
-        expect(posParser).to.not.undefined;
         expect(posParser).to.be.instanceOf(L.GML.CoordinatesParser);
     });
 });

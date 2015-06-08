@@ -20,7 +20,7 @@ describe("L.GML.PosParser", function () {
         expect(pos).to.be.instanceOf(Array);
     });
 
-    it('can parse 2 dimensional point', function () {
+    it('should parse 2 dimensional point', function () {
         var posXml = '<gml:pos>5 10</gml:pos>';
         var posElement = parseXml(posXml);
         var pos = parser.parse(posElement);
@@ -29,7 +29,7 @@ describe("L.GML.PosParser", function () {
         expect(pos[1]).to.equal(10);
     });
 
-    it('can parse 3 dimensional point', function () {
+    it('should parse 3 dimensional point', function () {
         var posXml = '<gml:pos>5 10 15</gml:pos>';
         var posElement = parseXml(posXml);
         var pos = parser.parse(posElement);

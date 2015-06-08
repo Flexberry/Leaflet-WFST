@@ -24,12 +24,6 @@ describe('WFS.Transaction', function () {
         };
     });
 
-    it('should be initialized', function () {
-        var spy = sinon.spy(L.WFS.Transaction.initialize);
-        new L.WFS.Transaction();
-        expect(spy).called;
-    });
-
     describe('#addLayer', function () {
         it('should set layer.state to "insert" and add it to changes', function () {
             wfst.addLayer(layer);

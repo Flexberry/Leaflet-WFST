@@ -17,21 +17,22 @@ L.Format = L.Class.extend({
         }
     },
 
-    setCRS: function (crs) {
-        this.options.crs = crs;
-        if (crs !== undefined) {
+    initialize: function (options) {
+        L.setOptions(this, L.extend({}, this.defaultOptions, options));
+        if (options.crs) {
+            var crs = options.crs;
             this.options.coordsToLatLng = function (coords) {
                 var point = L.point(coords[0], coords[1]);
-                return crs.projection.unproject(point);
+                var ll = crs.projection.unproject(point);
+                if (coords[2]) {
+                    ll.alt = coords[2];
+                }
+                return ll;
             };
             this.options.latLngToCoords = function (ll) {
-                var point = new L.latLng(ll[0], ll[1]);
-                return crs.projection.project(point);
+                var latLng = L.latLng(ll);
+                return crs.projection.project(latLng);
             };
         }
-    },
-
-    initialize: function (options) {
-        L.setOptions(this, L.extend(this.defaultOptions, options));
     }
 });

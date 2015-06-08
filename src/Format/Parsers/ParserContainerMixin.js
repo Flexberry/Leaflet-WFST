@@ -12,7 +12,7 @@ L.GML.ParserContainerMixin = {
 
     parseElement: function (element, options) {
         var parser = this.parsers[element.tagName];
-        if (!parser) throw('unknown element' + element.tagName);
+        if (!parser) throw('unknown child element ' + element.tagName);
 
         return parser.parse(element, options);
     }

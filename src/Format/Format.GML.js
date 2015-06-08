@@ -56,6 +56,6 @@ L.Format.GML = L.Format.extend({
     },
 
     generateLayer: function (geometry) {
-        return this.parseElement(geometry);
+        return this.parseElement(geometry, this.options);
     }
 });
