@@ -17,5 +17,6 @@ describe("L.GML.LinearRingParser", function () {
         var parentParse = sinon.stub(L.GML.PointSequenceParser.prototype, 'parse').returns([[0, 0], [1, 1], [2, 2]]);
         var result = parser.parse({});
         expect(result).to.deep.equal([[0, 0], [1, 1]]);
-    })
+        parentParse.restore();
+    });
 });

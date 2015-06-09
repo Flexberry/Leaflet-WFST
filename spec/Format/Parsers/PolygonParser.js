@@ -25,10 +25,10 @@ describe("L.GML.PolygonParser", function () {
 
     describe('#getCoordinates', function () {
         it('linearRingParser.parse should have been called for each exterior and interior element', function () {
-            var polygonElement = parseXml('<gml:Polygon><gml:exterior><exterior /></gml:exterior>'
-            + '<gml:interior><interior /></gml:interior>'
-            + '<gml:interior><interior /></gml:interior>'
-            + '</gml:Polygon>');
+            var polygonElement = parseXml('<gml:Polygon><gml:exterior><exterior /></gml:exterior>' +
+            '<gml:interior><interior /></gml:interior>' +
+            '<gml:interior><interior /></gml:interior>' +
+            '</gml:Polygon>');
             var stub = sinon.stub(parser.linearRingParser, 'parse').returns([]);
             parser.getCoordinates(polygonElement);
             expect(stub).have.been.calledThrice;
