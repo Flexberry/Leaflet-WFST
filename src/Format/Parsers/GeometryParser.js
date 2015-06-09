@@ -3,14 +3,8 @@
  */
 
 L.GML.GeometryParser = L.GML.ElementParser.extend({
-    includes: L.GML.ParserContainerMixin,
-
     statics: {
         DIM: 2
-    },
-
-    initialize: function () {
-        this.parsers = {};
     },
 
     dimensions: function (element) {

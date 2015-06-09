@@ -7,23 +7,13 @@ describe("L.GML.PointParser", function () {
         var pointXml = '<gml:Point srsDimension="2"></gml:Point>';
         var pointElement = parseXml(pointXml);
         var parser = new L.GML.PointParser();
-        var stub = sinon.stub(parser, 'parseElement', function () {
-            return [0, 0];
-        });
+        var parentParse = sinon.stub(L.GML.PointNodeParser.prototype, 'parse').returns([0, 0]);
+        var latLngs = [1, 1];
+        var transform = sinon.stub(parser, 'transform').returns(latLngs);
         var layer = parser.parse(pointElement);
         expect(layer).to.be.instanceOf(L.Marker);
-        stub.restore();
-    });
-
-    it('should know how to parse gml:pos', function () {
-        var parser = new L.GML.PointParser();
-        var posParser = parser.parsers['gml:pos'];
-        expect(posParser).to.be.instanceOf(L.GML.PosParser);
-    });
-
-    it('should know how to parse gml:coordinates', function () {
-        var parser = new L.GML.PointParser();
-        var posParser = parser.parsers['gml:coordinates'];
-        expect(posParser).to.be.instanceOf(L.GML.CoordinatesParser);
+        expect(layer.getLatLng()).to.be.deep.equal(L.latLng(latLngs));
+        transform.restore();
+        parentParse.restore();
     });
 });

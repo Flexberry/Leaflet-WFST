@@ -4,7 +4,12 @@
 L.GML = L.GML || {};
 
 L.GML.ParserContainerMixin = {
+
     parsers: {},
+
+    initializeParserContainer: function () {
+        this.parsers = {};
+    },
 
     appendParser: function (parser) {
         this.parsers[parser.elementTag] = parser;
