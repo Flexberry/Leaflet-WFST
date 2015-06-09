@@ -45,12 +45,12 @@ L.Format.GML = L.Format.extend({
   },
 
   processFeature: function (feature) {
-    var geometry = feature.getElementsByTagName(this.options.geometryField)[0];
-    var layer = this.generateLayer(geometry);
+    var geometryField = feature.getElementsByTagName(this.options.geometryField)[0];
+    var layer = this.generateLayer(geometryField.firstChild);
     var properties = {};
     for (var i = 0; i < feature.childNodes.length; i++) {
       var node = feature.childNodes[i];
-      if (node.nodeType === document.ELEMENT_NODE && node !== geometry) {
+      if (node.nodeType === document.ELEMENT_NODE && node !== geometryField) {
         var propertyName = node.tagName.split(':').pop();
         properties[propertyName] = node.textContent;
       }

@@ -415,18 +415,18 @@ L.GML.LinearRingParser = L.GML.PointSequenceParser.extend({
 });
 
 L.GML.CoordsToLatLngMixin = {
-    transform: function (coordinates, options) {
-        if (Array.isArray(coordinates[0])) {
-            var latLngs = [];
-            for (var i = 0; i < coordinates.length; i++) {
-                latLngs.push(options.coordsToLatLng(coordinates[i]));
-            }
+  transform: function (coordinates, options) {
+    if (Array.isArray(coordinates[0])) {
+      var latLngs = [];
+      for (var i = 0; i < coordinates.length; i++) {
+        latLngs.push(this.transform(coordinates[i], options));
+      }
 
-            return latLngs;
-        }
-
-        return options.coordsToLatLng(coordinates);
+      return latLngs;
     }
+
+    return options.coordsToLatLng(coordinates);
+  }
 };
 
 L.GML.PointParser = L.GML.PointNodeParser.extend({
@@ -526,7 +526,7 @@ L.GML.AbstractMultiPolylineParser = L.GML.MultiGeometryParser.extend({
 L.GML.AbstractMultiPolygonParser = L.GML.MultiGeometryParser.extend({
 
   parse: function (element, options) {
-    var childLayers = L.GML.MultiGeometryParser.prototype.parse.call(element, options);
+    var childLayers = L.GML.MultiGeometryParser.prototype.parse.call(this, element, options);
     var layer = new L.MultiPolygon([]);
     for (var i = 0; i < childLayers.length; i++) {
       layer.addLayer(childLayers[i]);
@@ -610,12 +610,12 @@ L.Format.GML = L.Format.extend({
   },
 
   processFeature: function (feature) {
-    var geometry = feature.getElementsByTagName(this.options.geometryField)[0];
-    var layer = this.generateLayer(geometry);
+    var geometryField = feature.getElementsByTagName(this.options.geometryField)[0];
+    var layer = this.generateLayer(geometryField.firstChild);
     var properties = {};
     for (var i = 0; i < feature.childNodes.length; i++) {
       var node = feature.childNodes[i];
-      if (node.nodeType === document.ELEMENT_NODE && node !== geometry) {
+      if (node.nodeType === document.ELEMENT_NODE && node !== geometryField) {
         var propertyName = node.tagName.split(':').pop();
         properties[propertyName] = node.textContent;
       }
@@ -750,7 +750,7 @@ L.WFS = L.FeatureGroup.extend({
 
     this._layers = {};
 
-    this.readFormat = readFormat || new L.Format.GeoJSON({crs: this.options.crs});
+    this.readFormat = readFormat || new L.Format.GML({crs: this.options.crs, geometryField: this.options.geometryField});
 
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;

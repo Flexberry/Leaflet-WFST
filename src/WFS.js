@@ -28,7 +28,7 @@ L.WFS = L.FeatureGroup.extend({
 
     this._layers = {};
 
-    this.readFormat = readFormat || new L.Format.GeoJSON({crs: this.options.crs});
+    this.readFormat = readFormat || new L.Format.GML({crs: this.options.crs, geometryField: this.options.geometryField});
 
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;

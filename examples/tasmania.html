@@ -30,6 +30,7 @@
     typeNS: 'topp',
     typeName: 'tasmania_state_boundaries',
     crs: L.CRS.EPSG4326,
+    geometryField: 'the_geom',
     style: {
       color: 'blue',
       weight: 2
@@ -44,6 +45,7 @@
     typeNS: 'topp',
     typeName: 'tasmania_roads',
     crs: L.CRS.EPSG4326,
+    geometryField: 'the_geom',
     style: {
       color: 'black',
       weight: 1
@@ -54,7 +56,8 @@
     url: 'http://demo.opengeo.org/geoserver/ows',
     typeNS: 'topp',
     typeName: 'tasmania_cities',
-    crs: L.CRS.EPSG4326
+    crs: L.CRS.EPSG4326,
+    geometryField: 'the_geom'
   }).addTo(map);
 
 
