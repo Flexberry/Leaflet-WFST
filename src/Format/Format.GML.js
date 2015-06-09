@@ -11,13 +11,13 @@ L.Format.GML = L.Format.extend({
     L.Format.prototype.initialize.call(this, options);
     this.outputFormat = 'text/xml; subtype=gml/3.1.1';
     this.initializeParserContainer();
-    this.appendParser(new L.GML.PointParser());
-    this.appendParser(new L.GML.LineStringParser());
-    this.appendParser(new L.GML.PolygonParser());
-    this.appendParser(new L.GML.MultiLineStringParser());
-    this.appendParser(new L.GML.MultiPolygonParser());
-    this.appendParser(new L.GML.MultiCurveParser());
-    this.appendParser(new L.GML.MultiSurfaceParser());
+    this.appendParser(new L.GML.Point());
+    this.appendParser(new L.GML.LineString());
+    this.appendParser(new L.GML.Polygon());
+    this.appendParser(new L.GML.MultiLineString());
+    this.appendParser(new L.GML.MultiPolygon());
+    this.appendParser(new L.GML.MultiCurve());
+    this.appendParser(new L.GML.MultiSurface());
   },
 
   responseToLayers: function (rawData) {

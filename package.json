@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/Flexberry/Leaflet-WFST/issues"
   },
-  "homepage": "https://github.com/Flexberry/Leaflet-WFST",
+  "homepage": "http://flexberry.github.io/Leaflet-WFST/",
   "devDependencies": {
     "chai": "^2.0.0",
     "grunt": "^0.4.5",

@@ -16,7 +16,10 @@ L.WFS.Transaction = L.WFS.extend({
   },
 
   describeFeatureType: function () {
-    var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {service: 'WFS', version: this.options.version});
+    var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
+      service: 'WFS',
+      version: this.options.version
+    });
     requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
 
     var that = this;

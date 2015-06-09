@@ -14,7 +14,7 @@ L.Util.request = function (options) {
       console.log(data);
     },
     error: function (data) {
-      console.log('Ajax fail');
+      console.log('Ajax request fail');
       console.log(data);
     },
     complete: function () {

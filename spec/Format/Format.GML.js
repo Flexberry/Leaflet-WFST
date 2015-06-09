@@ -12,31 +12,31 @@ describe("L.Format.GML", function () {
   var metas = [
     {
       tag: 'gml:Point',
-      parser: L.GML.PointParser
+      parser: L.GML.Point
     },
     {
       tag: 'gml:LineString',
-      parser: L.GML.LineStringParser
+      parser: L.GML.LineString
     },
     {
       tag: 'gml:Polygon',
-      parser: L.GML.PolygonParser
+      parser: L.GML.Polygon
     },
     {
       tag: 'gml:MultiLineString',
-      parser: L.GML.MultiLineStringParser
+      parser: L.GML.MultiLineString
     },
     {
       tag: 'gml:MultiPolygon',
-      parser: L.GML.MultiPolygonParser
+      parser: L.GML.MultiPolygon
     },
     {
       tag: 'gml:MultiCurve',
-      parser: L.GML.MultiCurveParser
+      parser: L.GML.MultiCurve
     },
     {
       tag: 'gml:MultiSurface',
-      parser: L.GML.MultiSurfaceParser
+      parser: L.GML.MultiSurface
     }
   ];
 
