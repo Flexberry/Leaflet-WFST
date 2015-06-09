@@ -3,7 +3,7 @@
  */
 
 /** Common format tests, such as count of processing objects, properties, etc. */
-describe("Format", function () {
+describe("L.Format", function () {
     var loadData = function (url, done, callback) {
         L.Util.request({
             url: url,

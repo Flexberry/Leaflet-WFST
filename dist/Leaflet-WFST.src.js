@@ -469,52 +469,83 @@ L.GML.PolygonParser = L.GML.GeometryParser.extend({
     }
 });
 L.GML.MultiGeometryParser = L.GML.GeometryParser.extend({
-    initialize: function(singleGeometryParser){
-        this.singleTag = singleGeometryParser.elementTag.split(':').pop();
-        this.singleParser = singleGeometryParser;
+    //initialize: function () {
+    //    this.singleTag = singleGeometryParser.elementTag.split(':').pop();
+    //    this.singleParser = singleGeometryParser;
+    //},
+    includes: L.GML.ParserContainerMixin,
+
+    initialize: function(){
+        this.initializeParserContainer();
     },
 
-    parse: function(element, options){
+    parse: function (element, options) {
         var childObjects = [];
-        var singles = element.getElementsByTagName(this.singleTag);
-        for(var i=0;i<singles.length;i++){
-            childObjects.push(this.singleParser.parse(singles[i], options));
+        for(var i = 0; i < element.childNodes.length; i++){
+            var geometryMember = element.childNodes[i];
+            if(geometryMember.nodeType !== document.ELEMENT_NODE) continue;
+
+            for(var j = 0; j < geometryMember.childNodes.length; j++){
+                var singleGeometry = geometryMember.childNodes[j];
+                if(singleGeometry.nodeType !== document.ELEMENT_NODE) continue;
+
+                childObjects.push(this.parseElement(singleGeometry, options));
+            }
         }
 
         return childObjects;
     }
 });
-L.GML.MultiLineStringParser = L.GML.MultiGeometryParser.extend({
-    initialize: function(){
-        L.GML.MultiGeometryParser.prototype.initialize.call(this, new L.GML.LineStringParser());
-        this.elementTag = 'gml:MultiLineString';
-    },
-
-    parse: function(element, options){
+L.GML.AbstractMultiPolylineParser = L.GML.MultiGeometryParser.extend({
+    parse: function (element, options) {
         var childLayers = L.GML.MultiGeometryParser.prototype.parse.call(this, element, options);
         var layer = new L.MultiPolyline([]);
-        for(var i=0; i<childLayers.length; i++){
+        for (var i = 0; i < childLayers.length; i++) {
             layer.addLayer(childLayers[i]);
         }
 
         return layer;
     }
 });
+L.GML.AbstractMultiPolygonParser = L.GML.MultiGeometryParser.extend({
 
-L.GML.MultiPolygonParser = L.GML.MultiGeometryParser.extend({
-    initialize: function(){
-        L.GML.MultiGeometryParser.prototype.initialize.call(this, new L.GML.PolygonParser());
-        this.elementTag = 'gml:MultiPolygon';
-    },
-
-    parse: function(element, options){
+    parse: function (element, options) {
         var childLayers = L.GML.MultiGeometryParser.prototype.parse.call(element, options);
         var layer = new L.MultiPolygon([]);
-        for(var i=0;i<childLayers.length;i++){
+        for (var i = 0; i < childLayers.length; i++) {
             layer.addLayer(childLayers[i]);
         }
 
         return layer;
+    }
+});
+L.GML.MultiLineStringParser = L.GML.AbstractMultiPolylineParser.extend({
+    initialize: function () {
+        L.GML.AbstractMultiPolylineParser.prototype.initialize.call(this);
+        this.appendParser(new L.GML.LineStringParser());
+        this.elementTag = 'gml:MultiLineString';
+    }
+});
+
+L.GML.MultiCurveParser = L.GML.AbstractMultiPolylineParser.extend({
+    initialize: function(){
+        L.GML.AbstractMultiPolylineParser.prototype.initialize.call(this);
+        this.elementTag = 'gml:MultiCurve';
+        this.appendParser(new L.GML.LineStringParser());
+    }
+});
+L.GML.MultiPolygonParser = L.GML.AbstractMultiPolygonParser.extend({
+    initialize: function () {
+        L.GML.AbstractMultiPolygonParser.prototype.initialize.call(this);
+        this.elementTag = 'gml:MultiPolygon';
+        this.appendParser(new L.GML.PolygonParser());
+    }
+});
+L.GML.MultiSurfaceParser = L.GML.AbstractMultiPolygonParser.extend({
+    initialize: function(){
+        L.GML.AbstractMultiPolygonParser.prototype.initialize.call(this);
+        this.elementTag = 'gml:MultiSurface';
+        this.appendParser(new L.GML.PolygonParser());
     }
 });
 L.Format.GML = L.Format.extend({
@@ -527,6 +558,11 @@ L.Format.GML = L.Format.extend({
         this.initializeParserContainer();
         this.appendParser(new L.GML.PointParser());
         this.appendParser(new L.GML.LineStringParser());
+        this.appendParser(new L.GML.PolygonParser());
+        this.appendParser(new L.GML.MultiLineStringParser());
+        this.appendParser(new L.GML.MultiPolygonParser());
+        this.appendParser(new L.GML.MultiCurveParser());
+        this.appendParser(new L.GML.MultiSurfaceParser());
     },
 
     responseToLayers: function (rawData) {

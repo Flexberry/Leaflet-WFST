@@ -2,15 +2,15 @@
  * Created by PRadostev on 09.06.2015.
  */
 
-describe("L.GML.MultiLineStringParser", function () {
+describe("L.GML.MultiCurveParser", function () {
     var parser;
 
     before(function () {
-        parser = new L.GML.MultiLineStringParser();
+        parser = new L.GML.MultiCurveParser();
     });
 
-    it('should parse gml:MultiLineString element', function () {
-        expect(parser.elementTag).to.equal('gml:MultiLineString');
+    it('should parse gml:MultiCurve element', function () {
+        expect(parser.elementTag).to.equal('gml:MultiCurve');
     });
 
     it('should know how parse gml:LineStrings', function () {

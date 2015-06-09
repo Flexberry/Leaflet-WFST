@@ -35,7 +35,7 @@ describe("L.MultiPolygon.toGml()", function () {
         expect(multiGml.tagName).to.be.equal('gml:MultiPolygon');
     });
 
-    it('should first child element gml:polygonMembers', function () {
+    it('should have first child element gml:polygonMembers', function () {
         expect(members.tagName).to.be.equal('gml:polygonMembers');
     });
 

@@ -13,6 +13,11 @@ L.Format.GML = L.Format.extend({
         this.initializeParserContainer();
         this.appendParser(new L.GML.PointParser());
         this.appendParser(new L.GML.LineStringParser());
+        this.appendParser(new L.GML.PolygonParser());
+        this.appendParser(new L.GML.MultiLineStringParser());
+        this.appendParser(new L.GML.MultiPolygonParser());
+        this.appendParser(new L.GML.MultiCurveParser());
+        this.appendParser(new L.GML.MultiSurfaceParser());
     },
 
     responseToLayers: function (rawData) {

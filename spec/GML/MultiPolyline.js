@@ -35,7 +35,7 @@ describe("L.MultiPolyline.toGml()", function () {
         expect(multiGml.tagName).to.be.equal('gml:MultiLineString');
     });
 
-    it('should first child element gml:lineStringMembers', function () {
+    it('should have first child element gml:lineStringMembers', function () {
         expect(members.tagName).to.be.equal('gml:lineStringMembers');
     });
 

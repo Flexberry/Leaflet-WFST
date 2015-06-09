@@ -12,7 +12,8 @@ describe('L.GML.MultiGeometryParser', function () {
             elementTag: 'gml:Single', parse: function () {
             }
         };
-        parser = new L.GML.MultiGeometryParser(singleParser);
+        parser = new L.GML.MultiGeometryParser();
+        parser.appendParser(singleParser);
         multiElement = parseXml('<multi>' +
         '<gml:singleMember><gml:Single/></gml:singleMember>' +
         '<gml:singleMembers>' +

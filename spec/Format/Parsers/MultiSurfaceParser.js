@@ -2,15 +2,15 @@
  * Created by PRadostev on 09.06.2015.
  */
 
-describe("L.GML.MultiPolygonParser", function () {
+describe("L.GML.MultiSurfaceParser", function () {
     var parser;
 
     before(function () {
-        parser = new L.GML.MultiPolygonParser();
+        parser = new L.GML.MultiSurfaceParser();
     });
 
-    it('should parse gml:MultiPolygon elements', function () {
-        expect(parser.elementTag).to.equal('gml:MultiPolygon');
+    it('should parse gml:MultiSurface elements', function () {
+        expect(parser.elementTag).to.equal('gml:MultiSurface');
     });
 
     it('should know how to parse gml:Polygon', function () {
