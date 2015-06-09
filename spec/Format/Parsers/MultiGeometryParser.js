@@ -36,7 +36,7 @@ describe('L.GML.MultiGeometryParser', function () {
             var result = parser.parse(multiElement);
             expect(result).to.be.instanceOf(Array);
             stub.restore();
-        });
+    });
     });
 
 });

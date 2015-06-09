@@ -5,29 +5,29 @@
 
 L.Format.GeoJSON = L.Format.extend({
 
-    initialize: function (options) {
-        L.Format.prototype.initialize.call(this, options);
-        this.outputFormat = 'application/json';
-    },
+  initialize: function (options) {
+    L.Format.prototype.initialize.call(this, options);
+    this.outputFormat = 'application/json';
+  },
 
-    responseToLayers: function (rawData) {
-        var layers = [];
-        var geoJson = JSON.parse(rawData);
+  responseToLayers: function (rawData) {
+    var layers = [];
+    var geoJson = JSON.parse(rawData);
 
-        for (var i = 0; i < geoJson.features.length; i++) {
-            layers.push(this.processFeature(geoJson.features[i]));
-        }
-
-        return layers;
-    },
-
-    processFeature: function (feature) {
-        var layer = this.generateLayer(feature);
-        layer.feature = feature;
-        return layer;
-    },
-
-    generateLayer: function (feature) {
-        return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng || null, null);
+    for (var i = 0; i < geoJson.features.length; i++) {
+      layers.push(this.processFeature(geoJson.features[i]));
     }
+
+    return layers;
+  },
+
+  processFeature: function (feature) {
+    var layer = this.generateLayer(feature);
+    layer.feature = feature;
+    return layer;
+  },
+
+  generateLayer: function (feature) {
+    return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng || null, null);
+  }
 });

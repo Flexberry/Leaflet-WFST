@@ -3,8 +3,8 @@
  */
 
 L.GML.ElementParser = L.Class.extend({
-    elementTag: '',
-    parse: function () {
-        throw('not implemented parse function in parser for ' + this.elementTag);
-    }
+  elementTag: '',
+  parse: function () {
+    throw('not implemented parse function in parser for ' + this.elementTag);
+  }
 });

@@ -5,21 +5,21 @@
  */
 
 L.Filter = L.Class.extend({
-    initialize: function () {
-        this.filter = L.XmlUtil.createElementNS('ogc:Filter');
-    },
+  initialize: function () {
+    this.filter = L.XmlUtil.createElementNS('ogc:Filter');
+  },
 
-    /**
-     * Represents this filter as GML node
-     *
-     * Returns:
-     * {XmlElement} Gml representation of this filter
-     */
-    toGml: function () {
-        return this.filter;
-    },
+  /**
+   * Represents this filter as GML node
+   *
+   * Returns:
+   * {XmlElement} Gml representation of this filter
+   */
+  toGml: function () {
+    return this.filter;
+  },
 
-    append: function () {
-        return this;
-    }
+  append: function () {
+    return this;
+  }
 });

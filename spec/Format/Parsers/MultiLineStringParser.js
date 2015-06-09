@@ -3,18 +3,18 @@
  */
 
 describe("L.GML.MultiLineStringParser", function () {
-    var parser;
+  var parser;
 
-    before(function () {
-        parser = new L.GML.MultiLineStringParser();
-    });
+  before(function () {
+    parser = new L.GML.MultiLineStringParser();
+  });
 
-    it('should parse gml:MultiLineString element', function () {
-        expect(parser.elementTag).to.equal('gml:MultiLineString');
-    });
+  it('should parse gml:MultiLineString element', function () {
+    expect(parser.elementTag).to.equal('gml:MultiLineString');
+  });
 
-    it('should know how parse gml:LineStrings', function () {
-        var child = parser.parsers['gml:LineString'];
-        expect(child).to.be.instanceOf(L.GML.LineStringParser);
-    });
+  it('should know how parse gml:LineStrings', function () {
+    var child = parser.parsers['gml:LineString'];
+    expect(child).to.be.instanceOf(L.GML.LineStringParser);
+  });
 });

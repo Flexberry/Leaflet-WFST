@@ -100,8 +100,8 @@ describe("L.Format", function () {
                         var label = feature.properties.label;
                         expect(label).to.equal("unimproved road");
                     });
-                });
-            });
         });
+            });
+    });
     });
 });

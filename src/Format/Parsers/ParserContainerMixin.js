@@ -5,20 +5,20 @@ L.GML = L.GML || {};
 
 L.GML.ParserContainerMixin = {
 
-    parsers: {},
+  parsers: {},
 
-    initializeParserContainer: function () {
-        this.parsers = {};
-    },
+  initializeParserContainer: function () {
+    this.parsers = {};
+  },
 
-    appendParser: function (parser) {
-        this.parsers[parser.elementTag] = parser;
-    },
+  appendParser: function (parser) {
+    this.parsers[parser.elementTag] = parser;
+  },
 
-    parseElement: function (element, options) {
-        var parser = this.parsers[element.tagName];
-        if (!parser) throw('unknown child element ' + element.tagName);
+  parseElement: function (element, options) {
+    var parser = this.parsers[element.tagName];
+    if (!parser) throw('unknown child element ' + element.tagName);
 
-        return parser.parse(element, options);
-    }
+    return parser.parse(element, options);
+  }
 };

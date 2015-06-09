@@ -3,10 +3,6 @@
  */
 
 L.GML.MultiGeometryParser = L.GML.GeometryParser.extend({
-    //initialize: function () {
-    //    this.singleTag = singleGeometryParser.elementTag.split(':').pop();
-    //    this.singleParser = singleGeometryParser;
-    //},
     includes: L.GML.ParserContainerMixin,
 
     initialize: function () {

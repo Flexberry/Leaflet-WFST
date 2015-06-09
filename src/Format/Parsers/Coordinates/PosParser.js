@@ -3,13 +3,13 @@
  */
 
 L.GML.PosParser = L.GML.ElementParser.extend({
-    initialize: function () {
-        this.elementTag = 'gml:pos';
-    },
+  initialize: function () {
+    this.elementTag = 'gml:pos';
+  },
 
-    parse: function (element) {
-        return element.textContent.split(' ').map(function (coord) {
-            return parseFloat(coord);
-        });
-    }
+  parse: function (element) {
+    return element.textContent.split(' ').map(function (coord) {
+      return parseFloat(coord);
+    });
+  }
 });
