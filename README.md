@@ -60,17 +60,17 @@ Markers geometry writes as posNode, for all other layers geometry writes as posL
 
 #Filter
 OGC Filter realization:
-##GmlFeatureId filter
+##GmlObjectId filter
 Example:
 ```javascript
-var filter = new L.Filter.GmlFeatureID();
+var filter = new L.Filter.GmlObjectId();
 filter.append(1);
 filter.toGml()
 ```
 code above will return:
 ```xml
 <ogc:Filter>
-    <ogc:GmlFeatureId gml:id=1/>
+    <ogc:GmlObjectId gml:id=1/>
 </ogc:Filter>
 ```
 

@@ -85,6 +85,10 @@ describe("L.Format", function () {
             expect(feature).to.not.be.undefined;
           });
 
+          it('should have id field with value "roads.1"', function () {
+            expect(feature.id).to.equal("roads.1");
+          });
+
           it('feature must have "properties" field object', function () {
             expect(feature.properties).to.not.be.undefined;
           });

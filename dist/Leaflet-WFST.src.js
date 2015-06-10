@@ -635,7 +635,11 @@ L.Format.GML = L.Format.extend({
       }
     }
 
-    layer.feature = {properties: properties};
+    layer.feature = {
+      properties: properties,
+      id: feature.attributes['gml:id'].value
+    };
+
     return layer;
   },
 
