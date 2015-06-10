@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-06-09 */
+/*! Leaflet-WFST 0.0.1 2015-06-10 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -568,6 +568,19 @@ L.GML.MultiSurface = L.GML.AbstractMultiPolygon.extend({
   }
 });
 
+L.GML.MultiPoint = L.GML.MultiGeometry.extend({
+  initialize: function () {
+    L.GML.MultiGeometry.prototype.initialize.call(this);
+    this.elementTag = 'gml:MultiPoint';
+    this.appendParser(new L.GML.Point());
+  },
+
+  parse: function (element, options) {
+    var layers = L.GML.MultiGeometry.prototype.parse.call(this, element, options);
+    return new L.FeatureGroup(layers);
+  }
+});
+
 L.Format.GML = L.Format.extend({
 
   includes: L.GML.ParserContainerMixin,
@@ -583,6 +596,7 @@ L.Format.GML = L.Format.extend({
     this.appendParser(new L.GML.MultiPolygon());
     this.appendParser(new L.GML.MultiCurve());
     this.appendParser(new L.GML.MultiSurface());
+    this.appendParser(new L.GML.MultiPoint());
   },
 
   responseToLayers: function (rawData) {

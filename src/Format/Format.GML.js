@@ -18,6 +18,7 @@ L.Format.GML = L.Format.extend({
     this.appendParser(new L.GML.MultiPolygon());
     this.appendParser(new L.GML.MultiCurve());
     this.appendParser(new L.GML.MultiSurface());
+    this.appendParser(new L.GML.MultiPoint());
   },
 
   responseToLayers: function (rawData) {

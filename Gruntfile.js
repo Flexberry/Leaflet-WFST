@@ -45,6 +45,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Format/Parsers/Layers/MultiCurve.js',
           '<%= srcPath %>/Format/Parsers/Layers/MultiPolygon.js',
           '<%= srcPath %>/Format/Parsers/Layers/MultiSurface.js',
+          '<%= srcPath %>/Format/Parsers/Layers/MultiPoint.js',
           '<%= srcPath %>/Format/Format.GML.js',
           '<%= srcPath %>/Util.js',
           '<%= srcPath %>/GmlUtil.js',

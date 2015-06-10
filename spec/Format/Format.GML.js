@@ -37,6 +37,10 @@ describe("L.Format.GML", function () {
     {
       tag: 'gml:MultiSurface',
       parser: L.GML.MultiSurface
+    },
+    {
+      tag: 'gml:MultiPoint',
+      parser: L.GML.MultiPoint
     }
   ];
 
