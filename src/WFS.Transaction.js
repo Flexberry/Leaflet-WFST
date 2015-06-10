@@ -15,25 +15,6 @@ L.WFS.Transaction = L.WFS.extend({
     this.changes = {};
   },
 
-  describeFeatureType: function () {
-    var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
-      service: 'WFS',
-      version: this.options.version
-    });
-    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
-
-    var that = this;
-    L.Util.request({
-      url: this.options.url,
-      data: L.XmlUtil.createXmlDocumentString(requestData),
-      success: function (data) {
-        var parser = new DOMParser();
-        var featureInfo = parser.parseFromString(data, "text/xml").documentElement;
-        that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
-      }
-    });
-  },
-
   addLayer: function (layer) {
     L.FeatureGroup.prototype.addLayer.call(this, layer);
     if (!layer.feature) {
@@ -97,7 +78,7 @@ L.WFS.Transaction = L.WFS.extend({
 
     L.Util.request({
       url: this.options.url,
-      data: L.XmlUtil.createXmlDocumentString(transaction),
+      data: L.XmlUtil.serializeXmlDocumentString(transaction),
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
         var filter = new L.Filter.GmlObjectID();

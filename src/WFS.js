@@ -36,13 +36,39 @@ L.WFS = L.FeatureGroup.extend({
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;
 
-    if (this.options.showExisting) {
-      this.loadFeatures();
-    }
+    var that = this;
+    this.describeFeatureType(function () {
+      if (that.options.showExisting) {
+        that.loadFeatures();
+      }
+    });
   },
 
   namespaceName: function (name) {
     return this.options.typeNS + ':' + name;
+  },
+
+  describeFeatureType: function (callback) {
+    var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
+      service: 'WFS',
+      version: this.options.version
+    });
+    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
+
+    var that = this;
+    L.Util.request({
+      url: this.options.url,
+      data: L.XmlUtil.serializeXmlDocumentString(requestData),
+      success: function (data) {
+        var xmldoc = L.XmlUtil.parseXml(data);
+        var featureInfo = xmldoc.documentElement;
+        that.readFormat.setFeatureDescription(featureInfo);
+        that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
+        if (typeof(callback) === 'function') {
+          callback();
+        }
+      }
+    });
   },
 
   getFeature: function (filter) {
@@ -70,7 +96,7 @@ L.WFS = L.FeatureGroup.extend({
     var that = this;
     L.Util.request({
       url: this.options.url,
-      data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
+      data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
       success: function (data) {
         var layers = that.readFormat.responseToLayers(data,
           {

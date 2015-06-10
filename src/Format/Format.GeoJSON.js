@@ -3,10 +3,10 @@
  * Translate GeoJSON to leaflet structures
  */
 
-L.Format.GeoJSON = L.Format.extend({
+L.Format.GeoJSON = L.Format.Base.extend({
 
   initialize: function (options) {
-    L.Format.prototype.initialize.call(this, options);
+    L.Format.Base.prototype.initialize.call(this, options);
     this.outputFormat = 'application/json';
   },
 

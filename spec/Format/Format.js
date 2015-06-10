@@ -42,6 +42,12 @@ describe("L.Format", function () {
     describe(kind.name, function () {
       var format = kind.format;
 
+      describe("#setFeatureDescription", function () {
+        it('should implement setFeatureDescription function', function () {
+          expect(format).to.respondTo('setFeatureDescription');
+        });
+      });
+
       describe("#responseToLayers", function () {
         var testData;
         before(function (done) {
@@ -70,6 +76,12 @@ describe("L.Format", function () {
             var stub = sinon.stub(format, 'generateLayer', function () {
               return {};
             });
+
+            var featureType = new L.GML.FeatureType('the_geom');
+            featureType.appendField('cat', 'int');
+            featureType.appendField('label', 'string');
+            format.featureType = featureType;
+
             layer = format.processFeature(testData);
             stub.restore();
           });

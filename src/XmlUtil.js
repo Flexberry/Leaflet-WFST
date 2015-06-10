@@ -66,14 +66,14 @@ L.XmlUtil = {
     return this.xmldoc.createTextNode(value);
   },
 
-  createXmlDocumentString: function (node) {
+  serializeXmlDocumentString: function (node) {
     var doc = document.implementation.createDocument("", "", null);
     doc.appendChild(node);
     var serializer = new XMLSerializer();
     return serializer.serializeToString(doc);
   },
 
-  createXmlString: function (node) {
+  serializeXmlToString: function (node) {
     var serializer = new XMLSerializer();
     return serializer.serializeToString(node);
   },

@@ -3,12 +3,12 @@
  */
 
 
-L.Format.GML = L.Format.extend({
+L.Format.GML = L.Format.Base.extend({
 
   includes: L.GML.ParserContainerMixin,
 
   initialize: function (options) {
-    L.Format.prototype.initialize.call(this, options);
+    L.Format.Base.prototype.initialize.call(this, options);
     this.outputFormat = 'text/xml; subtype=gml/3.1.1';
     this.initializeParserContainer();
     this.appendParser(new L.GML.Point());
@@ -48,20 +48,7 @@ L.Format.GML = L.Format.extend({
   processFeature: function (feature) {
     var geometryField = feature.getElementsByTagName(this.options.geometryField)[0];
     var layer = this.generateLayer(geometryField.firstChild);
-    var properties = {};
-    for (var i = 0; i < feature.childNodes.length; i++) {
-      var node = feature.childNodes[i];
-      if (node.nodeType === document.ELEMENT_NODE && node !== geometryField) {
-        var propertyName = node.tagName.split(':').pop();
-        properties[propertyName] = node.textContent;
-      }
-    }
-
-    layer.feature = {
-      properties: properties,
-      id: feature.attributes['gml:id'].value
-    };
-
+    layer.feature = this.featureType.parse(feature);
     return layer;
   },
 

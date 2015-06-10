@@ -67,14 +67,14 @@ L.XmlUtil = {
     return this.xmldoc.createTextNode(value);
   },
 
-  createXmlDocumentString: function (node) {
+  serializeXmlDocumentString: function (node) {
     var doc = document.implementation.createDocument("", "", null);
     doc.appendChild(node);
     var serializer = new XMLSerializer();
     return serializer.serializeToString(doc);
   },
 
-  createXmlString: function (node) {
+  serializeXmlToString: function (node) {
     var serializer = new XMLSerializer();
     return serializer.serializeToString(node);
   },
@@ -163,7 +163,43 @@ L.Filter.GmlObjectID = L.Filter.extend({
   }
 });
 
-L.Format = L.Class.extend({
+L.Format = {};
+
+L.Format.Scheme = L.Class.extend({
+  initialize: function (geometryField) {
+    this.geometryField = geometryField;
+  },
+
+  parse: function (element) {
+    var featureType = new L.GML.FeatureType(this.geometryField);
+    var complexTypeDefinition = element.getElementsByTagName('complexType')[0];
+    var properties = complexTypeDefinition.getElementsByTagName('sequence')[0];
+    for (var i = 0; i < properties.childNodes.length; i++) {
+      var node = properties.childNodes[i];
+      if (node.nodeType !== document.ELEMENT_NODE) {
+        continue;
+      }
+
+      var typeAttr = node.attributes.type;
+      if (!typeAttr) {
+        var restriction = node.getElementsByTagName('restriction');
+        typeAttr = restriction.attributes.base;
+      }
+
+      if (!typeAttr) {
+        continue;
+      }
+
+      var typeName = typeAttr.value.split(':').pop();
+      var propertyName = node.tagName.split(':').pop();
+      featureType.appendField(propertyName, typeName);
+    }
+
+    return featureType;
+  }
+});
+
+L.Format.Base = L.Class.extend({
   defaultOptions: {
     crs: L.CRS.EPSG3857,
     coordsToLatLng: function (coords) {
@@ -175,7 +211,8 @@ L.Format = L.Class.extend({
         coords.push(latlng.alt);
       }
       return coords;
-    }
+    },
+    geometryField: 'Shape'
   },
 
   initialize: function (options) {
@@ -195,13 +232,18 @@ L.Format = L.Class.extend({
         return crs.projection.project(latLng);
       };
     }
+  },
+
+  setFeatureDescription: function (featureInfo) {
+    var schemeParser = new L.Format.Scheme(this.options.geometryField);
+    this.featureType = schemeParser.parse(featureInfo);
   }
 });
 
-L.Format.GeoJSON = L.Format.extend({
+L.Format.GeoJSON = L.Format.Base.extend({
 
   initialize: function (options) {
-    L.Format.prototype.initialize.call(this, options);
+    L.Format.Base.prototype.initialize.call(this, options);
     this.outputFormat = 'application/json';
   },
 
@@ -581,12 +623,79 @@ L.GML.MultiPoint = L.GML.MultiGeometry.extend({
   }
 });
 
-L.Format.GML = L.Format.extend({
+L.GML.FeatureType = L.Class.extend({
+
+  primitives: [
+    {
+      types: ['byte', 'decimal', 'int', 'integer', 'long', 'short'],
+      parse: function (input) {
+        return Number(input);
+      }
+    },
+    {
+      types: ['string'],
+      parse: function (input) {
+        return input;
+      }
+    },
+    {
+      types: ['boolean'],
+      parse: function (input) {
+        return input !== 'false';
+      }
+    },
+    {
+      types: ['date', 'time', 'datetime'],
+      parse: function (input) {
+        return new Date(input);
+      }
+    }
+  ],
+
+  initialize: function (geometryField) {
+    this.geometryField = geometryField;
+    this.fields = {};
+  },
+
+  appendField: function (name, type) {
+    var that = this;
+    this.primitives.forEach(function (primitive) {
+      if (primitive.types.indexOf(type) !== -1) {
+        that.fields[name] = primitive.parse;
+      }
+    });
+  },
+
+  parse: function (feature) {
+    var properties = {};
+    for (var i = 0; i < feature.childNodes.length; i++) {
+      var node = feature.childNodes[i];
+      if (node.nodeType !== document.ELEMENT_NODE) continue;
+
+      var propertyName = node.tagName.split(':').pop();
+
+      if (propertyName === this.geometryField) continue;
+
+      var fieldParser = this.fields[propertyName];
+
+      if (!fieldParser) continue;
+
+      properties[propertyName] = fieldParser(node.textContent);
+    }
+
+    return {
+      properties: properties,
+      id: feature.attributes['gml:id'].value
+    };
+  }
+});
+
+L.Format.GML = L.Format.Base.extend({
 
   includes: L.GML.ParserContainerMixin,
 
   initialize: function (options) {
-    L.Format.prototype.initialize.call(this, options);
+    L.Format.Base.prototype.initialize.call(this, options);
     this.outputFormat = 'text/xml; subtype=gml/3.1.1';
     this.initializeParserContainer();
     this.appendParser(new L.GML.Point());
@@ -626,20 +735,7 @@ L.Format.GML = L.Format.extend({
   processFeature: function (feature) {
     var geometryField = feature.getElementsByTagName(this.options.geometryField)[0];
     var layer = this.generateLayer(geometryField.firstChild);
-    var properties = {};
-    for (var i = 0; i < feature.childNodes.length; i++) {
-      var node = feature.childNodes[i];
-      if (node.nodeType === document.ELEMENT_NODE && node !== geometryField) {
-        var propertyName = node.tagName.split(':').pop();
-        properties[propertyName] = node.textContent;
-      }
-    }
-
-    layer.feature = {
-      properties: properties,
-      id: feature.attributes['gml:id'].value
-    };
-
+    layer.feature = this.featureType.parse(feature);
     return layer;
   },
 
@@ -776,13 +872,39 @@ L.WFS = L.FeatureGroup.extend({
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;
 
-    if (this.options.showExisting) {
-      this.loadFeatures();
-    }
+    var that = this;
+    this.describeFeatureType(function () {
+      if (that.options.showExisting) {
+        that.loadFeatures();
+      }
+    });
   },
 
   namespaceName: function (name) {
     return this.options.typeNS + ':' + name;
+  },
+
+  describeFeatureType: function (callback) {
+    var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
+      service: 'WFS',
+      version: this.options.version
+    });
+    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
+
+    var that = this;
+    L.Util.request({
+      url: this.options.url,
+      data: L.XmlUtil.serializeXmlDocumentString(requestData),
+      success: function (data) {
+        var xmldoc = L.XmlUtil.parseXml(data);
+        var featureInfo = xmldoc.documentElement;
+        that.readFormat.setFeatureDescription(featureInfo);
+        that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
+        if (typeof(callback) === 'function') {
+          callback();
+        }
+      }
+    });
   },
 
   getFeature: function (filter) {
@@ -810,7 +932,7 @@ L.WFS = L.FeatureGroup.extend({
     var that = this;
     L.Util.request({
       url: this.options.url,
-      data: L.XmlUtil.createXmlDocumentString(that.getFeature(filter)),
+      data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
       success: function (data) {
         var layers = that.readFormat.responseToLayers(data,
           {
@@ -846,25 +968,6 @@ L.WFS.Transaction = L.WFS.extend({
     });
 
     this.changes = {};
-  },
-
-  describeFeatureType: function () {
-    var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
-      service: 'WFS',
-      version: this.options.version
-    });
-    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
-
-    var that = this;
-    L.Util.request({
-      url: this.options.url,
-      data: L.XmlUtil.createXmlDocumentString(requestData),
-      success: function (data) {
-        var parser = new DOMParser();
-        var featureInfo = parser.parseFromString(data, "text/xml").documentElement;
-        that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
-      }
-    });
   },
 
   addLayer: function (layer) {
@@ -930,7 +1033,7 @@ L.WFS.Transaction = L.WFS.extend({
 
     L.Util.request({
       url: this.options.url,
-      data: L.XmlUtil.createXmlDocumentString(transaction),
+      data: L.XmlUtil.serializeXmlDocumentString(transaction),
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
         var filter = new L.Filter.GmlObjectID();

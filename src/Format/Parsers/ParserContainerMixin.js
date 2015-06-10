@@ -1,7 +1,6 @@
 /**
  * Created by PRadostev on 05.06.2015.
  */
-L.GML = L.GML || {};
 
 L.GML.ParserContainerMixin = {
 
