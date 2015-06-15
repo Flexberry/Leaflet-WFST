@@ -42,12 +42,12 @@
 <div class="highlight highlight-javascript"><pre>   options<span class="pl-k">:</span> {
         crs<span class="pl-k">:</span> L.CRS.EPSG3857,
         showExisting<span class="pl-k">:</span> <span class="pl-c1">true</span>,
-        geometryField<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Shape<span class="pl-pds">'</span></span>,
-        url<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
-        typeNS<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
-        typeName<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
+        geometryField<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Shape<span class="pl-pds">'</span></span>,
+        url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
+        typeNS<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
+        typeName<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
         style<span class="pl-k">:</span> {
-            color<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>black<span class="pl-pds">'</span></span>,
+            color<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>black<span class="pl-pds">'</span></span>,
             weight<span class="pl-k">:</span> <span class="pl-c1">1</span>
         }
     }
@@ -106,19 +106,19 @@
 <a id="basic-wfs-example---view" class="anchor" href="#basic-wfs-example---view" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic WFS example - <a href="http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html">view</a>
 </h1>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> map <span class="pl-k">=</span> L.map(<span class="pl-s1"><span class="pl-pds">'</span>map<span class="pl-pds">'</span></span>).setView([<span class="pl-c1">0</span>, <span class="pl-c1">0</span>], <span class="pl-c1">2</span>);
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> map <span class="pl-k">=</span> L.map(<span class="pl-s"><span class="pl-pds">'</span>map<span class="pl-pds">'</span></span>).setView([<span class="pl-c1">0</span>, <span class="pl-c1">0</span>], <span class="pl-c1">2</span>);
 
-<span class="pl-s">var</span> boundaries <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.WFS</span>({
-    url<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>http://demo.opengeo.org/geoserver/ows<span class="pl-pds">'</span></span>,
-    typeNS<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>topp<span class="pl-pds">'</span></span>,
-    typeName<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>tasmania_state_boundaries<span class="pl-pds">'</span></span>,
+<span class="pl-k">var</span> boundaries <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.WFS</span>({
+    url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>http://demo.opengeo.org/geoserver/ows<span class="pl-pds">'</span></span>,
+    typeNS<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>topp<span class="pl-pds">'</span></span>,
+    typeName<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>tasmania_state_boundaries<span class="pl-pds">'</span></span>,
     crs<span class="pl-k">:</span> L.CRS.EPSG4326,
     style<span class="pl-k">:</span> {
-        color<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>blue<span class="pl-pds">'</span></span>,
+        color<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>blue<span class="pl-pds">'</span></span>,
         weight<span class="pl-k">:</span> <span class="pl-c1">2</span>
     }
 }).addTo(map)
-        .on(<span class="pl-s1"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
+        .on(<span class="pl-s"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
             map.fitBounds(boundaries);
         })</pre></div>
 
@@ -130,7 +130,12 @@
 <ul>
 <li>L.Marker</li>
 <li>L.Polygon</li>
+<li>L.Polyline</li>
+<li>L.MultiPolygon</li>
+<li>L.MultiPolyline</li>
 </ul>
+
+<p>Markers geometry writes as posNode, for all other layers geometry writes as posList</p>
 
 <h1>
 <a id="filter" class="anchor" href="#filter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Filter</h1>
@@ -138,18 +143,18 @@
 <p>OGC Filter realization:</p>
 
 <h2>
-<a id="gmlfeatureid-filter" class="anchor" href="#gmlfeatureid-filter" aria-hidden="true"><span class="octicon octicon-link"></span></a>GmlFeatureId filter</h2>
+<a id="gmlobjectid-filter" class="anchor" href="#gmlobjectid-filter" aria-hidden="true"><span class="octicon octicon-link"></span></a>GmlObjectId filter</h2>
 
 <p>Example:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> filter <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.Filter</span>.GmlFeatureID();
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> filter <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.Filter</span>.GmlObjectId();
 filter.append(<span class="pl-c1">1</span>);
 filter.toGml()</pre></div>
 
 <p>code above will return:</p>
 
 <div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">Filter</span>&gt;
-    &lt;<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">GmlFeatureId</span> <span class="pl-e">gml</span><span class="pl-e">:</span><span class="pl-e">id</span>=1/&gt;
+    &lt;<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">GmlObjectId</span> <span class="pl-e">gml</span><span class="pl-e">:</span><span class="pl-e">id</span>=1/&gt;
 &lt;/<span class="pl-ent">ogc</span><span class="pl-ent">:</span><span class="pl-ent">Filter</span>&gt;</pre></div>
 
 <h1>
@@ -159,37 +164,49 @@ filter.toGml()</pre></div>
 
 <div class="highlight highlight-javascript"><pre>L.WFS.Transaction.include(MultiEditableMixin);
 
-<span class="pl-s">var</span> wfst <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.WFS</span>.Transaction({
-    url<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>http://myserver/geoserver/ows<span class="pl-pds">'</span></span>,
-    typeNS<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>myns<span class="pl-pds">'</span></span>,
-    typeName<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>POIPOINT<span class="pl-pds">'</span></span>,
+<span class="pl-k">var</span> wfst <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">L.WFS</span>.Transaction({
+    url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>http://myserver/geoserver/ows<span class="pl-pds">'</span></span>,
+    typeNS<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>myns<span class="pl-pds">'</span></span>,
+    typeName<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>POIPOINT<span class="pl-pds">'</span></span>,
     style<span class="pl-k">:</span> {
-        color<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>blue<span class="pl-pds">'</span></span>,
+        color<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>blue<span class="pl-pds">'</span></span>,
         weight<span class="pl-k">:</span> <span class="pl-c1">2</span>
     }
-}).addTo(map).once(<span class="pl-s1"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
+}).addTo(map).once(<span class="pl-s"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
             map.fitBounds(wfst);
             wfst.enableEdit();
         });
 
-map.on(<span class="pl-s1"><span class="pl-pds">'</span>editable:created<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> (<span class="pl-vpf">e</span>) {
+map.on(<span class="pl-s"><span class="pl-pds">'</span>editable:created<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">e</span>) {
     wfst.addLayer(e.layer);
 });
 
-map.on(<span class="pl-s1"><span class="pl-pds">'</span>editable:editing<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> (<span class="pl-vpf">e</span>) {
+map.on(<span class="pl-s"><span class="pl-pds">'</span>editable:editing<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">e</span>) {
     wfst.editLayer(e.layer);
 });</pre></div>
 
 <p>to make "wfs:Transaction" POST request call save() method, example with <a href="https://github.com/CliffCloud/Leaflet.EasyButton">Leaflet.EasyButton</a></p>
 
-<div class="highlight highlight-javascript"><pre> L.easyButton(<span class="pl-s1"><span class="pl-pds">'</span>fa-save<span class="pl-pds">'</span></span>, <span class="pl-st">function</span> () {
+<div class="highlight highlight-javascript"><pre> L.easyButton(<span class="pl-s"><span class="pl-pds">'</span>fa-save<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
      wfst.save();
- }, <span class="pl-s1"><span class="pl-pds">'</span>Save changes<span class="pl-pds">'</span></span>);</pre></div>
+ }, <span class="pl-s"><span class="pl-pds">'</span>Save changes<span class="pl-pds">'</span></span>);</pre></div>
 
 <h1>
 <a id="demo" class="anchor" href="#demo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo</h1>
 
-<p><a href="http://flexberry.github.io/Leaflet-WFST/examples/markers.html">Markers</a>, <a href="http://flexberry.github.io/Leaflet-WFST/examples/polygon.html">Polygons</a></p>
+<p>demos for GML read format</p>
+
+<ul>
+<li><a href="http://flexberry.github.io/Leaflet-WFST/examples/markers.html">Markers</a></li>
+<li><a href="http://flexberry.github.io/Leaflet-WFST/examples/polygon.html">Polygons</a></li>
+<li><a href="http://flexberry.github.io/Leaflet-WFST/examples/polyline.html">Polylines</a></li>
+</ul>
+
+<p>demo for GeoJSON read format</p>
+
+<ul>
+<li><a href="http://flexberry.github.io/Leaflet-WFST/examples/polygonGeoJSON.html">Polygons</a></li>
+</ul>
 
 <h1>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h1>
@@ -202,7 +219,7 @@ map.on(<span class="pl-s1"><span class="pl-pds">'</span>editable:editing<span cl
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">Leaflet-WFST maintained by <a href="https://github.com/Flexberry">Flexberry</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
