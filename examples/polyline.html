@@ -12,7 +12,7 @@
       width: 100%;
     }
   </style>
-  <title>Leaflet-WFST polygon demo</title>
+  <title>Leaflet-WFST Polyline demo</title>
 </head>
 <body>
 <div id="map"></div>
@@ -38,7 +38,7 @@
   var wfst = new L.WFS.Transaction({
     url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'osm_perm_region',
-    typeName: 'perm_water_polygon',
+    typeName: 'perm_water_line',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
     style: {
@@ -60,7 +60,7 @@
           }
         },
         addHooks: function () {
-          map.editTools.startPolygon();
+          map.editTools.startPolyline();
         }
       }),
       L.ToolbarAction.extend({
