@@ -109,7 +109,13 @@ to make "wfs:Transaction" POST request call save() method, example with [Leaflet
 ```
 
 #Demo
-[Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html), [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygon.html)
+demos for GML read format
+* [Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html)
+* [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygon.html)
+* [Polylines](http://flexberry.github.io/Leaflet-WFST/examples/polyline.html)
+
+demo for GeoJSON read format
+* [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygonGeoJSON.html)
 
 #License
 MIT
