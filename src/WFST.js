@@ -2,7 +2,7 @@
  * Created by PRadostev on 06.02.2015.
  */
 
-L.WFS.Transaction = L.WFS.extend({
+L.WFST = L.WFS.extend({
   initialize: function (options, readFormat) {
     L.WFS.prototype.initialize.call(this, options, readFormat);
     this.state = L.extend(this.state, {
@@ -103,3 +103,7 @@ L.WFS.Transaction = L.WFS.extend({
     return this;
   }
 });
+
+L.wfst = function (options, readFormat) {
+  return new L.WFST(options, readFormat);
+};

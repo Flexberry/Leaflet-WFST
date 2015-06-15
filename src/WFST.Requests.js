@@ -2,7 +2,7 @@
  * Created by PRadostev on 20.02.2015.
  */
 
-L.WFS.Transaction.include({
+L.WFST.include({
 
   insert: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Insert');

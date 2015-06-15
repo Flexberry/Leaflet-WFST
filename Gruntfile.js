@@ -50,15 +50,14 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Format/Parsers/Layers/MultiSurface.js',
           '<%= srcPath %>/Format/Parsers/Layers/MultiPoint.js',
           '<%= srcPath %>/Format/Parsers/FeatureType.js',
-          '<%= srcPath %>/Format/Parsers/Layer.js',
           '<%= srcPath %>/Format/Format.GML.js',
           '<%= srcPath %>/Util.js',
           '<%= srcPath %>/GmlUtil.js',
           '<%= srcPath %>/GML/*.js',
           '<%= srcPath %>/WFS.js',
-          '<%= srcPath %>/WFS.Transaction.js',
-          '<%= srcPath %>/WFS.Transaction.Helpers.js',
-          '<%= srcPath %>/WFS.Transaction.Requests.js'
+          '<%= srcPath %>/WFST.js',
+          '<%= srcPath %>/WFST.Helpers.js',
+          '<%= srcPath %>/WFST.Requests.js'
         ],
         dest: '<%= distPath %>/<%= pkg.name %>.src.js'
       }

@@ -2,7 +2,7 @@
  * Created by PRadostev on 20.02.2015.
  */
 
-L.WFS.Transaction.include({
+L.WFST.include({
   gmlFeature: function (layer) {
     var featureNode = L.XmlUtil.createElementNS(this.options.typeNSName, {}, {uri: this.options.namespaceUri});
     var feature = layer.feature;

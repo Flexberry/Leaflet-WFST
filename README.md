@@ -77,9 +77,9 @@ code above will return:
 #WFST Example
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
 ```javascript
-L.WFS.Transaction.include(MultiEditableMixin);
+L.WFST.include(MultiEditableMixin);
 
-var wfst = new L.WFS.Transaction({
+var wfst = new L.WFST({
     url: 'http://myserver/geoserver/ows',
     typeNS: 'myns',
     typeName: 'POIPOINT',

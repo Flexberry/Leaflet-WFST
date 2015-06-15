@@ -2,7 +2,7 @@
  * Created by PRadostev on 20.02.2015.
  */
 
-describe('WFS.Transaction.Helpers', function () {
+describe('WFST.Helpers', function () {
   var wfst, layer, xhr;
 
   before(function () {
@@ -10,7 +10,7 @@ describe('WFS.Transaction.Helpers', function () {
   });
 
   beforeEach(function () {
-    wfst = new L.WFS.Transaction({
+    wfst = new L.WFST({
       typeNS: 'typeNS',
       typeName: 'typeName',
       namespaceUri: 'testuri'

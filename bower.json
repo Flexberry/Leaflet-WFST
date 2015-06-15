@@ -4,7 +4,7 @@
   "homepage": "https://github.com/Flexberry/Leaflet-WFST",
   "description": "WFST plugin for Leaflet",
   "license": "MIT",
-  "main": "dist/Leaflet-WFST.min.js",
+  "main": "dist/Leaflet-WFST.src.js",
   "ignore": [
     "**/.*",
     "node_modules",

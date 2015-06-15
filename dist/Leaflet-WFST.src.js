@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-06-15 */
+/*! Leaflet-WFST 1.0.0 2015-06-15 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -965,7 +965,7 @@ L.wfs = function (options, readFormat) {
   return new L.WFS(options, readFormat);
 };
 
-L.WFS.Transaction = L.WFS.extend({
+L.WFST = L.WFS.extend({
   initialize: function (options, readFormat) {
     L.WFS.prototype.initialize.call(this, options, readFormat);
     this.state = L.extend(this.state, {
@@ -1067,7 +1067,11 @@ L.WFS.Transaction = L.WFS.extend({
   }
 });
 
-L.WFS.Transaction.include({
+L.wfst = function (options, readFormat) {
+  return new L.WFST(options, readFormat);
+}
+
+L.WFST.include({
   gmlFeature: function (layer) {
     var featureNode = L.XmlUtil.createElementNS(this.options.typeNSName, {}, {uri: this.options.namespaceUri});
     var feature = layer.feature;
@@ -1110,7 +1114,7 @@ L.WFS.Transaction.include({
   }
 });
 
-L.WFS.Transaction.include({
+L.WFST.include({
 
   insert: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Insert');
