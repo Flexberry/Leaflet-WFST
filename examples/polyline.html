@@ -12,10 +12,11 @@
       width: 100%;
     }
   </style>
-  <title>Leaflet-WFST polygon demo with GeoJSON</title>
+  <title>Leaflet-WFST Polyline demo</title>
 </head>
 <body>
 <div id="map"></div>
+
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script src="lib/leaflet.toolbar.js"></script>
 <script src="lib/Leaflet.Editable.js"></script>
@@ -27,7 +28,6 @@
 <script src="../dist/Leaflet-WFST.src.js"></script>
 <script>
   var map = L.map('map', {editable: true}).setView([0, 0], 2);
-
   // add an OpenStreetMap tile layer
   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -38,15 +38,14 @@
   var wfst = new L.WFS.Transaction({
     url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'osm_perm_region',
-    typeName: 'perm_water_polygon',
+    typeName: 'perm_water_line',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
     style: {
       color: 'blue',
       weight: 2
     }
-  }, new L.Format.GeoJSON({crs: L.CRS.EPSG4326}))
-    .addTo(map)
+  }).addTo(map)
     .once('load', function () {
       map.fitBounds(wfst);
     });
@@ -61,7 +60,7 @@
           }
         },
         addHooks: function () {
-          map.editTools.startPolygon();
+          map.editTools.startPolyline();
         }
       }),
       L.ToolbarAction.extend({

@@ -12,9 +12,9 @@ describe("L.Format.Sheme", function () {
 
   it('should return L.GML.FeatureType object', function () {
     var element = parseXml('<element/>');
-    var stub = sinon.stub(Element.prototype, 'getElementsByTagName').returns([element]);
+    var stub = sinon.stub(Element.prototype, 'getElementsByTagNameNS').returns([element]);
     var result = parser.parse(element);
     expect(result).to.be.instanceOf(L.GML.FeatureType);
     stub.restore();
-  })
+  });
 });

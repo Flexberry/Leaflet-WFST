@@ -6,12 +6,13 @@ L.XmlUtil = {
   // comes from OL
   namespaces: {
     xlink: "http://www.w3.org/1999/xlink",
+    xmlns: "http://www.w3.org/2000/xmlns/",
+    xsd: "http://www.w3.org/2001/XMLSchema",
     xsi: "http://www.w3.org/2001/XMLSchema-instance",
     wfs: "http://www.opengis.net/wfs",
     gml: "http://www.opengis.net/gml",
     ogc: "http://www.opengis.net/ogc",
-    ows: "http://www.opengis.net/ows",
-    xmlns: "http://www.w3.org/2000/xmlns/"
+    ows: "http://www.opengis.net/ows"
   },
 
   //TODO: есть ли нормальная реализация для создания нового документа с doctype text/xml?

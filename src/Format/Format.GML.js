@@ -46,13 +46,13 @@ L.Format.GML = L.Format.Base.extend({
   },
 
   processFeature: function (feature) {
-    var geometryField = feature.getElementsByTagName(this.options.geometryField)[0];
-    var layer = this.generateLayer(geometryField.firstChild);
+    var layer = this.generateLayer(feature);
     layer.feature = this.featureType.parse(feature);
     return layer;
   },
 
-  generateLayer: function (geometry) {
-    return this.parseElement(geometry, this.options);
+  generateLayer: function (feature) {
+    var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
+    return this.parseElement(geometryField.firstChild, this.options);
   }
 });

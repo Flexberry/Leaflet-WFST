@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 0.0.1 2015-06-10 */
+/*! Leaflet-WFST 0.0.1 2015-06-15 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -7,12 +7,13 @@ L.XmlUtil = {
   // comes from OL
   namespaces: {
     xlink: "http://www.w3.org/1999/xlink",
+    xmlns: "http://www.w3.org/2000/xmlns/",
+    xsd: "http://www.w3.org/2001/XMLSchema",
     xsi: "http://www.w3.org/2001/XMLSchema-instance",
     wfs: "http://www.opengis.net/wfs",
     gml: "http://www.opengis.net/gml",
     ogc: "http://www.opengis.net/ogc",
-    ows: "http://www.opengis.net/ows",
-    xmlns: "http://www.w3.org/2000/xmlns/"
+    ows: "http://www.opengis.net/ows"
   },
 
   //TODO: есть ли нормальная реализация для создания нового документа с doctype text/xml?
@@ -171,18 +172,28 @@ L.Format.Scheme = L.Class.extend({
   },
 
   parse: function (element) {
-    var featureType = new L.GML.FeatureType(this.geometryField);
-    var complexTypeDefinition = element.getElementsByTagName('complexType')[0];
-    var properties = complexTypeDefinition.getElementsByTagName('sequence')[0];
+    var featureType = new L.GML.FeatureType();
+    var complexTypeDefinition = element.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'complexType')[0];
+    var properties = complexTypeDefinition.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'sequence')[0];
     for (var i = 0; i < properties.childNodes.length; i++) {
       var node = properties.childNodes[i];
       if (node.nodeType !== document.ELEMENT_NODE) {
         continue;
       }
 
+      var propertyAttr = node.attributes.name;
+      if (!propertyAttr) {
+        continue;
+      }
+
+      var propertyName = node.attributes.name.value;
+      if (propertyName === this.geometryField) {
+        continue;
+      }
+
       var typeAttr = node.attributes.type;
       if (!typeAttr) {
-        var restriction = node.getElementsByTagName('restriction');
+        var restriction = node.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'restriction');
         typeAttr = restriction.attributes.base;
       }
 
@@ -191,7 +202,7 @@ L.Format.Scheme = L.Class.extend({
       }
 
       var typeName = typeAttr.value.split(':').pop();
-      var propertyName = node.tagName.split(':').pop();
+
       featureType.appendField(propertyName, typeName);
     }
 
@@ -235,6 +246,7 @@ L.Format.Base = L.Class.extend({
   },
 
   setFeatureDescription: function (featureInfo) {
+    this.namespaceUri = featureInfo.attributes.targetNamespace.value;
     var schemeParser = new L.Format.Scheme(this.options.geometryField);
     this.featureType = schemeParser.parse(featureInfo);
   }
@@ -429,7 +441,7 @@ L.GML.PointSequence = L.GML.Geometry.extend({
     var tagName = firstChild.tagName;
     if (tagName === 'gml:pos' || tagName === 'gml:Point') {
       var childParser = this.parsers[tagName];
-      var elements = element.getElementsByTagName(tagName.split(':')[1]);
+      var elements = element.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, tagName.split(':').pop());
       for (var i = 0; i < elements.length; i++) {
         coords.push(childParser.parse(elements[i]));
       }
@@ -652,8 +664,7 @@ L.GML.FeatureType = L.Class.extend({
     }
   ],
 
-  initialize: function (geometryField) {
-    this.geometryField = geometryField;
+  initialize: function () {
     this.fields = {};
   },
 
@@ -673,9 +684,6 @@ L.GML.FeatureType = L.Class.extend({
       if (node.nodeType !== document.ELEMENT_NODE) continue;
 
       var propertyName = node.tagName.split(':').pop();
-
-      if (propertyName === this.geometryField) continue;
-
       var fieldParser = this.fields[propertyName];
 
       if (!fieldParser) continue;
@@ -733,14 +741,14 @@ L.Format.GML = L.Format.Base.extend({
   },
 
   processFeature: function (feature) {
-    var geometryField = feature.getElementsByTagName(this.options.geometryField)[0];
-    var layer = this.generateLayer(geometryField.firstChild);
+    var layer = this.generateLayer(feature);
     layer.feature = this.featureType.parse(feature);
     return layer;
   },
 
-  generateLayer: function (geometry) {
-    return this.parseElement(geometry, this.options);
+  generateLayer: function (feature) {
+    var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
+    return this.parseElement(geometryField.firstChild, this.options);
   }
 });
 
@@ -832,7 +840,7 @@ L.Polygon.include({
 L.Polyline.include({
   toGml: function (crs) {
     var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
-    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, this.getLatLngs()), true));
+    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, this.getLatLngs()), false));
     return node;
   }
 });
@@ -960,7 +968,6 @@ L.wfs = function (options, readFormat) {
 L.WFS.Transaction = L.WFS.extend({
   initialize: function (options, readFormat) {
     L.WFS.prototype.initialize.call(this, options, readFormat);
-    this.describeFeatureType();
     this.state = L.extend(this.state, {
       insert: 'insert',
       update: 'update',

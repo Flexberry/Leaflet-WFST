@@ -50,6 +50,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Format/Parsers/Layers/MultiSurface.js',
           '<%= srcPath %>/Format/Parsers/Layers/MultiPoint.js',
           '<%= srcPath %>/Format/Parsers/FeatureType.js',
+          '<%= srcPath %>/Format/Parsers/Layer.js',
           '<%= srcPath %>/Format/Format.GML.js',
           '<%= srcPath %>/Util.js',
           '<%= srcPath %>/GmlUtil.js',

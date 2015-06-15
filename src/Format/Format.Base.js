@@ -38,6 +38,7 @@ L.Format.Base = L.Class.extend({
   },
 
   setFeatureDescription: function (featureInfo) {
+    this.namespaceUri = featureInfo.attributes.targetNamespace.value;
     var schemeParser = new L.Format.Scheme(this.options.geometryField);
     this.featureType = schemeParser.parse(featureInfo);
   }

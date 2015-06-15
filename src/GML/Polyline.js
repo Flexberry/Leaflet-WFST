@@ -5,7 +5,7 @@
 L.Polyline.include({
   toGml: function (crs) {
     var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
-    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, this.getLatLngs()), true));
+    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, this.getLatLngs()), false));
     return node;
   }
 });

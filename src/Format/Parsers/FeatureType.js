@@ -31,8 +31,7 @@ L.GML.FeatureType = L.Class.extend({
     }
   ],
 
-  initialize: function (geometryField) {
-    this.geometryField = geometryField;
+  initialize: function () {
     this.fields = {};
   },
 
@@ -52,9 +51,6 @@ L.GML.FeatureType = L.Class.extend({
       if (node.nodeType !== document.ELEMENT_NODE) continue;
 
       var propertyName = node.tagName.split(':').pop();
-
-      if (propertyName === this.geometryField) continue;
-
       var fieldParser = this.fields[propertyName];
 
       if (!fieldParser) continue;

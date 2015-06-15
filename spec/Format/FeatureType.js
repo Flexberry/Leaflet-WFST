@@ -19,11 +19,11 @@ describe("L.GML.FeatureType", function () {
 
   describe('#parse', function () {
     it('should return feature object with properties and id fields', function () {
-      var element = parseXml('<feature gml:id="1"></feature>')
+      var element = parseXml('<feature gml:id="1"></feature>');
       var result = parser.parse(element);
       expect(result).to.have.property('properties');
       expect(result).to.have.property('id');
-    })
-  })
+    });
+  });
 
 });

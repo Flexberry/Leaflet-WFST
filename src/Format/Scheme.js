@@ -8,18 +8,28 @@ L.Format.Scheme = L.Class.extend({
   },
 
   parse: function (element) {
-    var featureType = new L.GML.FeatureType(this.geometryField);
-    var complexTypeDefinition = element.getElementsByTagName('complexType')[0];
-    var properties = complexTypeDefinition.getElementsByTagName('sequence')[0];
+    var featureType = new L.GML.FeatureType();
+    var complexTypeDefinition = element.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'complexType')[0];
+    var properties = complexTypeDefinition.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'sequence')[0];
     for (var i = 0; i < properties.childNodes.length; i++) {
       var node = properties.childNodes[i];
       if (node.nodeType !== document.ELEMENT_NODE) {
         continue;
       }
 
+      var propertyAttr = node.attributes.name;
+      if (!propertyAttr) {
+        continue;
+      }
+
+      var propertyName = node.attributes.name.value;
+      if (propertyName === this.geometryField) {
+        continue;
+      }
+
       var typeAttr = node.attributes.type;
       if (!typeAttr) {
-        var restriction = node.getElementsByTagName('restriction');
+        var restriction = node.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'restriction');
         typeAttr = restriction.attributes.base;
       }
 
@@ -28,7 +38,7 @@ L.Format.Scheme = L.Class.extend({
       }
 
       var typeName = typeAttr.value.split(':').pop();
-      var propertyName = node.tagName.split(':').pop();
+
       featureType.appendField(propertyName, typeName);
     }
 
