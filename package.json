@@ -1,15 +1,12 @@
 {
   "name": "Leaflet-WFST",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "WFST plugin for Leaflet",
   "main": "dist/Leaflet-WFST-src.js",
   "directories": {
     "example": "./examples",
     "source": "./src",
     "tests": "./spec"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -18,11 +15,10 @@
   "keywords": [
     "maps",
     "leaflet",
-    "edit",
     "wfs",
-    "ogc"
+    "wfst"
   ],
-  "author": "OOO IIS",
+  "author": "New Platform Ltd",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Flexberry/Leaflet-WFST/issues"

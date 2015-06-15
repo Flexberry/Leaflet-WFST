@@ -155,7 +155,7 @@ module.exports = function (grunt) {
     'gh-pages': {
       options: {
         add: true,
-        push: true,
+        push: false,
         message: 'Auto update gh-pages'
       },
       examples: {

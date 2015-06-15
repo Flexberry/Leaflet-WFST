@@ -1,22 +1,29 @@
 {
   "name": "Leaflet-WFST",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "homepage": "https://github.com/Flexberry/Leaflet-WFST",
   "description": "WFST plugin for Leaflet",
   "license": "MIT",
-  "private": true,
-  "main": "dist/Leaflet-WFST.src.js",
+  "main": "dist/Leaflet-WFST.min.js",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "examples",
-    "spec"
+    "spec",
+    "src"
+  ],
+  "keywords": [
+    "maps",
+    "leaflet",
+    "wfs",
+    "wfst"
   ],
   "dependencies": {
-    "proj4leaflet": "~0.7.0"
+    "leaflet": "~0.7.3"
   },
   "devDependencies": {
+    "proj4leaflet": "~0.7.0",
     "spin.js": "~2.0.1",
     "leaflet.markercluster": "~0.4.0",
     "leaflet-sidebar": "~0.1.6",
