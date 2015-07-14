@@ -1,4 +1,5 @@
 #Leaflet-WFST 
+[![Build Status](https://travis-ci.org/Flexberry/Leaflet-WFST.svg?branch=master)](https://travis-ci.org/Flexberry/Leaflet-WFST)
 
 OGC WFS-T client layer for leaflet.
 
