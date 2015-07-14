@@ -189,8 +189,11 @@ module.exports = function (grunt) {
   ]);
 
   // Watch tack with continuous tests running.
-  grunt.registerTask('watchAll', ['karma:continuous:start', 'watch']);
+  grunt.registerTask('dev', ['karma:continuous:start', 'watch']);
 
   // Publish task for gh-pages.
   grunt.registerTask('publish', ['clean:libs', 'copy:libs', 'gh-pages:examples']);
+
+  // CI build task
+  grunt.registerTask('build', ['concat', 'uglify', 'jshint:scripts']);
 };
