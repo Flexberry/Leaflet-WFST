@@ -3,7 +3,7 @@
  */
 
 L.GML.MultiGeometry = L.GML.Geometry.extend({
-  includes: L.GML.ParserContainerMixin,
+  includes: [L.GML.ParserContainerMixin, L.GML.CoordsToLatLngMixin],
 
   initialize: function () {
     this.initializeParserContainer();
@@ -23,6 +23,6 @@ L.GML.MultiGeometry = L.GML.Geometry.extend({
       }
     }
 
-    return childObjects;
+    return this.transform(childObjects, options);
   }
 });

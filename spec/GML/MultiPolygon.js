@@ -5,7 +5,7 @@
 describe("L.MultiPolygon.toGml()", function () {
   var multi, multiGml, members;
   beforeEach(function () {
-    multi = new L.MultiPolygon([
+    multi = new L.Polygon([
       [
         [0, 0],
         [1, 0],

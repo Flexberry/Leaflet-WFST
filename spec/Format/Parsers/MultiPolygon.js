@@ -15,6 +15,6 @@ describe("L.GML.MultiPolygon", function () {
 
   it('should know how to parse gml:Polygon', function () {
     var child = parser.parsers['gml:Polygon'];
-    expect(child).to.be.instanceOf(L.GML.Polygon);
+    expect(child).to.be.instanceOf(L.GML.PolygonNode);
   });
 });

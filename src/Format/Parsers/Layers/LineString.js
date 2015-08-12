@@ -2,19 +2,14 @@
  * Created by PRadostev on 05.06.2015.
  */
 
-L.GML.LineString = L.GML.PointSequence.extend({
+L.GML.LineString = L.GML.LineStringNode.extend({
 
   includes: L.GML.CoordsToLatLngMixin,
 
-  initialize: function () {
-    this.elementTag = 'gml:LineString';
-    L.GML.PointSequence.prototype.initialize.call(this);
-  },
-
   parse: function (element, options) {
     var layer = new L.Polyline([]);
-    var coordinates = L.GML.PointSequence.prototype.parse.call(this, element);
-    var latLngs = this.transform(coordinates, options);
-    return layer.setLatLngs(latLngs);
+    var coordinates = L.GML.LineStringNode.prototype.parse.call(this, element);
+    layer.setLatLngs(this.transform(coordinates, options));
+    return layer;
   }
 });

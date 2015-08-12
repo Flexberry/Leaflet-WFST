@@ -6,14 +6,23 @@ describe('L.GML.MultiGeometry', function () {
   var parser;
   var singleParser;
   var multiElement;
+  var transformStub;
+  var singleParserParseStub;
 
   before(function () {
     singleParser = {
       elementTag: 'gml:Single', parse: function () {
       }
     };
+
+    singleParserParseStub = sinon.stub(singleParser, 'parse').returns({});
+
     parser = new L.GML.MultiGeometry();
     parser.appendParser(singleParser);
+    transformStub = sinon.stub(parser, 'transform', function (coordinates) {
+      return coordinates;
+    });
+
     multiElement = parseXml('<multi>' +
     '<gml:singleMember><gml:Single/></gml:singleMember>' +
     '<gml:singleMembers>' +
@@ -24,18 +33,14 @@ describe('L.GML.MultiGeometry', function () {
   });
 
   it('should call singleParser.parse for each single member', function () {
-    var spy = sinon.spy(singleParser, 'parse');
     parser.parse(multiElement);
-    expect(spy).to.have.been.calledThrice;
-    spy.restore();
+    expect(singleParserParseStub).to.have.been.calledThrice;
   });
 
   describe('#parse', function () {
     it('should return array of objects', function () {
-      var stub = sinon.stub(singleParser, 'parse').returns({});
       var result = parser.parse(multiElement);
       expect(result).to.be.instanceOf(Array);
-      stub.restore();
     });
   });
 

@@ -3,13 +3,16 @@
  */
 
 L.GML.AbstractMultiPolyline = L.GML.MultiGeometry.extend({
-  parse: function (element, options) {
-    var childLayers = L.GML.MultiGeometry.prototype.parse.call(this, element, options);
-    var layer = new L.MultiPolyline([]);
-    for (var i = 0; i < childLayers.length; i++) {
-      layer.addLayer(childLayers[i]);
-    }
 
+  initialize: function () {
+    L.GML.MultiGeometry.prototype.initialize.call(this);
+    this.appendParser(new L.GML.LineStringNode());
+  },
+
+  parse: function (element, options) {
+    var latLngs = L.GML.MultiGeometry.prototype.parse.call(this, element, options);
+    var layer = new L.Polyline([]);
+    layer.setLatLngs(latLngs);
     return layer;
   }
 });

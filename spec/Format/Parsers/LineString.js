@@ -3,15 +3,11 @@
  */
 
 describe("L.GML.LineString", function () {
-  var parser;
-  var options;
+  var parser, parentParse, transform, coordinates;
   before(function () {
     parser = new L.GML.LineString();
-    options = {
-      coordsToLatLng: function (coords) {
-        return new L.LatLng(coords[1], coords[0], coords[2]);
-      }
-    };
+    parentParse = sinon.stub(L.GML.LineStringNode.prototype, 'parse').returns([]);
+    transform = sinon.stub(parser, 'transform').returns([]);
   });
 
   it('should parse gml:LineString element', function () {
@@ -20,10 +16,11 @@ describe("L.GML.LineString", function () {
 
   it('should return L.Polyline object', function () {
     var element = parseXml('<gml:LineString></gml:LineString>');
-    var parentParse = sinon.stub(L.GML.PointSequence.prototype, 'parse').returns([[0, 0], [1, 1]]);
-    var transform = sinon.stub(parser, 'transform').returns([[0, 0], [1, 1]]);
     var result = parser.parse(element);
     expect(result).to.be.instanceOf(L.Polyline);
+  });
+
+  after(function () {
     parentParse.restore();
     transform.restore();
   });

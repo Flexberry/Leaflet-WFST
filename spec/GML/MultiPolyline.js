@@ -5,7 +5,7 @@
 describe("L.MultiPolyline.toGml()", function () {
   var multi, multiGml, members;
   beforeEach(function () {
-    multi = new L.MultiPolyline([
+    multi = new L.Polyline([
       [
         [0, 0],
         [1, 0],

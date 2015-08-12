@@ -20,7 +20,7 @@
     "wfst"
   ],
   "dependencies": {
-    "leaflet": "~0.7.3"
+    "leaflet": "v1.0.0-beta.1"
   },
   "devDependencies": {
     "proj4leaflet": "~0.7.0",
@@ -28,7 +28,10 @@
     "leaflet.markercluster": "~0.4.0",
     "leaflet-sidebar": "~0.1.6",
     "Leaflet.label": "~0.2.1",
-    "leaflet.editable": "~0.6.0",
-    "Leaflet.toolbar": "Leaflet/Leaflet.toolbar#~0.1.2"
+    "leaflet.editable": "yohanboniface/Leaflet.Editable#leaflet1.0",
+    "Leaflet.toolbar": "yohanboniface/Leaflet.toolbar#leaflet1.0-compat"
+  },
+  "resolutions": {
+    "leaflet": "v1.0.0-beta.1"
   }
 }

@@ -6,6 +6,5 @@ L.GML.MultiSurface = L.GML.AbstractMultiPolygon.extend({
   initialize: function () {
     L.GML.AbstractMultiPolygon.prototype.initialize.call(this);
     this.elementTag = 'gml:MultiSurface';
-    this.appendParser(new L.GML.Polygon());
   }
 });

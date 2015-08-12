@@ -15,6 +15,6 @@ describe("L.GML.MultiLineString", function () {
 
   it('should know how parse gml:LineStrings', function () {
     var child = parser.parsers['gml:LineString'];
-    expect(child).to.be.instanceOf(L.GML.LineString);
+    expect(child).to.be.instanceOf(L.GML.LineStringNode);
   });
 });

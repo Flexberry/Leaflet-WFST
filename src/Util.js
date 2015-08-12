@@ -6,7 +6,7 @@ L.Util.project = function (crs, latlngs) {
   if (L.Util.isArray(latlngs)) {
     var result = [];
     latlngs.forEach(function (latlng) {
-      result.push(crs.projection.project(latlng));
+      result.push(L.Util.project(crs, latlng));
     });
 
     return result;
