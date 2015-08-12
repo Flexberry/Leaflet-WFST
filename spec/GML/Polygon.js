@@ -7,20 +7,20 @@ describe("L.Polygon.toGml()", function () {
   beforeEach(function () {
     polygon = new L.Polygon(
       [
-      [
         [
-          [-10, -10],
-          [-10, 10],
-          [10, 10],
-          [10, -10]
-        ],
-        [
-          [-1, -1],
-          [-1, 1],
-          [1, 1],
-          [1, -1]
+          [
+            [-10, -10],
+            [-10, 10],
+            [10, 10],
+            [10, -10]
+          ],
+          [
+            [-1, -1],
+            [-1, 1],
+            [1, 1],
+            [1, -1]
+          ]
         ]
-      ]
       ]);
     polygonGml = polygon.toGml(L.CRS.Simple);
   });

@@ -3,9 +3,23 @@
  */
 
 L.Polyline.include({
-  toGml: function (crs) {
+  _lineStringNode: function (crs, latlngs) {
     var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
-    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, this.getLatLngs()), false));
+    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, latlngs), false));
     return node;
+  },
+
+  toGml: function (crs) {
+    var latLngs = this.getLatLngs();
+    if (L.Polyline._flat(latLngs)) return this._lineStringNode(crs, latLngs);
+
+    //we have multiline
+    var multi = L.XmlUtil.createElementNS('gml:MultiLineString', {srsName: crs.code, srsDimension: 2});
+    var collection = multi.appendChild(L.XmlUtil.createElementNS('gml:lineStringMembers'));
+    for (var i = 0; i < latLngs.length; i++) {
+      collection.appendChild(this._lineStringNode(crs, latLngs[i]));
+    }
+
+    return multi;
   }
 });
