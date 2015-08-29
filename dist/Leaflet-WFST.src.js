@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2015-06-15 */
+/*! Leaflet-WFST 1.0.0 2015-08-29 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -1060,6 +1060,9 @@ L.WFST = L.WFS.extend({
         });
 
         that.loadFeatures(filter);
+      },
+      error: function(data){
+        that.fire('save:failed', data);
       }
     });
 
@@ -1069,7 +1072,7 @@ L.WFST = L.WFS.extend({
 
 L.wfst = function (options, readFormat) {
   return new L.WFST(options, readFormat);
-}
+};
 
 L.WFST.include({
   gmlFeature: function (layer) {
