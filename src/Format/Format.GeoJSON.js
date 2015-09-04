@@ -23,6 +23,7 @@ L.Format.GeoJSON = L.Format.Base.extend({
 
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
+	this.layerEvents(layer);
     layer.feature = feature;
     return layer;
   },

@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2015-08-29 */
+/*! Leaflet-WFST 1.0.0 2015-09-04 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -249,6 +249,22 @@ L.Format.Base = L.Class.extend({
     this.namespaceUri = featureInfo.attributes.targetNamespace.value;
     var schemeParser = new L.Format.Scheme(this.options.geometryField);
     this.featureType = schemeParser.parse(featureInfo);
+  },
+    
+  layerEvents: function (layer) {
+	var _propagateEvent = function (e) {
+		e = L.extend({
+		layer: layer,
+		target: e.target
+		}, e);
+		layer.fire(e.type, e);
+	};
+	if (layer instanceof L.MultiPolygon || layer instanceof L.MultiPolyline) {
+		layer.eachLayer(function (layer) {
+			layer.off(L.FeatureGroup.EVENTS);
+			layer.on(L.FeatureGroup.EVENTS, _propagateEvent, this);
+		});  
+	}
   }
 });
 
@@ -272,6 +288,7 @@ L.Format.GeoJSON = L.Format.Base.extend({
 
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
+	this.layerEvents(layer);
     layer.feature = feature;
     return layer;
   },
@@ -742,6 +759,7 @@ L.Format.GML = L.Format.Base.extend({
 
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
+	this.layerEvents(layer);
     layer.feature = this.featureType.parse(feature);
     return layer;
   },
