@@ -28,6 +28,14 @@ describe('WFS', function () {
       expect(query.tagName).to.be.equal('wfs:Query');
       expect(query.attributes.typeName.value).to.be.equal('typeNS:typeName');
     });
+
+    it('should return value of maxFeatures', function () {
+      wfs = new L.WFS({
+        maxFeatures: 5000
+      });
+      var feature = wfs.getFeature();
+      expect(feature.attributes.maxFeatures.nodeValue).to.be.equal('5000');
+    });
   });
 
 });
