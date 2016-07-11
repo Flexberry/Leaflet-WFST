@@ -53,6 +53,11 @@ L.Format.GML = L.Format.Base.extend({
 
   generateLayer: function (feature) {
     var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
-    return this.parseElement(geometryField.firstChild, this.options);
+    if (geometryField) {
+         return this.parseElement(geometryField.firstChild, this.options);
+		 }
+	else {
+		return {};
+	}
   }
 });

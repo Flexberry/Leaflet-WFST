@@ -49,5 +49,25 @@ describe("L.Format.GML", function () {
       var parser = format.parsers[meta.tag];
       expect(parser).to.be.instanceOf(meta.parser);
     });
+
   });
+
+      describe("#generateLayers", function () {
+        it('should return null', function () {
+	      var feature = L.XmlUtil.createElementNS(
+		      'newElement', {
+			     service: 'WFS',
+			     version: '1.1.0'}, 
+			  {});
+		  var stub = sinon.stub(feature, 'getElementsByTagNameNS', function () {
+		  return [];
+		  });
+          var layers = format.generateLayer(feature );
+          expect(layers).to.deep.equal({});
+          stub.restore();
+        });
+      });
+
 });
+
+
