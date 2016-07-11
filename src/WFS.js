@@ -12,6 +12,7 @@ L.WFS = L.FeatureGroup.extend({
     typeNS: '',
     typeName: '',
     typeNSName: '',
+    maxFeatures: undefined,
     style: {
       color: 'black',
       weight: 1
@@ -76,6 +77,7 @@ L.WFS = L.FeatureGroup.extend({
       {
         service: 'WFS',
         version: this.options.version,
+        maxFeatures: this.options.maxFeatures,
         outputFormat: this.readFormat.outputFormat
       });
 
