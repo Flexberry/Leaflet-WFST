@@ -56,6 +56,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Util.js',
           '<%= srcPath %>/GmlUtil.js',
           '<%= srcPath %>/GML/*.js',
+          '<%= srcPath %>/Properties.js',
           '<%= srcPath %>/WFS.js',
           '<%= srcPath %>/WFST.js',
           '<%= srcPath %>/WFST.Helpers.js',

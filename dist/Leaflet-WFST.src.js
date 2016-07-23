@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-07-22 */
+/*! Leaflet-WFST 1.0.0 2016-07-23 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -868,6 +868,33 @@ L.Polyline.include({
     }
 
     return multi;
+  }
+});
+
+L.Marker.include({
+  setProperties: function(obj) {
+    for (var i in obj) {
+      this.feature.properties[i] = obj[i];
+    }
+  },
+  getPropertiesId: function() {
+    return this.feature.id;
+  },
+  getProperties: function(field) {
+    return this.feature.properties[field];
+  }
+});
+L.Path.include({
+  setProperties: function(obj) {
+    for (var i in obj) {
+      this.feature.properties[i] = obj[i];
+    }
+  },
+  getPropertiesId: function() {
+    return this.feature.id;
+  },
+  getProperties: function(field) {
+    return this.feature.properties[field];
   }
 });
 
