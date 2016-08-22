@@ -191,18 +191,18 @@
     sidebar._marker = marker;
 
     if (sidebar._marker.feature) {
-      document.getElementById('idTextbox').value = sidebar._marker.getPropertiesId() || '';
+      document.getElementById('idTextbox').value = sidebar._marker.feature.id || '';
 
       if (sidebar._marker.feature.properties) {
-        document.getElementById('osmidTextbox').value = sidebar._marker.getProperties('osm_id') || '';
-        document.getElementById('manmadeTextbox').value = sidebar._marker.getProperties('man_made') || '';
-        document.getElementById('nameTextbox').value = sidebar._marker.getProperties('name') || '';
-        document.getElementById('amenityTextbox').value = sidebar._marker.getProperties('amenity') || '';
-        document.getElementById('leisureTextbox').value = sidebar._marker.getProperties('leisure') || '';
-        document.getElementById('officeTextbox').value = sidebar._marker.getProperties('office') || '';
-        document.getElementById('shopTextbox').value = sidebar._marker.getProperties('shop') || '';
-        document.getElementById('sportTextbox').value = sidebar._marker.getProperties('sport') || '';
-        document.getElementById('tourismTextbox').value = sidebar._marker.getProperties('tourism') || '';
+        document.getElementById('osmidTextbox').value = sidebar._marker.getProperty('osm_id') || '';
+        document.getElementById('manmadeTextbox').value = sidebar._marker.getProperty('man_made') || '';
+        document.getElementById('nameTextbox').value = sidebar._marker.getProperty('name') || '';
+        document.getElementById('amenityTextbox').value = sidebar._marker.getProperty('amenity') || '';
+        document.getElementById('leisureTextbox').value = sidebar._marker.getProperty('leisure') || '';
+        document.getElementById('officeTextbox').value = sidebar._marker.getProperty('office') || '';
+        document.getElementById('shopTextbox').value = sidebar._marker.getProperty('shop') || '';
+        document.getElementById('sportTextbox').value = sidebar._marker.getProperty('sport') || '';
+        document.getElementById('tourismTextbox').value = sidebar._marker.getProperty('tourism') || '';
       }
 
       sidebar._onApplyBtnClick = function () {
