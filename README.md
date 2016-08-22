@@ -1,4 +1,4 @@
-#Leaflet-WFST 
+#Leaflet-WFST
 [![Build Status](https://travis-ci.org/Flexberry/Leaflet-WFST.svg?branch=master)](https://travis-ci.org/Flexberry/Leaflet-WFST)
 
 OGC WFS-T client layer for leaflet.
@@ -17,7 +17,7 @@ OGC WFS-T client layer for leaflet.
             weight: 1
         }
     }
-    
+
 ```
 
 |option name|default|comment|
@@ -29,6 +29,7 @@ OGC WFS-T client layer for leaflet.
 |typeNS|-|type namespace|
 |typeName|-|type name|
 |style|-|leaflet vector style|
+|maxFeatures|-|limit the amount of features returned|
 
 #Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
 ```javascript
@@ -92,7 +93,7 @@ var wfst = new L.WFST({
             map.fitBounds(wfst);
             wfst.enableEdit();
         });
-        
+
 map.on('editable:created', function (e) {
     wfst.addLayer(e.layer);
 });
@@ -120,5 +121,3 @@ demo for GeoJSON read format
 
 #License
 MIT
-
-
