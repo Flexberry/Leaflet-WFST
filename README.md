@@ -136,8 +136,8 @@ layer.setProperties({
   c:'c'
 });
 
-//delete properties
-layer.deleteProperty(['a','b','c']);
+//clear properties
+layer.clearProperties(['a','b','c']);
 ```
 
 #Demo

@@ -882,11 +882,9 @@ var PropertiesMixin = {
   getProperty: function (field) {
     return this.feature.properties[field];
   },
-  deleteProperty: function (arr) {
+  clearProperties: function (arr) {
     for (var i = 0; i < arr.length; i++) {
-      if (this.feature.properties.hasOwnProperty(arr[i])) {
-        delete this.feature.properties[arr[i]];
-      }
+      this.feature.properties[arr[i]]=null;
     }
   }
 };

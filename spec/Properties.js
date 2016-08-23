@@ -47,24 +47,24 @@ describe('Properties', function () {
       expect(c).to.be.equal('c');
     });
 
-    it('deleteProperty() with one value', function () {
-      layer.deleteProperty(['a']);
+    it('clearProperties() with one value', function () {
+      layer.clearProperties(['a']);
       var a = layer.getProperty('a');
-      expect(a).to.be.undefined;
+      expect(a).to.be.null;
     });
 
-    it('deleteProperty() with multiple values', function () {
-      layer.deleteProperty(['a','b']);
+    it('clearProperties() with multiple values', function () {
+      layer.clearProperties(['a','b']);
       var a = layer.getProperty('a');
       var b = layer.getProperty('b');
-      expect(a).to.be.undefined;
-      expect(b).to.be.undefined;
+      expect(a).to.be.null;
+      expect(b).to.be.null;
     });
 
-    it('deleteProperty() with nonexistent value', function () {
-      layer.deleteProperty(['c']);
+    it('clearProperties() with nonexistent value', function () {
+      layer.clearProperties(['c']);
       var c = layer.getProperty('c');
-      expect(c).to.be.undefined;
+      expect(c).to.be.null;
     });
   });
 
