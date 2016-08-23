@@ -37,41 +37,14 @@ describe('Properties', function () {
       expect(b).to.be.equal('a');
     });
 
-    it('setProperties() should not add new property', function () {
+    it('setProperties() should be add new property', function () {
       var c = layer.getProperty('c');
       expect(c).to.be.undefined;
       layer.setProperties({
         c:'c'
       });
       c = layer.getProperty('c');
-      expect(c).to.be.undefined;
-    });
-
-    it('addProperties() with one value', function () {
-      layer.addProperties({
-        c:'c'
-      });
-      var c = layer.getProperty('c');
       expect(c).to.be.equal('c');
-    });
-
-    it('addProperties() with multiple values', function () {
-      layer.addProperties({
-        c:'c',
-        d:'d'
-      });
-      var c = layer.getProperty('c');
-      var d = layer.getProperty('d');
-      expect(c).to.be.equal('c');
-      expect(d).to.be.equal('d');
-    });
-
-    it('addProperties() should not change existent property', function () {
-      layer.addProperties({
-        a:'c'
-      });
-      var a = layer.getProperty('a');
-      expect(a).to.not.equal('c');
     });
 
     it('deleteProperty() with one value', function () {

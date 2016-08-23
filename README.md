@@ -132,7 +132,7 @@ layer.setProperties({
 });
 
 //add new property
-layer.addProperties({
+layer.setProperties({
   c:'c'
 });
 
