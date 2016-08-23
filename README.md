@@ -110,6 +110,36 @@ to make "wfs:Transaction" POST request call save() method, example with [Leaflet
  }, 'Save changes');
 ```
 
+#Layer properties
+```javascript
+//simple layer
+layer = new L.Marker([0, 0]);
+layer.feature = {
+  id: 1,
+  properties: {
+    a: 'a',
+    b: 'b'
+  }
+};
+
+//get value by key 'a'
+var a = layer.getProperty('a');
+
+//change values
+layer.setProperties({
+  a: 'b',
+  b:'a'
+});
+
+//add new property
+layer.addProperties({
+  c:'c'
+});
+
+//delete properties
+layer.deleteProperty(['a','b','c']);
+```
+
 #Demo
 demos for GML read format
 * [Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html)
