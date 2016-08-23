@@ -73,42 +73,6 @@ describe('WFST', function() {
     });
   });
 
-  describe('#properties', function() {
-    it('get property', function() {
-      var a = layer.getProperty('a');
-      expect(a).to.be.equal('a');
-    });
-
-    it('set property', function() {
-      layer.setProperties({
-        a: 'b'
-      });
-      var a = layer.getProperty('a');
-      expect(a).to.be.equal('b');
-    });
-
-    it('set properties', function() {
-      layer.setProperties({
-        a: 'b',
-        b:'a'
-      });
-      var a = layer.getProperty('a');
-      var b = layer.getProperty('b');
-      expect(a).to.be.equal('b');
-      expect(b).to.be.equal('a');
-    });
-
-    it('new property', function() {
-      var c = layer.getProperty('c');
-      expect(c).to.be.undefined;
-      layer.setProperties({
-        c:'c'
-      });
-      c = layer.getProperty('c');
-      expect(c).to.be.equal('c');
-    });
-  });
-
   after(function() {
     xhr.restore();
   });
