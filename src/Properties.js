@@ -9,9 +9,11 @@ var PropertiesMixin = {
   getProperty: function (field) {
     return this.feature.properties[field];
   },
-  clearProperties: function (arr) {
+  deleteProperties: function (arr) {
     for (var i = 0; i < arr.length; i++) {
-      this.feature.properties[arr[i]]=null;
+      if (this.feature.properties.hasOwnProperty(arr[i])) {
+        delete this.feature.properties[arr[i]];
+      }
     }
   }
 };

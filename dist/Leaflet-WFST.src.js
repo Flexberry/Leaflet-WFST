@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-08-23 */
+/*! Leaflet-WFST 1.0.0 2016-08-24 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -882,9 +882,11 @@ var PropertiesMixin = {
   getProperty: function (field) {
     return this.feature.properties[field];
   },
-  clearProperties: function (arr) {
+  deleteProperties: function (arr) {
     for (var i = 0; i < arr.length; i++) {
-      this.feature.properties[arr[i]]=null;
+      if (this.feature.properties.hasOwnProperty(arr[i])) {
+        delete this.feature.properties[arr[i]];
+      }
     }
   }
 };
