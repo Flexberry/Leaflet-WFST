@@ -18,15 +18,15 @@ describe('WFS', function () {
       var feature = wfs.getFeature();
       expect(feature).to.be.instanceOf(Element);
       expect(feature.tagName).to.be.equal('wfs:GetFeature');
-      expect(feature.attributes.service).to.be.not.undefined;
-      expect(feature.attributes.version).to.be.not.undefined;
+      expect(feature.getAttribute('service')).to.be.not.undefined;
+      expect(feature.getAttribute('version')).to.be.not.undefined;
     });
 
     it('should have child Element with tagName wfs:Query and attribute "typeName"', function () {
       var feature = wfs.getFeature();
       var query = feature.firstChild;
       expect(query.tagName).to.be.equal('wfs:Query');
-      expect(query.attributes.typeName.value).to.be.equal('typeNS:typeName');
+      expect(query.getAttribute('typeName')).to.be.equal('typeNS:typeName');
     });
 
     it('should return value of maxFeatures', function () {
@@ -34,7 +34,7 @@ describe('WFS', function () {
         maxFeatures: 5000
       });
       var feature = wfs.getFeature();
-      expect(feature.attributes.maxFeatures.nodeValue).to.be.equal('5000');
+      expect(feature.getAttribute('maxFeatures')).to.be.equal('5000');
     });
   });
 

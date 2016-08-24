@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2015-08-12 */
+/*! Leaflet-WFST 1.0.0 2016-08-24 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -850,7 +850,7 @@ L.Polygon.include({
 });
 
 L.Polyline.include({
-  _lineStringNode: function(crs, latlngs){
+  _lineStringNode: function (crs, latlngs) {
     var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
     node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, latlngs), false));
     return node;
@@ -858,18 +858,40 @@ L.Polyline.include({
 
   toGml: function (crs) {
     var latLngs = this.getLatLngs();
-    if(L.Polyline._flat(latLngs)) return this._lineStringNode(crs, latLngs);
+    if (L.Polyline._flat(latLngs)) return this._lineStringNode(crs, latLngs);
 
     //we have multiline
     var multi = L.XmlUtil.createElementNS('gml:MultiLineString', {srsName: crs.code, srsDimension: 2});
     var collection = multi.appendChild(L.XmlUtil.createElementNS('gml:lineStringMembers'));
-    for(var i=0;i<latLngs.length;i++){
+    for (var i = 0; i < latLngs.length; i++) {
       collection.appendChild(this._lineStringNode(crs, latLngs[i]));
     }
 
     return multi;
   }
 });
+
+var PropertiesMixin = {
+  setProperties: function (obj) {
+    for (var i in obj) {
+      if (obj.hasOwnProperty(i)) {
+        this.feature.properties[i] = obj[i];
+      }
+    }
+  },
+  getProperty: function (field) {
+    return this.feature.properties[field];
+  },
+  deleteProperties: function (arr) {
+    for (var i = 0; i < arr.length; i++) {
+      if (this.feature.properties.hasOwnProperty(arr[i])) {
+        delete this.feature.properties[arr[i]];
+      }
+    }
+  }
+};
+L.Marker.include(PropertiesMixin);
+L.Path.include(PropertiesMixin);
 
 L.WFS = L.FeatureGroup.extend({
 
@@ -882,6 +904,7 @@ L.WFS = L.FeatureGroup.extend({
     typeNS: '',
     typeName: '',
     typeNSName: '',
+    maxFeatures: null,
     style: {
       color: 'black',
       weight: 1
@@ -946,6 +969,7 @@ L.WFS = L.FeatureGroup.extend({
       {
         service: 'WFS',
         version: this.options.version,
+        maxFeatures: this.options.maxFeatures,
         outputFormat: this.readFormat.outputFormat
       });
 
