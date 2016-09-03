@@ -13,6 +13,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
+    bbox: false,
     style: {
       color: 'black',
       weight: 1
@@ -39,8 +40,15 @@ L.WFS = L.FeatureGroup.extend({
 
     var that = this;
     this.describeFeatureType(function () {
-      if (that.options.showExisting) {
-        that.loadFeatures();
+      if (that.options.bbox instanceof L.LatLngBounds) {
+        if (that.options.showExisting) {
+          var bbox = new L.Filter.BBox();
+          that.loadFeatures(bbox.append(that.options.bbox, that.options.geometryField));
+        }
+      } else {
+        if (that.options.showExisting) {
+          that.loadFeatures();
+        }
       }
     });
   },

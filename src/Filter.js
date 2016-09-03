@@ -23,3 +23,26 @@ L.Filter = L.Class.extend({
     return this;
   }
 });
+
+L.Filter.GmlObjectID = L.Filter.extend({
+  append: function (id) {
+    this.filter.appendChild(L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': id}));
+    return this;
+  }
+});
+
+L.Filter.BBox = L.Filter.extend({
+  append: function(bbox, geometryField) {
+    var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
+    filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
+
+    var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: "http://www.opengis.net/gml/srs/epsg.xml#4326"});
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: bbox.getSouthWest().lng + ' ' + bbox.getSouthWest().lat}));
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: bbox.getNorthEast().lng + ' ' + bbox.getNorthEast().lat}));
+
+    filterBBox.appendChild(envelope);
+
+    this.filter.appendChild(filterBBox);
+    return this;
+  }
+});

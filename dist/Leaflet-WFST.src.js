@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-08-24 */
+/*! Leaflet-WFST 1.0.0 2016-09-03 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -160,6 +160,22 @@ L.Filter = L.Class.extend({
 L.Filter.GmlObjectID = L.Filter.extend({
   append: function (id) {
     this.filter.appendChild(L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': id}));
+    return this;
+  }
+});
+
+L.Filter.BBox = L.Filter.extend({
+  append: function(bbox, geometryField) {
+    var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
+    filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
+
+    var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: "http://www.opengis.net/gml/srs/epsg.xml#4326"});
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: bbox.getSouthWest().lng + ' ' + bbox.getSouthWest().lat}));
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: bbox.getNorthEast().lng + ' ' + bbox.getNorthEast().lat}));
+
+    filterBBox.appendChild(envelope);
+
+    this.filter.appendChild(filterBBox);
     return this;
   }
 });
@@ -905,6 +921,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
+    bbox: false,
     style: {
       color: 'black',
       weight: 1
@@ -931,8 +948,15 @@ L.WFS = L.FeatureGroup.extend({
 
     var that = this;
     this.describeFeatureType(function () {
-      if (that.options.showExisting) {
-        that.loadFeatures();
+      if (that.options.bbox instanceof L.LatLngBounds) {
+        if (that.options.showExisting) {
+          var bbox = new L.Filter.BBox();
+          that.loadFeatures(bbox.append(that.options.bbox, that.options.geometryField));
+        }
+      } else {
+        if (that.options.showExisting) {
+          that.loadFeatures();
+        }
       }
     });
   },
