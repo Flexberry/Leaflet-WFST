@@ -42,8 +42,8 @@ L.WFS = L.FeatureGroup.extend({
     this.describeFeatureType(function () {
       if (that.options.bbox instanceof L.LatLngBounds) {
         if (that.options.showExisting) {
-          var bbox = new L.Filter.BBox();
-          that.loadFeatures(bbox.append(that.options.bbox, that.options.geometryField));
+          var filterBBox = new L.Filter.BBox();
+          that.loadFeatures(filterBBox.append(that.options.bbox, that.options.geometryField));
         }
       } else {
         if (that.options.showExisting) {
@@ -78,6 +78,11 @@ L.WFS = L.FeatureGroup.extend({
         }
       }
     });
+  },
+
+  setFilterBBox: function (bbox) {
+    var filterBBox = new L.Filter.BBox();
+    this.loadFeatures(filterBBox.append(bbox, this.options.geometryField));
   },
 
   getFeature: function (filter) {
