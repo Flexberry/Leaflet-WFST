@@ -29,6 +29,7 @@ OGC WFS-T client layer for leaflet.
 |typeNS|-|type namespace|
 |typeName|-|type name|
 |style|-|leaflet vector style|
+|bbox|-|filter boundaries. If pass the ```L.LatLngBounds``` that to return features. Default loaded all features|
 |maxFeatures|-|limit the amount of features returned|
 
 #Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
@@ -148,6 +149,9 @@ demos for GML read format
 
 demo for GeoJSON read format
 * [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygonGeoJSON.html)
+
+demo filter bbox
+* [BBox](http://flexberry.github.io/Leaflet-WFST/examples/filterBBox.html)
 
 #License
 MIT
