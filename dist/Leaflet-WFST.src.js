@@ -921,7 +921,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
-    bbox: false,
+    bbox: '',
     style: {
       color: 'black',
       weight: 1
