@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-09-03 */
+/*! Leaflet-WFST 1.0.0 2016-09-04 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -154,7 +154,7 @@ L.Filter = L.Class.extend({
 
   append: function () {
     return this;
-  }
+  },
 });
 
 L.Filter.GmlObjectID = L.Filter.extend({
@@ -165,11 +165,11 @@ L.Filter.GmlObjectID = L.Filter.extend({
 });
 
 L.Filter.BBox = L.Filter.extend({
-  append: function(bbox, geometryField) {
+  append: function(bbox, geometryField, crs) {
     var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
     filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
 
-    var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: "http://www.opengis.net/gml/srs/epsg.xml#4326"});
+    var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: crs.code});
     envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: bbox.getSouthWest().lng + ' ' + bbox.getSouthWest().lat}));
     envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: bbox.getNorthEast().lng + ' ' + bbox.getNorthEast().lat}));
 
