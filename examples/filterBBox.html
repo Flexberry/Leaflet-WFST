@@ -10,7 +10,7 @@
       width: 100%;
     }
   </style>
-  <title>Leaflet-WFST polygon demo</title>
+  <title>Leaflet-WFST bbox filter demo</title>
 </head>
 <body>
 <div id="map"></div>
@@ -28,22 +28,25 @@
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  var wfst = new L.WFST({
+  var objWfst = {
     url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'osm_perm_region',
     typeName: 'perm_water_polygon',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
-    bbox: map.getBounds(),
+    filter: new L.Filter.BBox().append(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326),
     style: {
       color: 'blue',
       weight: 2
     }
-  }).addTo(map);
+  };
+
+  var wfst = new L.WFST(objWfst).addTo(map);
 
   map.on('moveend',function(){
     wfst.clearLayers();
-    wfst.setFilterBBox(map.getBounds());
+    objWfst.filter = new L.Filter.BBox().append(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326);
+    wfst = new L.WFST(objWfst).addTo(map);
   })
 
 </script>

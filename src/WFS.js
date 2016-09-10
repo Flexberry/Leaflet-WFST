@@ -13,7 +13,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
-    bbox: '',
+    filter: '',
     style: {
       color: 'black',
       weight: 1
@@ -40,17 +40,10 @@ L.WFS = L.FeatureGroup.extend({
 
     var that = this;
     this.describeFeatureType(function () {
-      if (that.options.bbox instanceof L.LatLngBounds) {
         if (that.options.showExisting) {
-          var filterBBox = new L.Filter.BBox();
-          that.loadFeatures(filterBBox.append(that.options.bbox, that.options.geometryField));
+          that.loadFeatures(that.options.filter);
         }
-      } else {
-        if (that.options.showExisting) {
-          that.loadFeatures();
-        }
-      }
-    });
+      });
   },
 
   namespaceName: function (name) {
@@ -78,11 +71,6 @@ L.WFS = L.FeatureGroup.extend({
         }
       }
     });
-  },
-
-  setFilterBBox: function (bbox) {
-    var filterBBox = new L.Filter.BBox();
-    this.loadFeatures(filterBBox.append(bbox, this.options.geometryField));
   },
 
   getFeature: function (filter) {
