@@ -40,10 +40,10 @@ L.WFS = L.FeatureGroup.extend({
 
     var that = this;
     this.describeFeatureType(function () {
-        if (that.options.showExisting) {
-          that.loadFeatures(that.options.filter);
-        }
-      });
+      if (that.options.showExisting) {
+        that.loadFeatures(that.options.filter);
+      }
+    });
   },
 
   namespaceName: function (name) {

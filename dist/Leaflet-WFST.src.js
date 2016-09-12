@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-09-10 */
+/*! Leaflet-WFST 1.0.0 2016-09-12 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -948,10 +948,10 @@ L.WFS = L.FeatureGroup.extend({
 
     var that = this;
     this.describeFeatureType(function () {
-        if (that.options.showExisting) {
-          that.loadFeatures(that.options.filter);
-        }
-      });
+      if (that.options.showExisting) {
+        that.loadFeatures(that.options.filter);
+      }
+    });
   },
 
   namespaceName: function (name) {
