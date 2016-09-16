@@ -13,7 +13,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
-    filter: '',
+    filter: null,
     style: {
       color: 'black',
       weight: 1

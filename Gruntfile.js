@@ -114,7 +114,7 @@ module.exports = function (grunt) {
 
             'leaflet.editable/src/Leaflet.Editable.js',
 
-            'proj4leaflet/lib/proj4-compressed.js',
+            'proj4/dist/proj4.js',
             'proj4leaflet/src/proj4leaflet.js'
           ],
           dest: '<%= libsPath %>'

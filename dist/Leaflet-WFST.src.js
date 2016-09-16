@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-09-12 */
+/*! Leaflet-WFST 1.0.0 2016-09-16 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -154,7 +154,7 @@ L.Filter = L.Class.extend({
 
   append: function () {
     return this;
-  },
+  }
 });
 
 L.Filter.GmlObjectID = L.Filter.extend({
@@ -166,17 +166,20 @@ L.Filter.GmlObjectID = L.Filter.extend({
 
 L.Filter.BBox = L.Filter.extend({
   append: function(bbox, geometryField, crs) {
-    var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
-    filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
+    var projectedSW = crs.project(bbox.getSouthWest());
+    var projectedNE = crs.project(bbox.getNorthEast());
 
     var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: crs.code});
-    envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: bbox.getSouthWest().lng + ' ' + bbox.getSouthWest().lat}));
-    envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: bbox.getNorthEast().lng + ' ' + bbox.getNorthEast().lat}));
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: projectedSW.x + ' ' + projectedSW.y}));
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: projectedNE.x + ' ' + projectedNE.y}));
 
+    var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
+    filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
     filterBBox.appendChild(envelope);
 
     this.filter.appendChild(filterBBox);
-    return this;
+
+    return this; 
   }
 });
 
@@ -921,7 +924,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
-    filter: '',
+    filter: null,
     style: {
       color: 'black',
       weight: 1

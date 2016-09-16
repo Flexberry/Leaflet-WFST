@@ -72,7 +72,13 @@ Example:
   var wfst = new L.WFST({
     filter: new L.Filter.GmlObjectID().append(5)
   });
+
+  // It above code 'filter' will be like following:
+  // <ogc:Filter>
+  //   <ogc:GmlObjectId gml:id=1/>
+  // </ogc:Filter>
 ```
+
 ##BBox filter
 
 Example:
@@ -80,7 +86,7 @@ Example:
   var wfst = new L.WFST({
     filter: new L.Filter.BBox().append(L.latLngBounds(L.latLng(40.712, -74.227), L.latLng(40.774, -74.125)), 'ogr_geometry', L.CRS.EPSG4326)
   });
-```
+``
 
 
 #WFST Example

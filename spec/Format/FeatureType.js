@@ -13,7 +13,7 @@ describe("L.GML.FeatureType", function () {
   describe('#appendField', function () {
     it('should have bar field object parser', function () {
       parser.appendField('bar', 'int');
-      expect(parser.fields['bar']).to.not.be.undefined;
+      expect(parser.fields.bar).to.not.be.undefined;
     });
   });
 

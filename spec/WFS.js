@@ -3,13 +3,21 @@
  */
 
 describe('WFS', function () {
-  var wfs;
+  var wfs, xhr;
+
+  before(function () {
+    xhr = sinon.useFakeXMLHttpRequest();
+  });
+
+  after(function () {
+    xhr.restore();
+  });
 
   beforeEach(function () {
     wfs = new L.WFS({
       typeNS: 'typeNS',
       typeName: 'typeName',
-      namespaceUri: 'testuri'
+      namespaceUri: 'testuri',
     });
   });
 
@@ -31,7 +39,7 @@ describe('WFS', function () {
 
     it('should return value of maxFeatures', function () {
       wfs = new L.WFS({
-        maxFeatures: 5000
+        maxFeatures: 5000,
       });
       var feature = wfs.getFeature();
       expect(feature.getAttribute('maxFeatures')).to.be.equal('5000');
