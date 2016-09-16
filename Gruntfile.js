@@ -23,6 +23,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Request.js',
           '<%= srcPath %>/Filter.js',
           '<%= srcPath %>/Filter.GmlObjectID.js',
+          '<%= srcPath %>/Filter.BBox.js',
           '<%= srcPath %>/Format/Format.js',
           '<%= srcPath %>/Format/Scheme.js',
           '<%= srcPath %>/Format/Format.Base.js',

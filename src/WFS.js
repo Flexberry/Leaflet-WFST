@@ -13,6 +13,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
+    filter: '',
     style: {
       color: 'black',
       weight: 1
@@ -40,7 +41,7 @@ L.WFS = L.FeatureGroup.extend({
     var that = this;
     this.describeFeatureType(function () {
       if (that.options.showExisting) {
-        that.loadFeatures();
+        that.loadFeatures(that.options.filter);
       }
     });
   },

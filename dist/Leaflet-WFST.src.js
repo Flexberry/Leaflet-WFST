@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-08-24 */
+/*! Leaflet-WFST 1.0.0 2016-09-12 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -154,12 +154,28 @@ L.Filter = L.Class.extend({
 
   append: function () {
     return this;
-  }
+  },
 });
 
 L.Filter.GmlObjectID = L.Filter.extend({
   append: function (id) {
     this.filter.appendChild(L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': id}));
+    return this;
+  }
+});
+
+L.Filter.BBox = L.Filter.extend({
+  append: function(bbox, geometryField, crs) {
+    var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
+    filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
+
+    var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: crs.code});
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: bbox.getSouthWest().lng + ' ' + bbox.getSouthWest().lat}));
+    envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: bbox.getNorthEast().lng + ' ' + bbox.getNorthEast().lat}));
+
+    filterBBox.appendChild(envelope);
+
+    this.filter.appendChild(filterBBox);
     return this;
   }
 });
@@ -905,6 +921,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
+    filter: '',
     style: {
       color: 'black',
       weight: 1
@@ -932,7 +949,7 @@ L.WFS = L.FeatureGroup.extend({
     var that = this;
     this.describeFeatureType(function () {
       if (that.options.showExisting) {
-        that.loadFeatures();
+        that.loadFeatures(that.options.filter);
       }
     });
   },

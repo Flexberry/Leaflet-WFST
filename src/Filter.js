@@ -21,5 +21,5 @@ L.Filter = L.Class.extend({
 
   append: function () {
     return this;
-  }
+  },
 });

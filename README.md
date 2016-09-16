@@ -29,6 +29,7 @@ OGC WFS-T client layer for leaflet.
 |typeNS|-|type namespace|
 |typeName|-|type name|
 |style|-|leaflet vector style|
+|filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
 
 #Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
@@ -60,21 +61,27 @@ Extends leaflet classes with toGml(crs) function:
 
 Markers geometry writes as posNode, for all other layers geometry writes as posList
 
-#Filter
+# Filter
+
 OGC Filter realization:
+
 ##GmlObjectId filter
+
 Example:
 ```javascript
-var filter = new L.Filter.GmlObjectId();
-filter.append(1);
-filter.toGml()
+  var wfst = new L.WFST({
+    filter: new L.Filter.GmlObjectID().append(5)
+  });
 ```
-code above will return:
-```xml
-<ogc:Filter>
-    <ogc:GmlObjectId gml:id=1/>
-</ogc:Filter>
+##BBox filter
+
+Example:
+```javascript
+  var wfst = new L.WFST({
+    filter: new L.Filter.BBox().append(L.latLngBounds(L.latLng(40.712, -74.227), L.latLng(40.774, -74.125)), 'ogr_geometry', L.CRS.EPSG4326)
+  });
 ```
+
 
 #WFST Example
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
@@ -148,6 +155,9 @@ demos for GML read format
 
 demo for GeoJSON read format
 * [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygonGeoJSON.html)
+
+demo filter bbox
+* [BBox](http://flexberry.github.io/Leaflet-WFST/examples/filterBBox.html)
 
 #License
 MIT
