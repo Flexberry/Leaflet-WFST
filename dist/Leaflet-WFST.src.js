@@ -1023,9 +1023,12 @@ L.WFS = L.FeatureGroup.extend({
         });
 
         that.setStyle(that.options.style);
-        that.fire('load');
+        that.fire('load', data);
 
         return that;
+      },
+      error: function(errorData) {
+        that.fire('error', errorData);
       }
     });
   }
