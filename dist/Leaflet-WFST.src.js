@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-09-16 */
+/*! Leaflet-WFST 1.0.0 2016-09-19 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -91,6 +91,42 @@ L.XmlUtil = {
     } else {
       throw new Error("No XML parser found");
     }
+  },
+
+  parseOwsExceptionReport: function(rawXml) {
+    var exceptionReportElement = L.XmlUtil.parseXml(rawXml).documentElement;
+    if (!exceptionReportElement || exceptionReportElement.tagName !== "ows:ExceptionReport") {
+      return null;
+    }
+
+    var exceptionReport = {
+      exceptions: []
+    };
+
+    var exceptionsNodes = exceptionReportElement.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, "Exception");
+    for (var i = 0, exceptionsNodesCount = exceptionsNodes.length; i < exceptionsNodesCount; i++) {
+      var exceptionNode = exceptionsNodes[i];
+      var exceptionCode = exceptionNode.getAttribute("exceptionCode");
+      var exceptionsTextNodes = exceptionNode.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, "ExceptionText");
+      var exception = {
+        code: exceptionCode,
+        text: ""
+      };
+
+      for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
+        var exceptionTextNode = exceptionsTextNodes[j];
+        var exceptionText = exceptionTextNode.innerHTML;
+
+        exception.text += exceptionText;
+        if (j < textNodesCount - 1) {
+          exception.text += ". ";
+        }
+      }
+
+      exceptionReport.exceptions.push(exception);
+    }
+
+    return exceptionReport;
   }
 };
 
@@ -186,12 +222,18 @@ L.Filter.BBox = L.Filter.extend({
 L.Format = {};
 
 L.Format.Scheme = L.Class.extend({
-  initialize: function (geometryField) {
-    this.geometryField = geometryField;
+  options: {
+    geometryField: 'Shape',
+  },
+
+  initialize: function (options) {
+    L.setOptions(this, options);
   },
 
   parse: function (element) {
-    var featureType = new L.GML.FeatureType();
+    var featureType = new L.GML.FeatureType({
+      geometryField: this.options.geometryField
+    });
     var complexTypeDefinition = element.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'complexType')[0];
     var properties = complexTypeDefinition.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'sequence')[0];
     for (var i = 0; i < properties.childNodes.length; i++) {
@@ -206,7 +248,7 @@ L.Format.Scheme = L.Class.extend({
       }
 
       var propertyName = node.attributes.name.value;
-      if (propertyName === this.geometryField) {
+      if (propertyName === this.options.geometryField) {
         continue;
       }
 
@@ -266,7 +308,9 @@ L.Format.Base = L.Class.extend({
 
   setFeatureDescription: function (featureInfo) {
     this.namespaceUri = featureInfo.attributes.targetNamespace.value;
-    var schemeParser = new L.Format.Scheme(this.options.geometryField);
+    var schemeParser = new L.Format.Scheme({
+      geometryField: this.options.geometryField
+    });
     this.featureType = schemeParser.parse(featureInfo);
   }
 });
@@ -673,6 +717,9 @@ L.GML.MultiPoint = L.GML.MultiGeometry.extend({
 });
 
 L.GML.FeatureType = L.Class.extend({
+  options: {
+    geometryField: 'Shape',
+  },
 
   primitives: [
     {
@@ -701,7 +748,9 @@ L.GML.FeatureType = L.Class.extend({
     }
   ],
 
-  initialize: function () {
+  initialize: function (options) {
+    L.setOptions(this, options);
+
     this.fields = {};
   },
 
@@ -718,17 +767,26 @@ L.GML.FeatureType = L.Class.extend({
     var properties = {};
     for (var i = 0; i < feature.childNodes.length; i++) {
       var node = feature.childNodes[i];
-      if (node.nodeType !== document.ELEMENT_NODE) continue;
+      if (node.nodeType !== document.ELEMENT_NODE) {
+        continue;
+      }
 
       var propertyName = node.tagName.split(':').pop();
-      var fieldParser = this.fields[propertyName];
+      if (propertyName === this.options.geometryField) {
+        continue;
+      }
 
-      if (!fieldParser) continue;
+      var parseField = this.fields[propertyName];
+      if (!parseField) {
+        this.appendField(propertyName, "string");
+        parseField = this.fields[propertyName];
+      }
 
-      properties[propertyName] = fieldParser(node.textContent);
+      properties[propertyName] = parseField(node.textContent);
     }
 
     return {
+      type: 'Feature',
       properties: properties,
       id: feature.attributes['gml:id'].value
     };
@@ -785,6 +843,15 @@ L.Format.GML = L.Format.Base.extend({
 
   generateLayer: function (feature) {
     var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
+    if (!geometryField) {
+      throw new Error(
+        'Geometry field \'' +
+        this.options.geometryField +
+        '\' doesn\' exist inside received feature: \'' +
+        feature.innerHTML +
+        '\'');
+    }
+
     return this.parseElement(geometryField.firstChild, this.options);
   }
 });
@@ -1011,24 +1078,52 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
-      success: function (data) {
-        var layers = that.readFormat.responseToLayers(data,
-          {
-            coordsToLatLng: that.options.coordsToLatLng,
-            pointToLayer: that.options.pointToLayer
+      success: function (responseText) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(responseText);
+        if (exceptionReport && exceptionReport.exceptions) {
+          var errorMessage = '';
+          for (var i = 0, exceptionsCount = exceptionReport.exceptions.length; i < exceptionsCount; i++) {
+            var exception = exceptionReport.exceptions[i];
+            errorMessage += exception.code + ' - ' + exception.text;
+
+            if (i < exceptionsCount - 1) {
+              errorMessage += " ";
+            }
+          }
+
+          that.fire('error', {
+            error: new Error(errorMessage)
           });
+
+          return that;
+        }
+
+        // Request was truly successful (without exception report),
+        // so convert response to layers.
+        var layers = that.readFormat.responseToLayers(responseText, {
+          coordsToLatLng: that.options.coordsToLatLng,
+          pointToLayer: that.options.pointToLayer
+        });
         layers.forEach(function (element) {
           element.state = that.state.exist;
           that.addLayer(element);
         });
 
         that.setStyle(that.options.style);
-        that.fire('load', data);
+        that.fire('load', {
+          responseText: responseText
+        });
 
         return that;
       },
-      error: function(errorData) {
-        that.fire('error', errorData);
+      error: function(errorMessage) {
+        that.fire('error', {
+          error: new Error(errorMessage)
+        });
+
+        return that;
       }
     });
   }

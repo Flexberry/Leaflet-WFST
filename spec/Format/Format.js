@@ -77,7 +77,9 @@ describe("L.Format", function () {
               return {};
             });
 
-            var featureType = new L.GML.FeatureType();
+            var featureType = new L.GML.FeatureType({
+              geometryField: 'the_geom'
+            });
             featureType.appendField('cat', 'int');
             featureType.appendField('label', 'string');
             format.featureType = featureType;

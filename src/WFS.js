@@ -100,24 +100,52 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
-      success: function (data) {
-        var layers = that.readFormat.responseToLayers(data,
-          {
-            coordsToLatLng: that.options.coordsToLatLng,
-            pointToLayer: that.options.pointToLayer
+      success: function (responseText) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(responseText);
+        if (exceptionReport && exceptionReport.exceptions) {
+          var errorMessage = '';
+          for (var i = 0, exceptionsCount = exceptionReport.exceptions.length; i < exceptionsCount; i++) {
+            var exception = exceptionReport.exceptions[i];
+            errorMessage += exception.code + ' - ' + exception.text;
+
+            if (i < exceptionsCount - 1) {
+              errorMessage += " ";
+            }
+          }
+
+          that.fire('error', {
+            error: new Error(errorMessage)
           });
+
+          return that;
+        }
+
+        // Request was truly successful (without exception report),
+        // so convert response to layers.
+        var layers = that.readFormat.responseToLayers(responseText, {
+          coordsToLatLng: that.options.coordsToLatLng,
+          pointToLayer: that.options.pointToLayer
+        });
         layers.forEach(function (element) {
           element.state = that.state.exist;
           that.addLayer(element);
         });
 
         that.setStyle(that.options.style);
-        that.fire('load', data);
+        that.fire('load', {
+          responseText: responseText
+        });
 
         return that;
       },
-      error: function(errorData) {
-        that.fire('error', errorData);
+      error: function(errorMessage) {
+        that.fire('error', {
+          error: new Error(errorMessage)
+        });
+
+        return that;
       }
     });
   }

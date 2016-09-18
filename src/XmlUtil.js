@@ -90,5 +90,41 @@ L.XmlUtil = {
     } else {
       throw new Error("No XML parser found");
     }
+  },
+
+  parseOwsExceptionReport: function(rawXml) {
+    var exceptionReportElement = L.XmlUtil.parseXml(rawXml).documentElement;
+    if (!exceptionReportElement || exceptionReportElement.tagName !== "ows:ExceptionReport") {
+      return null;
+    }
+
+    var exceptionReport = {
+      exceptions: []
+    };
+
+    var exceptionsNodes = exceptionReportElement.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, "Exception");
+    for (var i = 0, exceptionsNodesCount = exceptionsNodes.length; i < exceptionsNodesCount; i++) {
+      var exceptionNode = exceptionsNodes[i];
+      var exceptionCode = exceptionNode.getAttribute("exceptionCode");
+      var exceptionsTextNodes = exceptionNode.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, "ExceptionText");
+      var exception = {
+        code: exceptionCode,
+        text: ""
+      };
+
+      for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
+        var exceptionTextNode = exceptionsTextNodes[j];
+        var exceptionText = exceptionTextNode.innerHTML;
+
+        exception.text += exceptionText;
+        if (j < textNodesCount - 1) {
+          exception.text += ". ";
+        }
+      }
+
+      exceptionReport.exceptions.push(exception);
+    }
+
+    return exceptionReport;
   }
 };

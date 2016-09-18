@@ -3,12 +3,18 @@
  */
 
 L.Format.Scheme = L.Class.extend({
-  initialize: function (geometryField) {
-    this.geometryField = geometryField;
+  options: {
+    geometryField: 'Shape',
+  },
+
+  initialize: function (options) {
+    L.setOptions(this, options);
   },
 
   parse: function (element) {
-    var featureType = new L.GML.FeatureType();
+    var featureType = new L.GML.FeatureType({
+      geometryField: this.options.geometryField
+    });
     var complexTypeDefinition = element.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'complexType')[0];
     var properties = complexTypeDefinition.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'sequence')[0];
     for (var i = 0; i < properties.childNodes.length; i++) {
@@ -23,7 +29,7 @@ L.Format.Scheme = L.Class.extend({
       }
 
       var propertyName = node.attributes.name.value;
-      if (propertyName === this.geometryField) {
+      if (propertyName === this.options.geometryField) {
         continue;
       }
 

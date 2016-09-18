@@ -3,6 +3,9 @@
  */
 
 L.GML.FeatureType = L.Class.extend({
+  options: {
+    geometryField: 'Shape',
+  },
 
   primitives: [
     {
@@ -31,7 +34,9 @@ L.GML.FeatureType = L.Class.extend({
     }
   ],
 
-  initialize: function () {
+  initialize: function (options) {
+    L.setOptions(this, options);
+
     this.fields = {};
   },
 
@@ -48,17 +53,26 @@ L.GML.FeatureType = L.Class.extend({
     var properties = {};
     for (var i = 0; i < feature.childNodes.length; i++) {
       var node = feature.childNodes[i];
-      if (node.nodeType !== document.ELEMENT_NODE) continue;
+      if (node.nodeType !== document.ELEMENT_NODE) {
+        continue;
+      }
 
       var propertyName = node.tagName.split(':').pop();
-      var fieldParser = this.fields[propertyName];
+      if (propertyName === this.options.geometryField) {
+        continue;
+      }
 
-      if (!fieldParser) continue;
+      var parseField = this.fields[propertyName];
+      if (!parseField) {
+        this.appendField(propertyName, "string");
+        parseField = this.fields[propertyName];
+      }
 
-      properties[propertyName] = fieldParser(node.textContent);
+      properties[propertyName] = parseField(node.textContent);
     }
 
     return {
+      type: 'Feature',
       properties: properties,
       id: feature.attributes['gml:id'].value
     };
