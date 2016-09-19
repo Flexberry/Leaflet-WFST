@@ -69,14 +69,15 @@ OGC Filter realization:
 
 Example:
 ```javascript
-  var wfst = new L.WFST({
-    filter: new L.Filter.GmlObjectID().append(5)
-  });
-
-  // It above code 'filter' will be like following:
-  // <ogc:Filter>
-  //   <ogc:GmlObjectId gml:id=1/>
-  // </ogc:Filter>
+var filter = new L.Filter.GmlObjectId();
+filter.append(1);
+filter.toGml()
+```
+code above will return xml:
+```xml
+<ogc:Filter>
+    <ogc:GmlObjectId gml:id=1/>
+</ogc:Filter>
 ```
 
 ##BBox filter
@@ -86,7 +87,7 @@ Example:
   var wfst = new L.WFST({
     filter: new L.Filter.BBox().append(L.latLngBounds(L.latLng(40.712, -74.227), L.latLng(40.774, -74.125)), 'ogr_geometry', L.CRS.EPSG4326)
   });
-``
+```
 
 
 #WFST Example
