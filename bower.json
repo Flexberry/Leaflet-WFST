@@ -20,7 +20,7 @@
     "wfst"
   ],
   "dependencies": {
-    "leaflet": "v1.0.0-beta.2"
+    "leaflet": "1.0.1"
   },
   "devDependencies": {
     "proj4leaflet": "~0.7.0",
@@ -32,6 +32,6 @@
     "Leaflet.toolbar": "yohanboniface/Leaflet.toolbar#leaflet1.0-compat"
   },
   "resolutions": {
-    "leaflet": "v1.0.0-beta.2"
+    "leaflet": "1.0.1"
   }
 }
