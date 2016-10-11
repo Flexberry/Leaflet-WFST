@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-09-30 */
+/*! Leaflet-WFST 1.0.0 2016-10-11 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -1021,6 +1021,10 @@ L.WFS = L.FeatureGroup.extend({
       if (that.options.showExisting) {
         that.loadFeatures(that.options.filter);
       }
+    }, function(errorMessage) {
+      that.fire('error', {
+        error: new Error(errorMessage)
+      });
     });
   },
 
@@ -1028,7 +1032,7 @@ L.WFS = L.FeatureGroup.extend({
     return this.options.typeNS + ':' + name;
   },
 
-  describeFeatureType: function (callback) {
+  describeFeatureType: function (successCallback, errorCallback) {
     var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
       service: 'WFS',
       version: this.options.version
@@ -1044,8 +1048,13 @@ L.WFS = L.FeatureGroup.extend({
         var featureInfo = xmldoc.documentElement;
         that.readFormat.setFeatureDescription(featureInfo);
         that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
-        if (typeof(callback) === 'function') {
-          callback();
+        if (typeof(successCallback) === 'function') {
+          successCallback();
+        }
+      },
+      error: function(errorMessage) {
+        if (typeof(errorCallback) === 'function') {
+          errorCallback(errorMessage);
         }
       }
     });
