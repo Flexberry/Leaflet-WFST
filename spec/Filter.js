@@ -111,6 +111,5 @@ describe('Filter', function () {
         expect(valueElement.textContent).to.be.equal('100500');
       });
     });
-
-  })
+  });
 });
