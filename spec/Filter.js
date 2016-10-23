@@ -83,4 +83,34 @@ describe('Filter', function () {
       });
     });
   });
+
+  describe('EQ', function() {
+    var filter;
+    var gml;
+
+    before(function () {
+      filter = new L.Filter.EQ().append('foobar', '100500');
+      gml = filter.toGml();
+    });
+
+    describe('#toGml', function () {
+      it('must have first child element with tagName ogc:PropertyIsEqualTo', function() {
+        var firstChild = gml.firstChild;
+        expect(firstChild.tagName).to.be.equal('ogc:PropertyIsEqualTo');
+      });
+
+      it('should pass name value to filter', function() {
+        var nameElement = gml.firstChild.firstChild;
+        expect(nameElement.tagName).to.be.equal('ogc:ValueReference');
+        expect(nameElement.textContent).to.be.equal('foobar');
+      });
+
+      it('should pass value to filter', function() {
+        var valueElement = gml.firstChild.childNodes[1];
+        expect(valueElement.tagName).to.be.equal('ogc:Literal');
+        expect(valueElement.textContent).to.be.equal('100500');
+      });
+    });
+
+  })
 });
