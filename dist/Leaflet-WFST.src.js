@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-10-23 */
+/*! Leaflet-WFST 1.0.0 2016-10-24 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -222,7 +222,7 @@ L.Filter.BBox = L.Filter.extend({
 L.Filter.EQ = L.Filter.extend({
   append: function (name, val) {
     var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsEqualTo');
-    var nameElement = L.XmlUtil.createElementNS('ogc:ValueReference', {}, {value: name});
+    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
     var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
     eqElement.appendChild(nameElement);
     eqElement.appendChild(valueElement);

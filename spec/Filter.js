@@ -101,7 +101,7 @@ describe('Filter', function () {
 
       it('should pass name value to filter', function() {
         var nameElement = gml.firstChild.firstChild;
-        expect(nameElement.tagName).to.be.equal('ogc:ValueReference');
+        expect(nameElement.tagName).to.be.equal('ogc:PropertyName');
         expect(nameElement.textContent).to.be.equal('foobar');
       });
 
