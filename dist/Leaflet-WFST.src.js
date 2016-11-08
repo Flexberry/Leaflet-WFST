@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-10-24 */
+/*! Leaflet-WFST 1.0.0 2016-11-08 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -214,6 +214,18 @@ L.Filter.BBox = L.Filter.extend({
     filterBBox.appendChild(envelope);
 
     this.filter.appendChild(filterBBox);
+
+    return this; 
+  }
+});
+
+L.Filter.Intersects = L.Filter.extend({
+  append: function(geometryLayer, geometryField, crs) {
+    var intersectsElement = L.XmlUtil.createElementNS('ogc:Intersects');
+    intersectsElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
+    intersectsElement.appendChild(geometryLayer.toGml(crs));
+
+    this.filter.appendChild(intersectsElement);
 
     return this; 
   }

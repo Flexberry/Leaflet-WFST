@@ -89,6 +89,14 @@ Example:
   });
 ```
 
+##Intersects filter
+
+Example:
+```javascript
+  var wfst = new L.WFST({
+    filter: new L.Filter.Intersects().append(L.polygon([L.latLng(40.712, -74.227), L.latLng(40.774, -74.125), L.latLng(40.734, -74.175)]), 'ogr_geometry', L.CRS.EPSG4326)
+  });
+```
 
 #WFST Example
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
