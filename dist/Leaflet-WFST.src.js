@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.0.0 2016-11-10 */
+/*! Leaflet-WFST 1.1.0 2016-11-10 */
 (function(window, document, undefined) {
 
 "use strict";
