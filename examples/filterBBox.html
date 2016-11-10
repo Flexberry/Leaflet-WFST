@@ -2,9 +2,8 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" type="text/css" href="lib/leaflet.toolbar.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.1/leaflet.css"/>
+  <title></title>
   <style>
     html, body, #map {
       margin: 0;
@@ -12,46 +11,41 @@
       width: 100%;
     }
   </style>
-  <title>Leaflet-WFST polygon demo</title>
 </head>
 <body>
 <div id="map"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.1/leaflet.js"></script>
 <script src="lib/proj4.js"></script>
 <script src="lib/proj4leaflet.js"></script>
-
 <script src="../dist/Leaflet-WFST.src.js"></script>
 <script>
-  var map = L.map('map').setView([0, 0], 2);
+  var map = L.map('map').setView([60.372465778991284, 53.64349365234375], 9);
   // add an OpenStreetMap tile layer
   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  var polygons = new L.WFS({
+  var objWfst = {
     url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'osm_perm_region',
     typeName: 'perm_water_polygon',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
+    filter: new L.Filter.BBox().append(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326),
     style: {
       color: 'blue',
       weight: 2
     }
-  }).addTo(map)
-    .once('load', function () {
-      map.fitBounds(polygons);
-    });
+  };
 
-  var popup = L.popup();
+  var wfst = new L.WFST(objWfst).addTo(map);
 
-  polygons.on('click', function (event) {
-    popup
-      .setLatLng(event.latlng)
-      .setContent('You clicked at ' + event.layer.feature.id)
-      .openOn(map);
-  });
+  map.on('moveend',function(){
+    wfst.clearLayers();
+    objWfst.filter = new L.Filter.BBox().append(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326);
+    wfst = new L.WFST(objWfst).addTo(map);
+  })
+
 </script>
 </body>
 </html>

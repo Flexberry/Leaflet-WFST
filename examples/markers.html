@@ -181,6 +181,7 @@
     typeName: 'perm_points_of_interest',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
+    maxFeatures:5,
     pointToLayer: function (featureData, latlng) {
       return createEditableMarker(latlng);
     }
@@ -193,15 +194,15 @@
       document.getElementById('idTextbox').value = sidebar._marker.feature.id || '';
 
       if (sidebar._marker.feature.properties) {
-        document.getElementById('osmidTextbox').value = sidebar._marker.feature.properties.osm_id || '';
-        document.getElementById('manmadeTextbox').value = sidebar._marker.feature.properties.man_made || '';
-        document.getElementById('nameTextbox').value = sidebar._marker.feature.properties.name || '';
-        document.getElementById('amenityTextbox').value = sidebar._marker.feature.properties.amenity || '';
-        document.getElementById('leisureTextbox').value = sidebar._marker.feature.properties.leisure || '';
-        document.getElementById('officeTextbox').value = sidebar._marker.feature.properties.office || '';
-        document.getElementById('shopTextbox').value = sidebar._marker.feature.properties.shop || '';
-        document.getElementById('sportTextbox').value = sidebar._marker.feature.properties.sport || '';
-        document.getElementById('tourismTextbox').value = sidebar._marker.feature.properties.tourism || '';
+        document.getElementById('osmidTextbox').value = sidebar._marker.getProperty('osm_id') || '';
+        document.getElementById('manmadeTextbox').value = sidebar._marker.getProperty('man_made') || '';
+        document.getElementById('nameTextbox').value = sidebar._marker.getProperty('name') || '';
+        document.getElementById('amenityTextbox').value = sidebar._marker.getProperty('amenity') || '';
+        document.getElementById('leisureTextbox').value = sidebar._marker.getProperty('leisure') || '';
+        document.getElementById('officeTextbox').value = sidebar._marker.getProperty('office') || '';
+        document.getElementById('shopTextbox').value = sidebar._marker.getProperty('shop') || '';
+        document.getElementById('sportTextbox').value = sidebar._marker.getProperty('sport') || '';
+        document.getElementById('tourismTextbox').value = sidebar._marker.getProperty('tourism') || '';
       }
 
       sidebar._onApplyBtnClick = function () {
@@ -209,7 +210,7 @@
           return;
         }
 
-        sidebar._marker.feature.properties = sidebar._marker.feature.properties || {};
+        sidebar._marker.setProperties(sidebar._marker.feature.properties || {});
 
         var propertiesChanged = false;
 
@@ -220,15 +221,17 @@
           }
         };
 
-        sidebar._marker.feature.properties.osm_id = document.getElementById('osmidTextbox').value || null;
-        sidebar._marker.feature.properties.man_made = document.getElementById('manmadeTextbox').value || null;
-        sidebar._marker.feature.properties.name = document.getElementById('nameTextbox').value || null;
-        sidebar._marker.feature.properties.amenity = document.getElementById('amenityTextbox').value || null;
-        sidebar._marker.feature.properties.leisure = document.getElementById('leisureTextbox').value || null;
-        sidebar._marker.feature.properties.office = document.getElementById('officeTextbox').value || null;
-        sidebar._marker.feature.properties.shop = document.getElementById('shopTextbox').value || null;
-        sidebar._marker.feature.properties.sport = document.getElementById('sportTextbox').value || null;
-        sidebar._marker.feature.properties.tourism = document.getElementById('tourismTextbox').value || null;
+        sidebar._marker.setProperties({
+          osm_id:  document.getElementById('osmidTextbox').value || null,
+          man_made:  document.getElementById('manmadeTextbox').value || null,
+          name:  document.getElementById('nameTextbox').value || null,
+          amenity:  document.getElementById('amenityTextbox').value || null,
+          leisure:  document.getElementById('leisureTextbox').value || null,
+          office:  document.getElementById('officeTextbox').value || null,
+          shop:  document.getElementById('shopTextbox').value || null,
+          sport:  document.getElementById('sportTextbox').value || null,
+          tourism:  document.getElementById('tourismTextbox').value || null
+        })
 
         if (propertiesChanged) {
           sidebar._marker.fire('marker:edited');

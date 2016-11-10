@@ -9,7 +9,7 @@
   "newcap": true,
   "strict": false,
   "undef": true,
-  "unused": true,
+  "unused": false,
   "eqnull": true,
   "globals": {
     "L": false

@@ -21,8 +21,11 @@ module.exports = function (grunt) {
         src: [
           '<%= srcPath %>/XmlUtil.js',
           '<%= srcPath %>/Request.js',
-          '<%= srcPath %>/Filter.js',
-          '<%= srcPath %>/Filter.GmlObjectID.js',
+          '<%= srcPath %>/Filter/Filter.js',
+          '<%= srcPath %>/Filter/Filter.GmlObjectID.js',
+          '<%= srcPath %>/Filter/Filter.BBox.js',
+          '<%= srcPath %>/Filter/Filter.Intersects.js',
+          '<%= srcPath %>/Filter/Filter.EQ.js',
           '<%= srcPath %>/Format/Format.js',
           '<%= srcPath %>/Format/Scheme.js',
           '<%= srcPath %>/Format/Format.Base.js',
@@ -56,6 +59,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Util.js',
           '<%= srcPath %>/GmlUtil.js',
           '<%= srcPath %>/GML/*.js',
+          '<%= srcPath %>/Properties.js',
           '<%= srcPath %>/WFS.js',
           '<%= srcPath %>/WFST.js',
           '<%= srcPath %>/WFST.Helpers.js',
@@ -112,7 +116,7 @@ module.exports = function (grunt) {
 
             'leaflet.editable/src/Leaflet.Editable.js',
 
-            'proj4leaflet/lib/proj4-compressed.js',
+            'proj4/dist/proj4.js',
             'proj4leaflet/src/proj4leaflet.js'
           ],
           dest: '<%= libsPath %>'

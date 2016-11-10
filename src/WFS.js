@@ -12,6 +12,8 @@ L.WFS = L.FeatureGroup.extend({
     typeNS: '',
     typeName: '',
     typeNSName: '',
+    maxFeatures: null,
+    filter: null,
     style: {
       color: 'black',
       weight: 1
@@ -39,8 +41,12 @@ L.WFS = L.FeatureGroup.extend({
     var that = this;
     this.describeFeatureType(function () {
       if (that.options.showExisting) {
-        that.loadFeatures();
+        that.loadFeatures(that.options.filter);
       }
+    }, function(errorMessage) {
+      that.fire('error', {
+        error: new Error(errorMessage)
+      });
     });
   },
 
@@ -48,7 +54,7 @@ L.WFS = L.FeatureGroup.extend({
     return this.options.typeNS + ':' + name;
   },
 
-  describeFeatureType: function (callback) {
+  describeFeatureType: function (successCallback, errorCallback) {
     var requestData = L.XmlUtil.createElementNS('wfs:DescribeFeatureType', {
       service: 'WFS',
       version: this.options.version
@@ -60,12 +66,28 @@ L.WFS = L.FeatureGroup.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
       success: function (data) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(data);
+        if (exceptionReport) {
+          if (typeof(errorCallback) === 'function') {
+            errorCallback(exceptionReport.message);
+          }
+
+          return;
+        }
+
         var xmldoc = L.XmlUtil.parseXml(data);
         var featureInfo = xmldoc.documentElement;
         that.readFormat.setFeatureDescription(featureInfo);
         that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
-        if (typeof(callback) === 'function') {
-          callback();
+        if (typeof(successCallback) === 'function') {
+          successCallback();
+        }
+      },
+      error: function(errorMessage) {
+        if (typeof(errorCallback) === 'function') {
+          errorCallback(errorMessage);
         }
       }
     });
@@ -76,6 +98,7 @@ L.WFS = L.FeatureGroup.extend({
       {
         service: 'WFS',
         version: this.options.version,
+        maxFeatures: this.options.maxFeatures,
         outputFormat: this.readFormat.outputFormat
       });
 
@@ -97,19 +120,40 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
-      success: function (data) {
-        var layers = that.readFormat.responseToLayers(data,
-          {
-            coordsToLatLng: that.options.coordsToLatLng,
-            pointToLayer: that.options.pointToLayer
+      success: function (responseText) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(responseText);
+        if (exceptionReport) {
+          that.fire('error', {
+            error: new Error(exceptionReport.message)
           });
+
+          return that;
+        }
+
+        // Request was truly successful (without exception report),
+        // so convert response to layers.
+        var layers = that.readFormat.responseToLayers(responseText, {
+          coordsToLatLng: that.options.coordsToLatLng,
+          pointToLayer: that.options.pointToLayer
+        });
         layers.forEach(function (element) {
           element.state = that.state.exist;
           that.addLayer(element);
         });
 
         that.setStyle(that.options.style);
-        that.fire('load');
+        that.fire('load', {
+          responseText: responseText
+        });
+
+        return that;
+      },
+      error: function(errorMessage) {
+        that.fire('error', {
+          error: new Error(errorMessage)
+        });
 
         return that;
       }

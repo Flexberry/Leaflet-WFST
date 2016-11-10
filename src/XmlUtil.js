@@ -1,28 +1,23 @@
-/**
- * Created by PRadostev on 06.02.2015.
- */
-
 L.XmlUtil = {
-  // comes from OL
   namespaces: {
-    xlink: "http://www.w3.org/1999/xlink",
-    xmlns: "http://www.w3.org/2000/xmlns/",
-    xsd: "http://www.w3.org/2001/XMLSchema",
-    xsi: "http://www.w3.org/2001/XMLSchema-instance",
-    wfs: "http://www.opengis.net/wfs",
-    gml: "http://www.opengis.net/gml",
-    ogc: "http://www.opengis.net/ogc",
-    ows: "http://www.opengis.net/ows"
+    xlink: 'http://www.w3.org/1999/xlink',
+    xmlns: 'http://www.w3.org/2000/xmlns/',
+    xsd: 'http://www.w3.org/2001/XMLSchema',
+    xsi: 'http://www.w3.org/2001/XMLSchema-instance',
+    wfs: 'http://www.opengis.net/wfs',
+    gml: 'http://www.opengis.net/gml',
+    ogc: 'http://www.opengis.net/ogc',
+    ows: 'http://www.opengis.net/ows'
   },
 
-  //TODO: есть ли нормальная реализация для создания нового документа с doctype text/xml?
+  // TODO: find another way to create a new document with doctype text/xml?
   xmldoc: (new DOMParser()).parseFromString('<root />', 'text/xml'),
 
   setAttributes: function (node, attributes) {
     for (var name in attributes) {
       if (attributes[name] != null && attributes[name].toString) {
         var value = attributes[name].toString();
-        var uri = this.namespaces[name.substring(0, name.indexOf(":"))] || null;
+        var uri = this.namespaces[name.substring(0, name.indexOf(':'))] || null;
         node.setAttributeNS(uri, name, value);
       }
     }
@@ -43,7 +38,7 @@ L.XmlUtil = {
     var uri = options.uri;
 
     if (!uri) {
-      uri = this.namespaces[name.substring(0, name.indexOf(":"))];
+      uri = this.namespaces[name.substring(0, name.indexOf(':'))];
     }
 
     if (!uri) {
@@ -68,7 +63,7 @@ L.XmlUtil = {
   },
 
   serializeXmlDocumentString: function (node) {
-    var doc = document.implementation.createDocument("", "", null);
+    var doc = document.implementation.createDocument('', '', null);
     doc.appendChild(node);
     var serializer = new XMLSerializer();
     return serializer.serializeToString(doc);
@@ -80,15 +75,57 @@ L.XmlUtil = {
   },
 
   parseXml: function (rawXml) {
-    if (typeof window.DOMParser !== "undefined") {
-      return ( new window.DOMParser() ).parseFromString(rawXml, "text/xml");
-    } else if (typeof window.ActiveXObject !== "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
-      var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async = "false";
+    if (typeof window.DOMParser !== 'undefined') {
+      return ( new window.DOMParser() ).parseFromString(rawXml, 'text/xml');
+    } else if (typeof window.ActiveXObject !== 'undefined' && new window.ActiveXObject('Microsoft.XMLDOM')) {
+      var xmlDoc = new window.ActiveXObject('Microsoft.XMLDOM');
+      xmlDoc.async = 'false';
       xmlDoc.loadXML(rawXml);
       return xmlDoc;
     } else {
-      throw new Error("No XML parser found");
+      throw new Error('No XML parser found');
     }
+  },
+
+  parseOwsExceptionReport: function(rawXml) {
+    var exceptionReportElement = L.XmlUtil.parseXml(rawXml).documentElement;
+    if (!exceptionReportElement || exceptionReportElement.tagName !== 'ows:ExceptionReport') {
+      return null;
+    }
+
+    var exceptionReport = {
+      exceptions: [],
+      message: ''
+    };
+
+    var exceptionsNodes = exceptionReportElement.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'Exception');
+    for (var i = 0, exceptionsNodesCount = exceptionsNodes.length; i < exceptionsNodesCount; i++) {
+      var exceptionNode = exceptionsNodes[i];
+      var exceptionCode = exceptionNode.getAttribute('exceptionCode');
+      var exceptionsTextNodes = exceptionNode.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'ExceptionText');
+      var exception = {
+        code: exceptionCode,
+        text: ''
+      };
+
+      for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
+        var exceptionTextNode = exceptionsTextNodes[j];
+        var exceptionText = exceptionTextNode.innerHTML;
+
+        exception.text += exceptionText;
+        if (j < textNodesCount - 1) {
+          exception.text += '. ';
+        }
+      }
+
+      exceptionReport.message += exception.code + ' - ' + exception.text;
+      if (i < exceptionsNodesCount - 1) {
+        exceptionReport.message += ' ';
+      }
+
+      exceptionReport.exceptions.push(exception);
+    }
+
+    return exceptionReport;
   }
 };
