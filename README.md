@@ -28,6 +28,8 @@ OGC WFS-T client layer for leaflet.
 |url|-|WFS url, for example http://demo.opengeo.org/geoserver/osm/ows
 |typeNS|-|type namespace|
 |typeName|-|type name|
+|typeNSName|-|type namespace name|
+|namespaceUri|-|namespace URI|
 |style|-|leaflet vector style|
 |filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
@@ -69,22 +71,67 @@ OGC Filter realization:
 
 Example:
 ```javascript
-var filter = new L.Filter.GmlObjectId();
-filter.append(1);
-filter.toGml()
+  var filter = new L.Filter.GmlObjectId().append(1);
+  filter.toGml()
 ```
 code above will return xml:
 ```xml
-<ogc:Filter>
-    <ogc:GmlObjectId gml:id=1/>
-</ogc:Filter>
+  <ogc:Filter>
+    <ogc:GmlObjectId gml:id="1"/>
+  </ogc:Filter>
+```
+to load feature by id pass filter to WFS-layer options:
+```javascript
+  var wfs = new L.WFS({
+    filter: new L.Filter.GmlObjectId().append(1)
+  });
+```
+
+##EQ filter
+
+Example:
+```javascript
+  var filter = new L.Filter.EQ().append('city', 'Perm');
+  filter.toGml()
+```
+code above will return xml:
+```xml
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:PropertyIsEqualTo>
+      <ogc:PropertyName>city</ogc:PropertyName>
+      <ogc:Literal>Perm</ogc:Literal>
+    </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+```
+to load features by some property equality to the specified value pass filter to WFS-layer options:
+```javascript
+  var wfs = new L.WFS({
+    filter: new L.Filter.EQ().append('city', 'Perm')
+  });
 ```
 
 ##BBox filter
 
 Example:
 ```javascript
-  var wfst = new L.WFST({
+    var filter = new L.Filter.BBox().append(L.latLngBounds(L.latLng(40.712, -74.227), L.latLng(40.774, -74.125)), 'ogr_geometry', L.CRS.EPSG4326);
+    filter.toGml()
+```
+code above will return xml:
+```xml
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:BBOX>
+      <ogc:PropertyName>ogr_geometry</ogc:PropertyName>
+      <gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+        <gml:lowerCorner>-74.227 40.712</gml:lowerCorner>
+        <gml:upperCorner>-74.125 40.774</gml:upperCorner>
+      </gml:Envelope>
+    </ogc:BBOX>
+  </ogc:Filter>
+```
+to load features by bbox pass filter to WFS-layer options:
+```javascript
+  var wfs = new L.WFS({
     filter: new L.Filter.BBox().append(L.latLngBounds(L.latLng(40.712, -74.227), L.latLng(40.774, -74.125)), 'ogr_geometry', L.CRS.EPSG4326)
   });
 ```
@@ -93,7 +140,27 @@ Example:
 
 Example:
 ```javascript
-  var wfst = new L.WFST({
+  var filter = new L.Filter.Intersects().append(L.polygon([L.latLng(40.712, -74.227), L.latLng(40.774, -74.125), L.latLng(40.734, -74.175)]), 'ogr_geometry', L.CRS.EPSG4326);
+  filter.toGml();
+```
+code above will return xml:
+```xml
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:Intersects>
+      <ogc:PropertyName>ogr_geometry</ogc:PropertyName>
+      <gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326" srsDimension="2">
+        <gml:exterior>
+          <gml:LinearRing srsDimension="2">
+            <gml:posList>-74.227 40.712 -74.125 40.774 -74.175 40.734 -74.227 40.712</gml:posList>
+          </gml:LinearRing>
+        </gml:exterior>
+      </gml:Polygon>
+    </ogc:Intersects>
+  </ogc:Filter>
+```
+to load features by intersection with the specified geometry pass filter to WFS-layer options:
+```javascript
+  var wfs = new L.WFS({
     filter: new L.Filter.Intersects().append(L.polygon([L.latLng(40.712, -74.227), L.latLng(40.774, -74.125), L.latLng(40.734, -74.175)]), 'ogr_geometry', L.CRS.EPSG4326)
   });
 ```
