@@ -67,23 +67,23 @@ Markers geometry writes as posNode, for all other layers geometry writes as posL
 
 OGC Filter realization:
 
-##GmlObjectId filter
+##GmlObjectID filter
 
 Example:
 ```javascript
-  var filter = new L.Filter.GmlObjectId().append(1);
+  var filter = new L.Filter.GmlObjectID().append(1);
   filter.toGml()
 ```
 code above will return xml:
 ```xml
-  <ogc:Filter>
-    <ogc:GmlObjectId gml:id="1"/>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:GmlObjectId xmlns:gml="http://www.opengis.net/gml" gml:id="1" />
   </ogc:Filter>
 ```
 to load feature by id pass filter to WFS-layer options:
 ```javascript
   var wfs = new L.WFS({
-    filter: new L.Filter.GmlObjectId().append(1)
+    filter: new L.Filter.GmlObjectID().append(1)
   });
 ```
 
