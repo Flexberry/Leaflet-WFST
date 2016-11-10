@@ -1,29 +1,28 @@
-/*! Leaflet-WFST 1.0.0 2016-11-08 */
+/*! Leaflet-WFST 1.0.0 2016-11-10 */
 (function(window, document, undefined) {
 
 "use strict";
 
 L.XmlUtil = {
-  // comes from OL
   namespaces: {
-    xlink: "http://www.w3.org/1999/xlink",
-    xmlns: "http://www.w3.org/2000/xmlns/",
-    xsd: "http://www.w3.org/2001/XMLSchema",
-    xsi: "http://www.w3.org/2001/XMLSchema-instance",
-    wfs: "http://www.opengis.net/wfs",
-    gml: "http://www.opengis.net/gml",
-    ogc: "http://www.opengis.net/ogc",
-    ows: "http://www.opengis.net/ows"
+    xlink: 'http://www.w3.org/1999/xlink',
+    xmlns: 'http://www.w3.org/2000/xmlns/',
+    xsd: 'http://www.w3.org/2001/XMLSchema',
+    xsi: 'http://www.w3.org/2001/XMLSchema-instance',
+    wfs: 'http://www.opengis.net/wfs',
+    gml: 'http://www.opengis.net/gml',
+    ogc: 'http://www.opengis.net/ogc',
+    ows: 'http://www.opengis.net/ows'
   },
 
-  //TODO: есть ли нормальная реализация для создания нового документа с doctype text/xml?
+  // TODO: find another way to create a new document with doctype text/xml?
   xmldoc: (new DOMParser()).parseFromString('<root />', 'text/xml'),
 
   setAttributes: function (node, attributes) {
     for (var name in attributes) {
       if (attributes[name] != null && attributes[name].toString) {
         var value = attributes[name].toString();
-        var uri = this.namespaces[name.substring(0, name.indexOf(":"))] || null;
+        var uri = this.namespaces[name.substring(0, name.indexOf(':'))] || null;
         node.setAttributeNS(uri, name, value);
       }
     }
@@ -44,7 +43,7 @@ L.XmlUtil = {
     var uri = options.uri;
 
     if (!uri) {
-      uri = this.namespaces[name.substring(0, name.indexOf(":"))];
+      uri = this.namespaces[name.substring(0, name.indexOf(':'))];
     }
 
     if (!uri) {
@@ -69,7 +68,7 @@ L.XmlUtil = {
   },
 
   serializeXmlDocumentString: function (node) {
-    var doc = document.implementation.createDocument("", "", null);
+    var doc = document.implementation.createDocument('', '', null);
     doc.appendChild(node);
     var serializer = new XMLSerializer();
     return serializer.serializeToString(doc);
@@ -81,36 +80,37 @@ L.XmlUtil = {
   },
 
   parseXml: function (rawXml) {
-    if (typeof window.DOMParser !== "undefined") {
-      return ( new window.DOMParser() ).parseFromString(rawXml, "text/xml");
-    } else if (typeof window.ActiveXObject !== "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
-      var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async = "false";
+    if (typeof window.DOMParser !== 'undefined') {
+      return ( new window.DOMParser() ).parseFromString(rawXml, 'text/xml');
+    } else if (typeof window.ActiveXObject !== 'undefined' && new window.ActiveXObject('Microsoft.XMLDOM')) {
+      var xmlDoc = new window.ActiveXObject('Microsoft.XMLDOM');
+      xmlDoc.async = 'false';
       xmlDoc.loadXML(rawXml);
       return xmlDoc;
     } else {
-      throw new Error("No XML parser found");
+      throw new Error('No XML parser found');
     }
   },
 
   parseOwsExceptionReport: function(rawXml) {
     var exceptionReportElement = L.XmlUtil.parseXml(rawXml).documentElement;
-    if (!exceptionReportElement || exceptionReportElement.tagName !== "ows:ExceptionReport") {
+    if (!exceptionReportElement || exceptionReportElement.tagName !== 'ows:ExceptionReport') {
       return null;
     }
 
     var exceptionReport = {
-      exceptions: []
+      exceptions: [],
+      message: ''
     };
 
-    var exceptionsNodes = exceptionReportElement.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, "Exception");
+    var exceptionsNodes = exceptionReportElement.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'Exception');
     for (var i = 0, exceptionsNodesCount = exceptionsNodes.length; i < exceptionsNodesCount; i++) {
       var exceptionNode = exceptionsNodes[i];
-      var exceptionCode = exceptionNode.getAttribute("exceptionCode");
-      var exceptionsTextNodes = exceptionNode.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, "ExceptionText");
+      var exceptionCode = exceptionNode.getAttribute('exceptionCode');
+      var exceptionsTextNodes = exceptionNode.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'ExceptionText');
       var exception = {
         code: exceptionCode,
-        text: ""
+        text: ''
       };
 
       for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
@@ -119,8 +119,13 @@ L.XmlUtil = {
 
         exception.text += exceptionText;
         if (j < textNodesCount - 1) {
-          exception.text += ". ";
+          exception.text += '. ';
         }
+      }
+
+      exceptionReport.message += exception.code + ' - ' + exception.text;
+      if (i < exceptionsNodesCount - 1) {
+        exceptionReport.message += ' ';
       }
 
       exceptionReport.exceptions.push(exception);
@@ -202,18 +207,11 @@ L.Filter.GmlObjectID = L.Filter.extend({
 
 L.Filter.BBox = L.Filter.extend({
   append: function(bbox, geometryField, crs) {
-    var projectedSW = crs.project(bbox.getSouthWest());
-    var projectedNE = crs.project(bbox.getNorthEast());
+    var bboxElement = L.XmlUtil.createElementNS('ogc:BBOX');
+    bboxElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
+    bboxElement.appendChild(bbox.toGml(crs));
 
-    var envelope = L.XmlUtil.createElementNS('gml:Envelope', {srsName: crs.code});
-    envelope.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, {value: projectedSW.x + ' ' + projectedSW.y}));
-    envelope.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, {value: projectedNE.x + ' ' + projectedNE.y}));
-
-    var filterBBox = L.XmlUtil.createElementNS('ogc:BBOX');
-    filterBBox.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: geometryField}));
-    filterBBox.appendChild(envelope);
-
-    this.filter.appendChild(filterBBox);
+    this.filter.appendChild(bboxElement);
 
     return this; 
   }
@@ -914,6 +912,17 @@ L.GMLUtil = {
   }
 };
 
+L.LatLngBounds.prototype.toGml = function (crs) {
+  var projectedSW = crs.project(this.getSouthWest());
+  var projectedNE = crs.project(this.getNorthEast());
+
+  var envelopeElement = L.XmlUtil.createElementNS('gml:Envelope', { srsName: crs.code });
+  envelopeElement.appendChild(L.XmlUtil.createElementNS('gml:lowerCorner', {}, { value: projectedSW.x + ' ' + projectedSW.y }));
+  envelopeElement.appendChild(L.XmlUtil.createElementNS('gml:upperCorner', {}, { value: projectedNE.x + ' ' + projectedNE.y }));
+
+  return envelopeElement;
+};
+
 L.Marker.include({
   toGml: function (crs) {
     var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
@@ -1068,6 +1077,17 @@ L.WFS = L.FeatureGroup.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
       success: function (data) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(data);
+        if (exceptionReport) {
+          if (typeof(errorCallback) === 'function') {
+            errorCallback(exceptionReport.message);
+          }
+
+          return;
+        }
+
         var xmldoc = L.XmlUtil.parseXml(data);
         var featureInfo = xmldoc.documentElement;
         that.readFormat.setFeatureDescription(featureInfo);
@@ -1115,19 +1135,9 @@ L.WFS = L.FeatureGroup.extend({
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
         var exceptionReport = L.XmlUtil.parseOwsExceptionReport(responseText);
-        if (exceptionReport && exceptionReport.exceptions) {
-          var errorMessage = '';
-          for (var i = 0, exceptionsCount = exceptionReport.exceptions.length; i < exceptionsCount; i++) {
-            var exception = exceptionReport.exceptions[i];
-            errorMessage += exception.code + ' - ' + exception.text;
-
-            if (i < exceptionsCount - 1) {
-              errorMessage += " ";
-            }
-          }
-
+        if (exceptionReport) {
           that.fire('error', {
-            error: new Error(errorMessage)
+            error: new Error(exceptionReport.message)
           });
 
           return that;

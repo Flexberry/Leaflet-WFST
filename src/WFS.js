@@ -66,6 +66,17 @@ L.WFS = L.FeatureGroup.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
       success: function (data) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(data);
+        if (exceptionReport) {
+          if (typeof(errorCallback) === 'function') {
+            errorCallback(exceptionReport.message);
+          }
+
+          return;
+        }
+
         var xmldoc = L.XmlUtil.parseXml(data);
         var featureInfo = xmldoc.documentElement;
         that.readFormat.setFeatureDescription(featureInfo);
@@ -113,19 +124,9 @@ L.WFS = L.FeatureGroup.extend({
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
         var exceptionReport = L.XmlUtil.parseOwsExceptionReport(responseText);
-        if (exceptionReport && exceptionReport.exceptions) {
-          var errorMessage = '';
-          for (var i = 0, exceptionsCount = exceptionReport.exceptions.length; i < exceptionsCount; i++) {
-            var exception = exceptionReport.exceptions[i];
-            errorMessage += exception.code + ' - ' + exception.text;
-
-            if (i < exceptionsCount - 1) {
-              errorMessage += " ";
-            }
-          }
-
+        if (exceptionReport) {
           that.fire('error', {
-            error: new Error(errorMessage)
+            error: new Error(exceptionReport.message)
           });
 
           return that;
