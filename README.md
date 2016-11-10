@@ -60,6 +60,12 @@ Extends leaflet classes with toGml(crs) function:
 * L.Polyline
 * L.MultiPolygon
 * L.MultiPolyline
+* L.LatLngBounds
+
+#Events
+Triggers two type of events:
+* load - triggers when both 'DescribeFeatureType' & 'GetFeature' requests succeed, and features have been successfully parsed into leaflet layers
+* error - triggers when any 'DescribeFeatureType' or 'GetFeature' request fails, and features haven't been parsed into leaflet layers
 
 Markers geometry writes as posNode, for all other layers geometry writes as posList
 
