@@ -26,6 +26,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Filter/Filter.BBox.js',
           '<%= srcPath %>/Filter/Filter.Intersects.js',
           '<%= srcPath %>/Filter/Filter.EQ.js',
+          '<%= srcPath %>/Filter/Filter.Like.js',
           '<%= srcPath %>/Format/Format.js',
           '<%= srcPath %>/Format/Scheme.js',
           '<%= srcPath %>/Format/Format.Base.js',

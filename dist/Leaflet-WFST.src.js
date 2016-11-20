@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.1.0 2016-11-10 */
+/*! Leaflet-WFST 1.2.0-alpha01 2016-11-20 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -232,6 +232,23 @@ L.Filter.Intersects = L.Filter.extend({
 L.Filter.EQ = L.Filter.extend({
   append: function (name, val) {
     var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsEqualTo');
+    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
+    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
+    eqElement.appendChild(nameElement);
+    eqElement.appendChild(valueElement);
+    this.filter.appendChild(eqElement);
+    return this;
+  }
+});
+
+L.Filter.Like = L.Filter.extend({
+  append: function (name, val, attributes) {
+    attributes = L.extend({
+      wildCard: '*',
+      singleChar: '#',
+      escapeChar: '!'
+    }, attributes || {});
+    var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
     var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
     var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
     eqElement.appendChild(nameElement);
