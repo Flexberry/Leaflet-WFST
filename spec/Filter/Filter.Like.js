@@ -20,9 +20,9 @@ describe('Filter.Like', function () {
     it('must have first child element with tagName = ogc:PropertyIsLike with default attributes', function() {
       var eqElement = gml.firstChild;
       expect(eqElement.tagName).to.be.equal('ogc:PropertyIsLike');
-      expect(eqElement.attributes.wildCard).to.be.equal('*');
-      expect(eqElement.attributes.singleChar).to.be.equal('#');
-      expect(eqElement.attributes.escapeChar).to.be.equal('!');
+      expect(eqElement.getAttribute('wildCard')).to.be.equal('*');
+      expect(eqElement.getAttribute('singleChar')).to.be.equal('#');
+      expect(eqElement.getAttribute('escapeChar')).to.be.equal('!');
     });
 
     it('must have child element with tagName = ogc:PropertyName & textContent = foobar', function() {
@@ -53,9 +53,9 @@ describe('Filter.Like', function () {
     it('must have first child element with tagName = ogc:PropertyIsLike with custom attributes', function() {
       var eqElement = gml.firstChild;
       expect(eqElement.tagName).to.be.equal('ogc:PropertyIsLike');
-      expect(eqElement.attributes.wildCard).to.be.equal('##');
-      expect(eqElement.attributes.singleChar).to.be.equal('$$');
-      expect(eqElement.attributes.escapeChar).to.be.equal('\\');
+      expect(eqElement.getAttribute('wildCard')).to.be.equal('##');
+      expect(eqElement.getAttribute('singleChar')).to.be.equal('$$');
+      expect(eqElement.getAttribute('escapeChar')).to.be.equal('\\');
     });
   });
 });
