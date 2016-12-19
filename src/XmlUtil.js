@@ -59,7 +59,13 @@ L.XmlUtil = {
   },
 
   createTextNode: function (value) {
-    return this.xmldoc.createTextNode(value);
+    if (value ||
+      value === 0) {
+
+      return this.xmldoc.createTextNode(value);
+    }
+
+    return this.xmldoc.createTextNode('');
   },
 
   serializeXmlDocumentString: function (node) {

@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.1.0 2016-11-10 */
+/*! Leaflet-WFST 1.1.0 2016-12-19 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -64,7 +64,13 @@ L.XmlUtil = {
   },
 
   createTextNode: function (value) {
-    return this.xmldoc.createTextNode(value);
+    if (value ||
+      value === 0) {
+
+      return this.xmldoc.createTextNode(value);
+    }
+
+    return this.xmldoc.createTextNode('');
   },
 
   serializeXmlDocumentString: function (node) {
@@ -1316,7 +1322,7 @@ L.WFST.include({
       valueNode.appendChild(value);
     }
     else {
-      valueNode.appendChild(L.XmlUtil.createTextNode(value || ''));
+      valueNode.appendChild(L.XmlUtil.createTextNode(value));
     }
 
     propertyNode.appendChild(valueNode);
