@@ -1082,6 +1082,7 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
+      headers: this.options.headers || {},
       success: function (data) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -1137,6 +1138,7 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
+      headers: this.options.headers || {},
       success: function (responseText) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -1258,6 +1260,7 @@ L.WFST = L.WFS.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(transaction),
+      headers: this.options.headers || {},
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
         var filter = new L.Filter.GmlObjectID();
