@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.1.0 2016-12-19 */
+/*! Leaflet-WFST 1.1.0 2016-12-23 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -368,7 +368,7 @@ L.Format.GeoJSON = L.Format.Base.extend({
   },
 
   generateLayer: function (feature) {
-    return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng || null, null);
+    return L.GeoJSON.geometryToLayer(feature, this.options || null, this.options.coordsToLatLng || null, null);
   }
 });
 
@@ -1308,7 +1308,7 @@ L.WFST.include({
       propertyNode.appendChild(value);
     }
     else {
-      propertyNode.appendChild(L.XmlUtil.createTextNode(value || ''));
+      propertyNode.appendChild(L.XmlUtil.createTextNode(value));
     }
 
     return propertyNode;
