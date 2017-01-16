@@ -3,7 +3,8 @@ L.Filter.Like = L.Filter.extend({
     attributes = L.extend({
       wildCard: '*',
       singleChar: '#',
-      escapeChar: '!'
+      escapeChar: '!',
+      matchCase: true
     }, attributes || {});
     var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
     var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});

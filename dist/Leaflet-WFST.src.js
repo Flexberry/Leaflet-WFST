@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.2.0-alpha01 2016-11-20 */
+/*! Leaflet-WFST 1.2.0-alpha02 2017-01-16 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -246,7 +246,8 @@ L.Filter.Like = L.Filter.extend({
     attributes = L.extend({
       wildCard: '*',
       singleChar: '#',
-      escapeChar: '!'
+      escapeChar: '!',
+      matchCase: true
     }, attributes || {});
     var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
     var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
