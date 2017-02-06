@@ -65,6 +65,7 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
+      headers: this.options.headers || {},
       success: function (data) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -120,6 +121,7 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
+      headers: this.options.headers || {},
       success: function (responseText) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
