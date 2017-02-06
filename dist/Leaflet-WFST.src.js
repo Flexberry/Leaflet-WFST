@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.2.0-alpha02 2017-02-06 */
+/*! Leaflet-WFST 1.2.0-alpha03 2017-02-06 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -386,7 +386,7 @@ L.Format.GeoJSON = L.Format.Base.extend({
   },
 
   generateLayer: function (feature) {
-    return L.GeoJSON.geometryToLayer(feature, this.options || null, this.options.coordsToLatLng || null, null);
+    return L.GeoJSON.geometryToLayer(feature, this.options || null);
   }
 });
 
