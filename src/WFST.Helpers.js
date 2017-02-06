@@ -22,7 +22,7 @@ L.WFST.include({
       propertyNode.appendChild(value);
     }
     else {
-      propertyNode.appendChild(L.XmlUtil.createTextNode(value || ''));
+      propertyNode.appendChild(L.XmlUtil.createTextNode(value));
     }
 
     return propertyNode;
@@ -36,7 +36,7 @@ L.WFST.include({
       valueNode.appendChild(value);
     }
     else {
-      valueNode.appendChild(L.XmlUtil.createTextNode(value || ''));
+      valueNode.appendChild(L.XmlUtil.createTextNode(value));
     }
 
     propertyNode.appendChild(valueNode);

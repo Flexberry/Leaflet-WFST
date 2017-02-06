@@ -78,6 +78,7 @@ L.WFST = L.WFS.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(transaction),
+      headers: this.options.headers || {},
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
         var filter = new L.Filter.GmlObjectID();

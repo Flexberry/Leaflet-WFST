@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.2.0-alpha02 2017-01-16 */
+/*! Leaflet-WFST 1.2.0-alpha02 2017-02-06 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -64,7 +64,13 @@ L.XmlUtil = {
   },
 
   createTextNode: function (value) {
-    return this.xmldoc.createTextNode(value);
+    if (value ||
+      value === 0) {
+
+      return this.xmldoc.createTextNode(value);
+    }
+
+    return this.xmldoc.createTextNode('');
   },
 
   serializeXmlDocumentString: function (node) {
@@ -380,7 +386,7 @@ L.Format.GeoJSON = L.Format.Base.extend({
   },
 
   generateLayer: function (feature) {
-    return L.GeoJSON.geometryToLayer(feature, this.options.pointToLayer || null, this.options.coordsToLatLng || null, null);
+    return L.GeoJSON.geometryToLayer(feature, this.options || null, this.options.coordsToLatLng || null, null);
   }
 });
 
@@ -1094,6 +1100,7 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
+      headers: this.options.headers || {},
       success: function (data) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -1149,6 +1156,7 @@ L.WFS = L.FeatureGroup.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
+      headers: this.options.headers || {},
       success: function (responseText) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -1270,6 +1278,7 @@ L.WFST = L.WFS.extend({
     L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(transaction),
+      headers: this.options.headers || {},
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
         var filter = new L.Filter.GmlObjectID();
@@ -1320,7 +1329,7 @@ L.WFST.include({
       propertyNode.appendChild(value);
     }
     else {
-      propertyNode.appendChild(L.XmlUtil.createTextNode(value || ''));
+      propertyNode.appendChild(L.XmlUtil.createTextNode(value));
     }
 
     return propertyNode;
@@ -1334,7 +1343,7 @@ L.WFST.include({
       valueNode.appendChild(value);
     }
     else {
-      valueNode.appendChild(L.XmlUtil.createTextNode(value || ''));
+      valueNode.appendChild(L.XmlUtil.createTextNode(value));
     }
 
     propertyNode.appendChild(valueNode);
