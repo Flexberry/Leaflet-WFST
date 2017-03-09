@@ -140,12 +140,12 @@ L.WFS = L.FeatureGroup.extend({
           coordsToLatLng: that.options.coordsToLatLng,
           pointToLayer: that.options.pointToLayer
         });
-        i
-        f (typeof that.options.style === "function") {
+
+        if (typeof that.options.style === "function") {
           layers.forEach(function (element) {
             element.state = that.state.exist;
             if (element.setStyle) {
-        			layer.setStyle(that.options.style(element));
+        			element.setStyle(that.options.style(element));
         		}
             that.addLayer(element);
           });
