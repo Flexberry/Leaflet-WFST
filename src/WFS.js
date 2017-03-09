@@ -140,12 +140,23 @@ L.WFS = L.FeatureGroup.extend({
           coordsToLatLng: that.options.coordsToLatLng,
           pointToLayer: that.options.pointToLayer
         });
-        layers.forEach(function (element) {
-          element.state = that.state.exist;
-          that.addLayer(element);
-        });
+        i
+        f (typeof that.options.style === "function") {
+          layers.forEach(function (element) {
+            element.state = that.state.exist;
+            if (element.setStyle) {
+        			layer.setStyle(that.options.style(element));
+        		}
+            that.addLayer(element);
+          });
+        } else {
+          layers.forEach(function (element) {
+            element.state = that.state.exist;
+            that.addLayer(element);
+          });
+          that.setStyle(that.options.style);
+        }
 
-        that.setStyle(that.options.style);
         that.fire('load', {
           responseText: responseText
         });
