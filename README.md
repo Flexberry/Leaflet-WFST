@@ -25,7 +25,7 @@ where #v1.1.0 is version [releases](https://github.com/Flexberry/Leaflet-WFST/re
     }
 
 ```
-```
+```javascript
 const wfstPointOptions = {
   crs: L.CRS.EPSG4326,
   showExisting: true,
