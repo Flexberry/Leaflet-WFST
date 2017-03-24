@@ -3,7 +3,7 @@
 
 OGC WFS-T client layer for leaflet.
 
-#insatll npm
+#insatll plugin
 ```
   npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.0
 ```
@@ -25,6 +25,7 @@ where #v1.1.0 is version [releases](https://github.com/Flexberry/Leaflet-WFST/re
     }
 
 ```
+#Example
 ```javascript
 const wfstPointOptions = {
   crs: L.CRS.EPSG4326,
