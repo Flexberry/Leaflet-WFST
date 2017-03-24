@@ -145,7 +145,7 @@ L.WFS = L.FeatureGroup.extend({
           layers.forEach(function (element) {
             element.state = that.state.exist;
             if (element.setStyle) {
-        			element.setStyle(that.options.style(element));
+              element.setStyle(that.options.style(element));
         		}
             that.addLayer(element);
           });
