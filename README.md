@@ -1,9 +1,9 @@
-#Leaflet-WFST
+# Leaflet-WFST
 [![Build Status](https://travis-ci.org/Flexberry/Leaflet-WFST.svg?branch=master)](https://travis-ci.org/Flexberry/Leaflet-WFST)
 
 OGC WFS-T client layer for leaflet.
 
-#Initialization options
+# Initialization options
 ```javascript
    options: {
         crs: L.CRS.EPSG3857,
@@ -34,7 +34,7 @@ OGC WFS-T client layer for leaflet.
 |filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
 
-#Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
+# Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
 ```javascript
 var map = L.map('map').setView([0, 0], 2);
 
@@ -53,7 +53,7 @@ var boundaries = new L.WFS({
         })
 ```
 
-#Methods
+# Methods
 Extends leaflet classes with toGml(crs) function:
 * L.Marker
 * L.Polygon
@@ -62,7 +62,7 @@ Extends leaflet classes with toGml(crs) function:
 * L.MultiPolyline
 * L.LatLngBounds
 
-#Events
+# Events
 Triggers two type of events:
 * load - triggers when both 'DescribeFeatureType' & 'GetFeature' requests succeed, and features have been successfully parsed into leaflet layers
 * error - triggers when any 'DescribeFeatureType' or 'GetFeature' request fails, and features haven't been parsed into leaflet layers
@@ -73,7 +73,7 @@ Markers geometry writes as posNode, for all other layers geometry writes as posL
 
 OGC Filter realization:
 
-##GmlObjectID filter
+## GmlObjectID filter
 
 Example:
 ```javascript
@@ -93,7 +93,7 @@ to load feature by id pass filter to WFS-layer options:
   });
 ```
 
-##EQ filter
+## EQ filter
 
 Example:
 ```javascript
@@ -116,7 +116,7 @@ to load features by some property equality to the specified value pass filter to
   });
 ```
 
-##BBox filter
+## BBox filter
 
 Example:
 ```javascript
@@ -142,7 +142,7 @@ to load features by bbox pass filter to WFS-layer options:
   });
 ```
 
-##Intersects filter
+## Intersects filter
 
 Example:
 ```javascript
@@ -171,7 +171,7 @@ to load features by intersection with the specified geometry pass filter to WFS-
   });
 ```
 
-#WFST Example
+# WFST Example
 Editing plugin - [Leaflet.Editable](https://github.com/yohanboniface/Leaflet.Editable)
 ```javascript
 L.WFST.include(MultiEditableMixin);
@@ -205,7 +205,7 @@ to make "wfs:Transaction" POST request call save() method, example with [Leaflet
  }, 'Save changes');
 ```
 
-#Layer properties
+# Layer properties
 ```javascript
 //simple layer
 layer = new L.Marker([0, 0]);
@@ -235,7 +235,7 @@ layer.setProperties({
 layer.deleteProperties(['a','b','c']);
 ```
 
-#Demo
+# Demo
 demos for GML read format
 * [Markers](http://flexberry.github.io/Leaflet-WFST/examples/markers.html)
 * [Polygons](http://flexberry.github.io/Leaflet-WFST/examples/polygon.html)
@@ -247,5 +247,5 @@ demo for GeoJSON read format
 demo filter bbox
 * [BBox](http://flexberry.github.io/Leaflet-WFST/examples/filterBBox.html)
 
-#License
+# License
 MIT
