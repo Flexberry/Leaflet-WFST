@@ -3,7 +3,14 @@
 
 OGC WFS-T client layer for leaflet.
 
+# Install plugin
+```
+  npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.0
+```
+where #v1.1.0 is version [releases](https://github.com/Flexberry/Leaflet-WFST/releases)
+
 # Initialization options
+
 ```javascript
    options: {
         crs: L.CRS.EPSG3857,
@@ -20,6 +27,36 @@ OGC WFS-T client layer for leaflet.
 
 ```
 
+## Example
+```javascript
+const wfstPointOptions = {
+  crs: L.CRS.EPSG4326,
+  showExisting: true,
+  geometryField: 'geom',
+  url: `http://localhost:8080/geoserver/wfs`,
+  typeNS: 'test',
+  typeName: 'test',
+  maxFeatures: 90,
+  style: function(layer) {
+    // you can use if statemt etc
+    return {
+      color: 'black',
+      weight: 1
+    }
+  },
+};
+const wfstPoint = new L.WFST(wfstPointOptions, new L.Format.GeoJSON({
+  crs: L.CRS.EPSG4326,
+  pointToLayer(geoJsonPoint, latlng) {
+    const layer = new L.CircleMarker(latlng, {
+      radius: 10,
+    });
+    return layer;
+  },
+}));
+wfstPoint.addTo(map);
+```
+
 |option name|default|comment|
 |-----------|-------|-------|
 |crs|L.CRS.EPSG3857|spatial reference system for layer, should implement [ICRS](http://leafletjs.com/reference.html#icrs), for example [Proj4Leaflet](https://github.com/kartena/Proj4Leaflet) |
@@ -30,7 +67,7 @@ OGC WFS-T client layer for leaflet.
 |typeName|-|type name|
 |typeNSName|-|type namespace name|
 |namespaceUri|-|namespace URI|
-|style|-|leaflet vector style|
+|style|-|leaflet vector style. function or object|
 |filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
 

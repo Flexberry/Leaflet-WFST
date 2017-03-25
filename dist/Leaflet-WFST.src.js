@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.1.0 2016-12-23 */
+/*! Leaflet-WFST 1.1.0 2017-03-09 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -918,6 +918,14 @@ L.GMLUtil = {
   }
 };
 
+L.CircleMarker.include({
+  toGml: function(crs) {
+    var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
+    node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+    return node;
+  }
+});
+
 L.LatLngBounds.prototype.toGml = function (crs) {
   var projectedSW = crs.project(this.getSouthWest());
   var projectedNE = crs.project(this.getNorthEast());
@@ -1157,12 +1165,23 @@ L.WFS = L.FeatureGroup.extend({
           coordsToLatLng: that.options.coordsToLatLng,
           pointToLayer: that.options.pointToLayer
         });
-        layers.forEach(function (element) {
-          element.state = that.state.exist;
-          that.addLayer(element);
-        });
 
-        that.setStyle(that.options.style);
+        if (typeof that.options.style === "function") {
+          layers.forEach(function (element) {
+            element.state = that.state.exist;
+            if (element.setStyle) {
+        			element.setStyle(that.options.style(element));
+        		}
+            that.addLayer(element);
+          });
+        } else {
+          layers.forEach(function (element) {
+            element.state = that.state.exist;
+            that.addLayer(element);
+          });
+          that.setStyle(that.options.style);
+        }
+
         that.fire('load', {
           responseText: responseText
         });
