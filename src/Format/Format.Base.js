@@ -44,4 +44,20 @@ L.Format.Base = L.Class.extend({
     });
     this.featureType = schemeParser.parse(featureInfo);
   }
+  
+  layerEvents: function (layer) {
+    var _propagateEvent = function (e) {
+      e = L.extend({
+       layer: layer,
+	   target: e.target
+      }, e);
+      layer.fire(e.type, e);
+	}
+	if (layer instanceof L.MultiPolygon || layer instanceof L.Multipolyline) {
+	  layer.eachLayer(function (layer) {
+	    layer.off(L.FeatureGroup.EVENTS);
+		layer.on(L.FeatureGroup.EVENTS, _propagateEvent, this);
+	  });  
+	}
+  }
 });

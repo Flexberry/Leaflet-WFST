@@ -47,6 +47,7 @@ L.Format.GML = L.Format.Base.extend({
 
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
+	this.layerEvents(layer);
     layer.feature = this.featureType.parse(feature);
     return layer;
   },
