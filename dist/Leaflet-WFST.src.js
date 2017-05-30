@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.1.0 2017-05-30 */
+/*! leaflet-wfst 1.1.1 2017-05-30 */
 (function(window, document, undefined) {
 
 "use strict";

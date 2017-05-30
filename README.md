@@ -4,14 +4,19 @@
 OGC WFS-T client layer for leaflet.
 
 # Install plugin
+Via [npm](https://www.npmjs.com/):
 ```
   npm i leaflet-wfst --save
 ```
-or
+Via [Bower](https://bower.io/):
 ```
-  npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.0
+  bower i leaflet-wfst --save
 ```
-where #v1.1.0 is version [releases](https://github.com/Flexberry/Leaflet-WFST/releases)
+From [GitHub](https://github.com/):
+```
+  npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.1
+```
+where #v1.1.1 is version of specific [release](https://github.com/Flexberry/Leaflet-WFST/releases).
 
 # Initialization options
 
@@ -289,4 +294,4 @@ demo filter bbox
 * [BBox](http://flexberry.github.io/Leaflet-WFST/examples/filterBBox.html)
 
 # License
-MIT
+[MIT License](https://github.com/Flexberry/Leaflet-WFST/blob/master/LICENSE.md)
