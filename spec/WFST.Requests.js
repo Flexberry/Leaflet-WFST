@@ -31,7 +31,7 @@ describe('WFST.Requests', function () {
 
   describe('#insert', function () {
     it('should return Element object with tagName wfs:Insert', function () {
-      sinon.stub(wfst, 'gmlFeature', function () {
+      sinon.stub(wfst, 'gmlFeature').callsFake(function () {
         return document.createElement('dummy');
       });
       var result = wfst.insert(layer);
@@ -42,7 +42,7 @@ describe('WFST.Requests', function () {
 
   describe('#update', function () {
     it('should return Element object with tagName wfs:Update', function () {
-      sinon.stub(wfst, 'wfsProperty', function () {
+      sinon.stub(wfst, 'wfsProperty').callsFake(function () {
         return document.createElement('dummy');
       });
       var result = wfst.update(layer);

@@ -19,7 +19,7 @@ describe('L.GML.MultiGeometry', function () {
 
     parser = new L.GML.MultiGeometry();
     parser.appendParser(singleParser);
-    transformStub = sinon.stub(parser, 'transform', function (coordinates) {
+    transformStub = sinon.stub(parser, 'transform').callsFake(function (coordinates) {
       return coordinates;
     });
 

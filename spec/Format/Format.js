@@ -57,7 +57,7 @@ describe("L.Format", function () {
         });
 
         it('should return array with 10 elements', function () {
-          var stub = sinon.stub(format, 'processFeature', function () {
+          var stub = sinon.stub(format, 'processFeature').callsFake(function () {
             return 0;
           });
 
@@ -73,7 +73,7 @@ describe("L.Format", function () {
         before(function (done) {
           loadData('/base/spec/Format/' + kind.featureFile, done, function (data) {
             var testData = kind.prepareData(data);
-            var stub = sinon.stub(format, 'generateLayer', function () {
+            var stub = sinon.stub(format, 'generateLayer').callsFake(function () {
               return {};
             });
 

@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.1.0 2017-03-09 */
+/*! leaflet-wfst 1.1.0 2017-05-30 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -121,7 +121,7 @@ L.XmlUtil = {
 
       for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
         var exceptionTextNode = exceptionsTextNodes[j];
-        var exceptionText = exceptionTextNode.innerHTML;
+        var exceptionText = exceptionTextNode.innerText || exceptionTextNode.textContent || exceptionTextNode.text;
 
         exception.text += exceptionText;
         if (j < textNodesCount - 1) {
@@ -1170,7 +1170,7 @@ L.WFS = L.FeatureGroup.extend({
           layers.forEach(function (element) {
             element.state = that.state.exist;
             if (element.setStyle) {
-        			element.setStyle(that.options.style(element));
+              element.setStyle(that.options.style(element));
         		}
             that.addLayer(element);
           });

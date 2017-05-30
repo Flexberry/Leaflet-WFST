@@ -225,10 +225,10 @@
 
         registerForDrawing: function (editor) {
             if (this._drawingEditor) this.unregisterForDrawing(this._drawingEditor);
-            this.map.on('mousemove touchmove', editor.onDrawingMouseMove, editor);
             this.blockEvents();
             editor.reset();  // Make sure editor tools still receive events.
             this._drawingEditor = editor;
+            this.map.on('mousemove touchmove', editor.onDrawingMouseMove, editor);
             this.map.on('mousedown', this.onMousedown, this);
             this.map.on('mouseup', this.onMouseup, this);
             L.DomUtil.addClass(this.map._container, this.options.drawingCSSClass);
@@ -716,6 +716,7 @@
             this.editor.refresh();
             var icon = this._icon;
             var marker = this.editor.addVertexMarker(e.latlng, this.latlngs);
+            this.editor.onNewVertex(marker);
             /* Hack to workaround browser not firing touchend when element is no more on DOM */
             var parent = marker._icon.parentNode;
             parent.removeChild(marker._icon);
@@ -1037,6 +1038,14 @@
             return new this.tools.options.vertexMarkerClass(latlng, latlngs, this);
         },
 
+        onNewVertex: function (vertex) {
+            // 🍂namespace Editable
+            // 🍂section Vertex events
+            // 🍂event editable:vertex:new: VertexEvent
+            // Fired when a new vertex is created.
+            this.fireAndForward('editable:vertex:new', {latlng: vertex.latlng, vertex: vertex});
+        },
+
         addVertexMarkers: function (latlngs) {
             for (var i = 0; i < latlngs.length; i++) {
                 this.addVertexMarker(latlngs[i], latlngs);
@@ -1219,7 +1228,8 @@
             if (this._drawing === L.Editable.FORWARD) this._drawnLatLngs.push(latlng);
             else this._drawnLatLngs.unshift(latlng);
             this.feature._bounds.extend(latlng);
-            this.addVertexMarker(latlng, this._drawnLatLngs);
+            var vertex = this.addVertexMarker(latlng, this._drawnLatLngs);
+            this.onNewVertex(vertex);
             this.refresh();
         },
 
@@ -1581,6 +1591,15 @@
             this.refresh();
             this.reset();
             // Stop dragging map.
+            // L.Draggable has two workflows:
+            // - mousedown => mousemove => mouseup
+            // - touchstart => touchmove => touchend
+            // Problem: L.Map.Tap does not allow us to listen to touchstart, so we only
+            // can deal with mousedown, but then when in a touch device, we are dealing with
+            // simulated events (actually simulated by L.Map.Tap), which are no more taken
+            // into account by L.Draggable.
+            // Ref.: https://github.com/Leaflet/Leaflet.Editable/issues/103
+            e.originalEvent._simulated = false;
             this.map.dragging._draggable._onUp(e.originalEvent);
             // Now transfer ongoing drag action to the bottom right corner.
             // Should we refine which corne will handle the drag according to
@@ -1590,8 +1609,15 @@
 
         onDrawingMouseUp: function (e) {
             this.commitDrawing(e);
+            e.originalEvent._simulated = false;
             L.Editable.PathEditor.prototype.onDrawingMouseUp.call(this, e);
         },
+
+        onDrawingMouseMove: function (e) {
+            e.originalEvent._simulated = false;
+            L.Editable.PathEditor.prototype.onDrawingMouseMove.call(this, e);
+        },
+
 
         getDefaultLatLngs: function (latlngs) {
             return latlngs || this.feature._latlngs[0];
@@ -1663,8 +1689,8 @@
             this._resizeLatLng.update(e.latlng);
             this.feature._latlng.update(e.latlng);
             this.connect();
-            // this.commitDrawing(e);
             // Stop dragging map.
+            e.originalEvent._simulated = false;
             this.map.dragging._draggable._onUp(e.originalEvent);
             // Now transfer ongoing drag action to the radius handler.
             this._resizeLatLng.__vertex.dragging._draggable._onDown(e.originalEvent);
@@ -1672,7 +1698,13 @@
 
         onDrawingMouseUp: function (e) {
             this.commitDrawing(e);
+            e.originalEvent._simulated = false;
             L.Editable.PathEditor.prototype.onDrawingMouseUp.call(this, e);
+        },
+
+        onDrawingMouseMove: function (e) {
+            e.originalEvent._simulated = false;
+            L.Editable.PathEditor.prototype.onDrawingMouseMove.call(this, e);
         },
 
         onDrag: function (e) {
