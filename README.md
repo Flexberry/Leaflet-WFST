@@ -5,6 +5,10 @@ OGC WFS-T client layer for leaflet.
 
 # Install plugin
 ```
+  npm i leaflet-wfst --save
+```
+or
+```
   npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.0
 ```
 where #v1.1.0 is version [releases](https://github.com/Flexberry/Leaflet-WFST/releases)
