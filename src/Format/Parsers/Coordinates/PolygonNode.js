@@ -15,7 +15,7 @@ L.GML.PolygonNode = L.GML.Geometry.extend({
       //there can be exterior and interior, by GML standard and for leaflet its not significant
       var child = element.childNodes[i];
       if (child.nodeType === document.ELEMENT_NODE) {
-        coords.push(this.linearRingParser.parse(child.firstChild));
+        coords.push(this.linearRingParser.parse(child.children[0]));
       }
     }
 
