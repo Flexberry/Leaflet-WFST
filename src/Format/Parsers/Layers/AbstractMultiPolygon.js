@@ -11,7 +11,12 @@ L.GML.AbstractMultiPolygon = L.GML.MultiGeometry.extend({
 
   parse: function (element, options) {
     var latLngs = L.GML.MultiGeometry.prototype.parse.call(this, element, options);
-    var layer = new L.Polygon([]);
+    var layer;
+    if (Array.isArray(latLngs[0]) && L.MultiPolygon) {
+      layer = new L.MultiPolygon([]);
+    } else {
+      layer = new L.Polygon([]);
+    }
     layer.setLatLngs(latLngs);
     return layer;
   }
