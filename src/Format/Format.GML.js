@@ -27,7 +27,7 @@ L.Format.GML = L.Format.Base.extend({
     var featureCollection = xmlDoc.documentElement;
     var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
     for (var i = 0; i < featureMemberNodes.length; i++) {
-      var feature = featureMemberNodes[i].firstChild;
+      var feature = featureMemberNodes[i].children[0];
       layers.push(this.processFeature(feature));
     }
 
@@ -62,6 +62,6 @@ L.Format.GML = L.Format.Base.extend({
         '\'');
     }
 
-    return this.parseElement(geometryField.firstChild, this.options);
+    return this.parseElement(geometryField.children[0], this.options);
   }
 });
