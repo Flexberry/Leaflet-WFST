@@ -98,6 +98,9 @@ L.WFST = L.WFS.extend({
         });
 
         that.loadFeatures(filter);
+      },
+      error: function(data){
+        that.fire('save:failed', data);
       }
     });
 
