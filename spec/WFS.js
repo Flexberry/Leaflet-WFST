@@ -37,7 +37,7 @@ var getFeatureResponseText = '<wfs:FeatureCollection ' +
     'xmlns:maps="http://boundlessgeo.com" ' +
     'xmlns:topp="http://www.openplans.org/topp" ' +
     'xmlns:wfs="http://www.opengis.net/wfs" ' +
-    'xmlns:ne="http://naturalearthdata.com" ' + 
+    'xmlns:ne="http://naturalearthdata.com" ' +
     'xmlns:ows="http://www.opengis.net/ows" ' +
     'xmlns:xlink="http://www.w3.org/1999/xlink" ' +
     'xmlns:gml="http://www.opengis.net/gml" ' +
@@ -111,7 +111,7 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
           xhr.method === 'POST' &&
           xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0 &&
           new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
-          
+
           // Respond with error to prevent DescribeFeatureType response parsing.
           xhr.respond(500, { 'Content-Type': 'text/html' }, 'Error');
           return;
@@ -133,7 +133,7 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       server.restore();
     });
 
-    it('should return Element object with tagName=GetFeature and must have attiributes "service" and "version"', function () {     
+    it('should return Element object with tagName=GetFeature and must have attiributes "service" and "version"', function () {
       expect(feature).to.be.instanceOf(Element);
       expect(feature.tagName).to.be.equal('wfs:GetFeature');
       expect(feature.getAttribute('service')).to.be.not.undefined;
@@ -199,7 +199,11 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Check events handlers.
       expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledWithMatch({ error: new Error('Not Found') })).to.be.equal(true);
+      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+
+      var eventObject = onErrorEventHandler.getCall(0).args[0];
+      var error = eventObject.error;
+      expect(error).to.be.instanceOf(Error).and.have.property('message', 'Not Found');
     });
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request succeed but with ExceptionReport', function () {
@@ -237,7 +241,11 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Check events handlers.
       expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledWithMatch({ error: new Error('404 - Not Found') })).to.be.equal(true);
+      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+
+      var eventObject = onErrorEventHandler.getCall(0).args[0];
+      var error = eventObject.error;
+      expect(error).to.be.instanceOf(Error).and.have.property('message', '404 - Not Found');
     });
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request succeed, but \'GetFeature\' request failed', function () {
@@ -282,7 +290,11 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Check events handlers.
       expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledWithMatch({ error: new Error('Not Found') })).to.be.equal(true);
+      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+
+      var eventObject = onErrorEventHandler.getCall(0).args[0];
+      var error = eventObject.error;
+      expect(error).to.be.instanceOf(Error).and.have.property('message', 'Not found');
     });
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request succeed, but \'GetFeature\' request succeed with ExceptionReport', function () {
@@ -327,7 +339,11 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Check events handlers.
       expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledWithMatch({ error: new Error('404 - Not Found') })).to.be.equal(true);
+      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+
+      var eventObject = onErrorEventHandler.getCall(0).args[0];
+      var error = eventObject.error;
+      expect(error).to.be.instanceOf(Error).and.have.property('message', '404 - Not Found');
     });
 
     it('should trigger \'load\' event if \'DescribeFeatureType\' request succeed, and \'GetFeature\' request succeed', function () {

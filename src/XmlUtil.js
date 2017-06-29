@@ -116,7 +116,7 @@ L.XmlUtil = {
 
       for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
         var exceptionTextNode = exceptionsTextNodes[j];
-        var exceptionText = exceptionTextNode.innerHTML;
+        var exceptionText = exceptionTextNode.innerText || exceptionTextNode.textContent || exceptionTextNode.text;
 
         exception.text += exceptionText;
         if (j < textNodesCount - 1) {

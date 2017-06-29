@@ -1,4 +1,4 @@
-/*! Leaflet-WFST 1.2.0-alpha03 2017-02-06 */
+/*! leaflet-wfst 1.1.1 2017-06-29 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -121,7 +121,7 @@ L.XmlUtil = {
 
       for (var j = 0, textNodesCount = exceptionsTextNodes.length; j < textNodesCount; j++) {
         var exceptionTextNode = exceptionsTextNodes[j];
-        var exceptionText = exceptionTextNode.innerHTML;
+        var exceptionText = exceptionTextNode.innerText || exceptionTextNode.textContent || exceptionTextNode.text;
 
         exception.text += exceptionText;
         if (j < textNodesCount - 1) {
@@ -936,6 +936,14 @@ L.GMLUtil = {
   }
 };
 
+L.CircleMarker.include({
+  toGml: function(crs) {
+    var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
+    node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+    return node;
+  }
+});
+
 L.LatLngBounds.prototype.toGml = function (crs) {
   var projectedSW = crs.project(this.getSouthWest());
   var projectedNE = crs.project(this.getNorthEast());
@@ -1175,12 +1183,23 @@ L.WFS = L.FeatureGroup.extend({
           coordsToLatLng: that.options.coordsToLatLng,
           pointToLayer: that.options.pointToLayer
         });
-        layers.forEach(function (element) {
-          element.state = that.state.exist;
-          that.addLayer(element);
-        });
 
-        that.setStyle(that.options.style);
+        if (typeof that.options.style === "function") {
+          layers.forEach(function (element) {
+            element.state = that.state.exist;
+            if (element.setStyle) {
+              element.setStyle(that.options.style(element));
+        		}
+            that.addLayer(element);
+          });
+        } else {
+          layers.forEach(function (element) {
+            element.state = that.state.exist;
+            that.addLayer(element);
+          });
+          that.setStyle(that.options.style);
+        }
+
         that.fire('load', {
           responseText: responseText
         });

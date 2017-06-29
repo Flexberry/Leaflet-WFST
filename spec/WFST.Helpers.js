@@ -37,7 +37,7 @@ describe('WFST.Helpers', function () {
 
   describe('#gmlFeature', function () {
     it('should return Element object with tagName like "%namespace%:%typename%"', function () {
-      var stub = sinon.stub(wfst, 'gmlProperty', function () {
+      var stub = sinon.stub(wfst, 'gmlProperty').callsFake(function () {
         return document.createElement('property');
       });
 
@@ -50,7 +50,7 @@ describe('WFST.Helpers', function () {
 
   describe('#gmlProperty', function () {
     it('should return Element object', function () {
-      var stub = sinon.stub(wfst, 'namespaceName', function (name) {
+      var stub = sinon.stub(wfst, 'namespaceName').callsFake(function (name) {
         return name;
       });
       var result = wfst.gmlProperty('propertyName', '');
