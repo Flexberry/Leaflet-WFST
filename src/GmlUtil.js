@@ -4,7 +4,7 @@
 
 L.GmlUtil = {
   posNode: function (coord) {
-    return L.XmlUtil.createElementNS('gml:pos', {srsDimension: 2}, {value: coord.x + ' ' + coord.y});
+    return L.XmlUtil.createElementNS('gml:pos', { srsDimension: 2 }, { value: coord.x + ' ' + coord.y });
   },
 
   posListNode: function (coords, close) {
@@ -18,10 +18,14 @@ L.GmlUtil = {
     }
 
     var posList = localcoords.join(' ');
-    return L.XmlUtil.createElementNS('gml:posList', {}, {value: posList});
+    return L.XmlUtil.createElementNS('gml:posList', {}, { value: posList });
   },
 
-  propertyName: function(value) {
+  propertyName: function (value) {
     return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
+  },
+
+  literal: function (value) {
+    return L.XmlUtil.createElementNS('ogc:Literal', {}, { value: value });
   }
 };

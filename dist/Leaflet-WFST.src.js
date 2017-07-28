@@ -379,21 +379,84 @@ L.Filter.GmlObjectID = L.Class.extend({
   }
 });
 
-L.Filter.EQ = L.Class.extend({
-  initialize: function (name, val) {
-    this.name = name;
-    this.val = val;
+L.Filter.BinaryComparison = L.Class.extend({
+  tagName: null,
+
+  options: {
+    matchCase: true
+  },
+
+  initialize: function (firstValue, secondValue, options) {
+    this.firstValue = firstValue;
+    this.secondValue = secondValue;
+    L.Util.setOptions(this, options);
   },
 
   toGml: function () {
-    var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsEqualTo');
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: this.name });
-    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, { value: this.val });
-    eqElement.appendChild(nameElement);
-    eqElement.appendChild(valueElement);
-    return eqElement;
+    var filterElement = L.XmlUtil.createElementNS(this.tagName, { matchCase: this.options.matchCase });
+    if (this.firstValue instanceof Element) {
+      filterElement.appendChild(this.firstValue);
+    } else {
+      filterElement.appendChild(L.GmlUtil.propertyName(this.firstValue));
+    }
+
+    if (this.secondValue instanceof Element) {
+      filterElement.appendChild(this.secondValue);
+    } else {
+      filterElement.appendChild(L.GmlUtil.literal(this.secondValue));
+    }
+
+    return filterElement;
   }
 });
+
+L.Filter.EQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsEqualTo'
+});
+
+L.Filter.eq = function(firstValue, secondValue) {
+  return new L.Filter.EQ(firstValue, secondValue);
+};
+
+L.Filter.NotEQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsNotEqualTo'
+});
+
+L.Filter.neq = function(firstValue, secondValue) {
+  return new L.Filter.NotEQ(firstValue, secondValue);
+};
+
+L.Filter.LT = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsLessThan'
+});
+
+L.Filter.lt = function(firstValue, secondValue) {
+  return new L.Filter.LT(firstValue, secondValue);
+};
+
+L.Filter.GT = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsGreaterThan'
+});
+
+L.Filter.gt = function(firstValue, secondValue) {
+  return new L.Filter.GT(firstValue, secondValue);
+};
+
+L.Filter.LEQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsLessThanOrEqualTo'
+});
+
+L.Filter.leq = function(firstValue, secondValue) {
+  return new L.Filter.LEQ(firstValue, secondValue);
+};
+
+L.Filter.GEQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsGreaterThanOrEqualTo'
+});
+
+L.Filter.geq = function(firstValue, secondValue) {
+  return new L.Filter.GEQ(firstValue, secondValue);
+};
 
 L.Filter.Like = L.Class.extend({
 
@@ -1072,7 +1135,7 @@ L.Util.project = function (crs, latlngs) {
 
 L.GmlUtil = {
   posNode: function (coord) {
-    return L.XmlUtil.createElementNS('gml:pos', {srsDimension: 2}, {value: coord.x + ' ' + coord.y});
+    return L.XmlUtil.createElementNS('gml:pos', { srsDimension: 2 }, { value: coord.x + ' ' + coord.y });
   },
 
   posListNode: function (coords, close) {
@@ -1086,11 +1149,15 @@ L.GmlUtil = {
     }
 
     var posList = localcoords.join(' ');
-    return L.XmlUtil.createElementNS('gml:posList', {}, {value: posList});
+    return L.XmlUtil.createElementNS('gml:posList', {}, { value: posList });
   },
 
-  propertyName: function(value) {
+  propertyName: function (value) {
     return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
+  },
+
+  literal: function (value) {
+    return L.XmlUtil.createElementNS('ogc:Literal', {}, { value: value });
   }
 };
 
