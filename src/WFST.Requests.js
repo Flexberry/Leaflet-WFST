@@ -20,15 +20,15 @@ L.WFST.include({
     node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
       layer.toGml(this.options.crs)));
 
-    var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
-    node.appendChild(filter.toGml());
+    var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
+    node.appendChild(L.filter(idFilter).toGml());
     return node;
   },
 
   remove: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
-    var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
-    node.appendChild(filter.toGml());
+    var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
+    node.appendChild(L.filter(idFilter).toGml());
     return node;
   }
 });

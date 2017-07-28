@@ -81,10 +81,10 @@ L.WFST = L.WFS.extend({
       headers: this.options.headers || {},
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
-        var filter = new L.Filter.GmlObjectID();
+        var insertedIds = [];
         var id = insertResult.iterateNext();
         while (id) {
-          filter.append(id.value);
+          insertedIds.push(new L.Filter.GmlObjectId(id));
           id = insertResult.iterateNext();
         }
 
@@ -97,7 +97,7 @@ L.WFST = L.WFS.extend({
           that.changes = {};
         });
 
-        that.loadFeatures(filter);
+        that.loadFeatures(insertedIds);
       },
       error: function(data){
         that.fire('save:failed', data);

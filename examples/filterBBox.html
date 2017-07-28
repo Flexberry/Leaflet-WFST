@@ -31,7 +31,7 @@
     typeName: 'perm_water_polygon',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
-    filter: new L.Filter.BBox().append(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326),
+    filter: new L.Filter.BBox(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326),
     style: {
       color: 'blue',
       weight: 2
@@ -42,10 +42,9 @@
 
   map.on('moveend',function(){
     wfst.clearLayers();
-    objWfst.filter = new L.Filter.BBox().append(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326);
+    objWfst.filter = new L.Filter.BBox(map.getBounds(), 'ogr_geometry', L.CRS.EPSG4326);
     wfst = new L.WFST(objWfst).addTo(map);
-  })
-
+  });
 </script>
 </body>
 </html>

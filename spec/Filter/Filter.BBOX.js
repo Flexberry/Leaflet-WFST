@@ -5,29 +5,26 @@ describe('Filter.BBOX', function () {
   var crs;
 
   before(function () {
-    filter = new L.Filter.BBox();
+
     bounds = L.latLngBounds([40.712, -74.227], [40.774, -74.125]);
     geometryField = 'geom';
     crs = L.CRS.EPSG4326;
 
-    filter.append(bounds, geometryField, crs);
+    filter = new L.Filter.BBox(bounds, geometryField, crs);
   });
 
   describe('#toGml', function () {
-    var gml;
+    var bboxElement;
 
     before(function () {
-      gml = filter.toGml(); 
+      bboxElement = filter.toGml();
     });
 
     it('must have first child element with tagName = ogc:BBOX', function () {
-      var bboxElement = gml.firstChild;
-
       expect(bboxElement.tagName).to.be.equal('ogc:BBOX');
     });
 
     it('must have first child element with tagName = ogc:PropertyName & content = geom', function () {
-      var bboxElement = gml.firstChild;
       var propertyNameElement = bboxElement.firstChild;
 
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
@@ -35,7 +32,6 @@ describe('Filter.BBOX', function () {
     });
 
     it('must have last child element describing bounding box geometry', function () {
-      var bboxElement = gml.firstChild;
       var envelopeElement = bboxElement.lastChild;
 
       expect(envelopeElement.outerHTML).to.be.equal(bounds.toGml(crs).outerHTML);

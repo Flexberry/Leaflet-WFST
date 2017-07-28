@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.2.0-alpha04 2017-06-29 */
+/*! leaflet-wfst 1.2.0-alpha04 2017-07-28 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -185,8 +185,14 @@ L.Util.request = function (options) {
 };
 
 L.Filter = L.Class.extend({
-  initialize: function () {
-    this.filter = L.XmlUtil.createElementNS('ogc:Filter');
+  filters: [],
+
+  initialize: function (filters) {
+    if (Array.isArray(filters)) {
+      this.filters = filters;
+    } else if(filters) {
+      this.filters.push(filters);
+    }
   },
 
   /**
@@ -196,72 +202,109 @@ L.Filter = L.Class.extend({
    * {XmlElement} Gml representation of this filter
    */
   toGml: function () {
-    return this.filter;
+    var result = L.XmlUtil.createElementNS('ogc:Filter');
+    this.filters.forEach(function (element) {
+      result.appendChild(element.toGml());
+    }, this);
+    return result;
   },
 
-  append: function () {
-    return this;
+  append: function (filter) {
+    this.filters.push(filter);
   }
 });
 
-L.Filter.GmlObjectID = L.Filter.extend({
-  append: function (id) {
-    this.filter.appendChild(L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': id}));
-    return this;
+L.filter = function (filters) {
+  return new L.Filter(filters);
+};
+
+L.Filter.GmlObjectID = L.Class.extend({
+  initialize: function (id) {
+    this.id = id;
+  },
+
+  toGml: function () {
+    return L.XmlUtil.createElementNS('ogc:GmlObjectId', { 'gml:id': this.id });
   }
 });
 
-L.Filter.BBox = L.Filter.extend({
-  append: function(bbox, geometryField, crs) {
+L.Filter.BBox = L.Class.extend({
+  bbox: null,
+
+  geometryField: null,
+
+  crs: null,
+
+  initialize: function(bbox, geometryField, crs) {
+    this.bbox = bbox;
+    this.geometryField = geometryField;
+    this.crs = crs;
+  },
+
+  toGml: function() {
     var bboxElement = L.XmlUtil.createElementNS('ogc:BBOX');
-    bboxElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
-    bboxElement.appendChild(bbox.toGml(crs));
-
-    this.filter.appendChild(bboxElement);
-
-    return this; 
+    bboxElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: this.geometryField }));
+    bboxElement.appendChild(this.bbox.toGml(this.crs));
+    return bboxElement;
   }
 });
+
+L.Filter.bbox = function(bbox, geometryField, crs) {
+  return new L.Filter.BBox(bbox, geometryField, crs);
+};
 
 L.Filter.Intersects = L.Filter.extend({
-  append: function(geometryLayer, geometryField, crs) {
+  initialize: function(geometryLayer, geometryField, crs) {
+    this.geometryLayer = geometryLayer;
+    this.geometryField = geometryField;
+    this.crs = crs;
+  },
+
+  toGml: function() {
     var intersectsElement = L.XmlUtil.createElementNS('ogc:Intersects');
-    intersectsElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
-    intersectsElement.appendChild(geometryLayer.toGml(crs));
-
-    this.filter.appendChild(intersectsElement);
-
-    return this; 
+    intersectsElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: this.geometryField }));
+    intersectsElement.appendChild(this.geometryLayer.toGml(this.crs));
+    return intersectsElement;
   }
 });
 
-L.Filter.EQ = L.Filter.extend({
-  append: function (name, val) {
+L.Filter.EQ = L.Class.extend({
+  initialize: function (name, val) {
+    this.name = name;
+    this.val = val;
+  },
+
+  toGml: function () {
     var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsEqualTo');
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
-    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
+    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: this.name });
+    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, { value: this.val });
     eqElement.appendChild(nameElement);
     eqElement.appendChild(valueElement);
-    this.filter.appendChild(eqElement);
-    return this;
+    return eqElement;
   }
 });
 
-L.Filter.Like = L.Filter.extend({
-  append: function (name, val, attributes) {
-    attributes = L.extend({
+L.Filter.Like = L.Class.extend({
+
+  initialize: function (name, val, attributes) {
+    this.name = name;
+    this.val = val;
+    this.attributes = attributes;
+  },
+
+  toGml: function() {
+    var attributes = L.extend({
       wildCard: '*',
       singleChar: '#',
       escapeChar: '!',
       matchCase: true
-    }, attributes || {});
-    var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
-    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
-    eqElement.appendChild(nameElement);
-    eqElement.appendChild(valueElement);
-    this.filter.appendChild(eqElement);
-    return this;
+    }, this.attributes || {});
+    var filterElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
+    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: this.name});
+    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: this.val});
+    filterElement.appendChild(nameElement);
+    filterElement.appendChild(valueElement);
+    return filterElement;
   }
 });
 
@@ -1152,8 +1195,8 @@ L.WFS = L.FeatureGroup.extend({
         srsName: this.options.srsName
       }));
 
-    if (filter && filter.toGml) {
-      query.appendChild(filter.toGml());
+    if (filter) {
+      query.appendChild(L.filter(filter).toGml());
     }
 
     return request;
@@ -1300,10 +1343,10 @@ L.WFST = L.WFS.extend({
       headers: this.options.headers || {},
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
-        var filter = new L.Filter.GmlObjectID();
+        var insertedIds = [];
         var id = insertResult.iterateNext();
         while (id) {
-          filter.append(id.value);
+          insertedIds.push(new L.Filter.GmlObjectId(id));
           id = insertResult.iterateNext();
         }
 
@@ -1316,7 +1359,7 @@ L.WFST = L.WFS.extend({
           that.changes = {};
         });
 
-        that.loadFeatures(filter);
+        that.loadFeatures(insertedIds);
       },
       error: function(data){
         that.fire('save:failed', data);
@@ -1392,15 +1435,15 @@ L.WFST.include({
     node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
       layer.toGml(this.options.crs)));
 
-    var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
-    node.appendChild(filter.toGml());
+    var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
+    node.appendChild(L.filter(idFilter).toGml());
     return node;
   },
 
   remove: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
-    var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
-    node.appendChild(filter.toGml());
+    var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
+    node.appendChild(L.filter(idFilter).toGml());
     return node;
   }
 });

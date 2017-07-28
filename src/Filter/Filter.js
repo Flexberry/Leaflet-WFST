@@ -5,8 +5,14 @@
  */
 
 L.Filter = L.Class.extend({
-  initialize: function () {
-    this.filter = L.XmlUtil.createElementNS('ogc:Filter');
+  filters: [],
+
+  initialize: function (filters) {
+    if (Array.isArray(filters)) {
+      this.filters = filters;
+    } else if(filters) {
+      this.filters.push(filters);
+    }
   },
 
   /**
@@ -16,10 +22,18 @@ L.Filter = L.Class.extend({
    * {XmlElement} Gml representation of this filter
    */
   toGml: function () {
-    return this.filter;
+    var result = L.XmlUtil.createElementNS('ogc:Filter');
+    this.filters.forEach(function (element) {
+      result.appendChild(element.toGml());
+    }, this);
+    return result;
   },
 
-  append: function () {
-    return this;
+  append: function (filter) {
+    this.filters.push(filter);
   }
 });
+
+L.filter = function (filters) {
+  return new L.Filter(filters);
+};
