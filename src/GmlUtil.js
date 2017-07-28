@@ -2,7 +2,7 @@
  * Created by PRadostev on 20.02.2015.
  */
 
-L.GMLUtil = {
+L.GmlUtil = {
   posNode: function (coord) {
     return L.XmlUtil.createElementNS('gml:pos', {srsDimension: 2}, {value: coord.x + ' ' + coord.y});
   },
@@ -19,5 +19,9 @@ L.GMLUtil = {
 
     var posList = localcoords.join(' ');
     return L.XmlUtil.createElementNS('gml:posList', {}, {value: posList});
+  },
+
+  propertyName: function(value) {
+    return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
   }
 };

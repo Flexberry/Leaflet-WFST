@@ -10,7 +10,7 @@ L.Filter = L.Class.extend({
   initialize: function (filters) {
     if (Array.isArray(filters)) {
       this.filters = filters;
-    } else if(filters) {
+    } else if (filters) {
       this.filters.push(filters);
     }
   },

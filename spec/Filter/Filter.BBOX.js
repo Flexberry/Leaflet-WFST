@@ -10,7 +10,7 @@ describe('Filter.BBOX', function () {
     geometryField = 'geom';
     crs = L.CRS.EPSG4326;
 
-    filter = new L.Filter.BBox(bounds, geometryField, crs);
+    filter = new L.Filter.BBox(geometryField, bounds, crs);
   });
 
   describe('#toGml', function () {

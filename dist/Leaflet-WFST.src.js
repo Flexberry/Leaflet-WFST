@@ -190,7 +190,7 @@ L.Filter = L.Class.extend({
   initialize: function (filters) {
     if (Array.isArray(filters)) {
       this.filters = filters;
-    } else if(filters) {
+    } else if (filters) {
       this.filters.push(filters);
     }
   },
@@ -218,15 +218,128 @@ L.filter = function (filters) {
   return new L.Filter(filters);
 };
 
-L.Filter.GmlObjectID = L.Class.extend({
-  initialize: function (id) {
-    this.id = id;
+L.Filter.BinarySpatial = L.Class.extend({
+  tagName: null,
+
+  initialize: function (propertyName, value, crs) {
+    this.propertyName = propertyName;
+    this.value = value;
+    this.crs = crs;
   },
 
   toGml: function () {
-    return L.XmlUtil.createElementNS('ogc:GmlObjectId', { 'gml:id': this.id });
+    var filterElement = L.XmlUtil.createElementNS(this.tagName);
+    filterElement.appendChild(L.GmlUtil.propertyName(this.propertyName));
+
+    if (typeof(this.value) === "string") {
+      filterElement.appendChild(L.GmlUtil.propertyName(this.value));
+    } else {
+      filterElement.appendChild(this.value.toGml(this.crs));
+    }
+
+    return filterElement;
   }
 });
+
+L.Filter.Equals = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Equals'
+});
+
+L.Filter.equals = function(options) {
+  return new L.Filter.Equals(options);
+};
+
+L.Filter.Disjoint = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Disjoint'
+});
+
+L.Filter.disjoint = function(options) {
+  return new L.Filter.Disjoint(options);
+};
+
+L.Filter.Touches = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Touches'
+});
+
+L.Filter.touches = function(options) {
+  return new L.Filter.Touches(options);
+};
+
+L.Filter.Within = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Within'
+});
+
+L.Filter.within = function(options) {
+  return new L.Filter.Within(options);
+};
+
+L.Filter.Overlaps = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Overlaps'
+});
+
+L.Filter.overlaps = function(options) {
+  return new L.Filter.Overlaps(options);
+};
+
+L.Filter.Crosses = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Crosses'
+});
+
+L.Filter.crosses = function(options) {
+  return new L.Filter.Crosses(options);
+};
+
+L.Filter.Intersects = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Intersects'
+});
+
+L.Filter.intersects = function(options) {
+  return new L.Filter.Intersects(options);
+};
+
+L.Filter.Contains = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Contains'
+});
+
+L.Filter.contains = function(options) {
+  return new L.Filter.Contains(options);
+};
+
+L.Filter.DistanceBuffer = L.Class.extend({
+  tagName: null,
+
+  initialize: function (propertyName, geometry, crs, distance, units) {
+    this.propertyName = propertyName;
+    this.geomerty = geometry;
+    this.crs = crs;
+    this.distance = distance;
+    this.units = units;
+  },
+
+  toGml: function () {
+    var filterElement = L.XmlUtil.createElementNS(this.tagName);
+    filterElement.appendChild(L.GmlUtil.propertyName(this.propertyName));
+    filterElement.appendChild(this.geomerty.toGml(this.crs));
+    filterElement.appendChild(L.XmlUtil.createElementNS('ogc:Distance', { 'units': this.units }, { value: this.distance }));
+    return filterElement;
+  }
+});
+
+L.Filter.DWithin = L.Filter.DistanceBuffer.extend({
+  tagName: 'ogc:DWithin'
+});
+
+L.Filter.dwithin = function(propertyName, geometry, crs, distance, units) {
+  return new L.Filter.DWithin(propertyName, geometry, crs, distance, units);
+};
+
+L.Filter.Beyond = L.Filter.DistanceBuffer.extend({
+  tagName: 'ogc:Beyond'
+});
+
+L.Filter.beyond = function(propertyName, geometry, crs, distance, units) {
+  return new L.Filter.Beyond(propertyName, geometry, crs, distance, units);
+};
 
 L.Filter.BBox = L.Class.extend({
   bbox: null,
@@ -235,36 +348,34 @@ L.Filter.BBox = L.Class.extend({
 
   crs: null,
 
-  initialize: function(bbox, geometryField, crs) {
+  initialize: function (geometryField, bbox, crs) {
     this.bbox = bbox;
     this.geometryField = geometryField;
     this.crs = crs;
   },
 
-  toGml: function() {
+  toGml: function () {
     var bboxElement = L.XmlUtil.createElementNS('ogc:BBOX');
-    bboxElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: this.geometryField }));
+    if (this.geometryField) {
+      bboxElement.appendChild(L.GmlUtil.propertyName(this.geometryField));
+    }
+
     bboxElement.appendChild(this.bbox.toGml(this.crs));
     return bboxElement;
   }
 });
 
-L.Filter.bbox = function(bbox, geometryField, crs) {
-  return new L.Filter.BBox(bbox, geometryField, crs);
+L.Filter.bbox = function (geometryField, bbox, crs) {
+  return new L.Filter.BBox(geometryField, bbox, crs);
 };
 
-L.Filter.Intersects = L.Filter.extend({
-  initialize: function(geometryLayer, geometryField, crs) {
-    this.geometryLayer = geometryLayer;
-    this.geometryField = geometryField;
-    this.crs = crs;
+L.Filter.GmlObjectID = L.Class.extend({
+  initialize: function (id) {
+    this.id = id;
   },
 
-  toGml: function() {
-    var intersectsElement = L.XmlUtil.createElementNS('ogc:Intersects');
-    intersectsElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: this.geometryField }));
-    intersectsElement.appendChild(this.geometryLayer.toGml(this.crs));
-    return intersectsElement;
+  toGml: function () {
+    return L.XmlUtil.createElementNS('ogc:GmlObjectId', { 'gml:id': this.id });
   }
 });
 
@@ -300,7 +411,7 @@ L.Filter.Like = L.Class.extend({
       matchCase: true
     }, this.attributes || {});
     var filterElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: this.name});
+    var nameElement = L.GmlUtil.propertyName(this.name);
     var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: this.val});
     filterElement.appendChild(nameElement);
     filterElement.appendChild(valueElement);
@@ -959,7 +1070,7 @@ L.Util.project = function (crs, latlngs) {
   }
 };
 
-L.GMLUtil = {
+L.GmlUtil = {
   posNode: function (coord) {
     return L.XmlUtil.createElementNS('gml:pos', {srsDimension: 2}, {value: coord.x + ' ' + coord.y});
   },
@@ -976,13 +1087,17 @@ L.GMLUtil = {
 
     var posList = localcoords.join(' ');
     return L.XmlUtil.createElementNS('gml:posList', {}, {value: posList});
+  },
+
+  propertyName: function(value) {
+    return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
   }
 };
 
 L.CircleMarker.include({
   toGml: function(crs) {
     var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
-    node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+    node.appendChild(L.GmlUtil.posNode(L.Util.project(crs, this.getLatLng())));
     return node;
   }
 });
@@ -1001,7 +1116,7 @@ L.LatLngBounds.prototype.toGml = function (crs) {
 L.Marker.include({
   toGml: function (crs) {
     var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
-    node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+    node.appendChild(L.GmlUtil.posNode(L.Util.project(crs, this.getLatLng())));
     return node;
   }
 });
@@ -1017,13 +1132,13 @@ L.Polygon.include({
       var node = L.XmlUtil.createElementNS('gml:Polygon', {srsName: crs.code, srsDimension: 2});
       node.appendChild(L.XmlUtil.createElementNS('gml:exterior'))
         .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))
-        .appendChild(L.GMLUtil.posListNode(L.Util.project(crs, flat ? polygonCoordinates : polygonCoordinates[0]), true));
+        .appendChild(L.GmlUtil.posListNode(L.Util.project(crs, flat ? polygonCoordinates : polygonCoordinates[0]), true));
 
       if (!flat) {
         for (var hole = 1; hole < polygonCoordinates.length; hole++) {
           node.appendChild(L.XmlUtil.createElementNS('gml:interior'))
             .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))
-            .appendChild(L.GMLUtil.posListNode(L.Util.project(crs, polygonCoordinates[hole]), true));
+            .appendChild(L.GmlUtil.posListNode(L.Util.project(crs, polygonCoordinates[hole]), true));
         }
       }
 
@@ -1046,7 +1161,7 @@ L.Polygon.include({
 L.Polyline.include({
   _lineStringNode: function (crs, latlngs) {
     var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
-    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, latlngs), false));
+    node.appendChild(L.GmlUtil.posListNode(L.Util.project(crs, latlngs), false));
     return node;
   },
 

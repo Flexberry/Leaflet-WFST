@@ -14,7 +14,7 @@ L.Filter.Like = L.Class.extend({
       matchCase: true
     }, this.attributes || {});
     var filterElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: this.name});
+    var nameElement = L.GmlUtil.propertyName(this.name);
     var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: this.val});
     filterElement.appendChild(nameElement);
     filterElement.appendChild(valueElement);
