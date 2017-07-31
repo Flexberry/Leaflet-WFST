@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.2.0-alpha04 2017-07-28 */
+/*! leaflet-wfst 1.2.0-alpha04 2017-07-31 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -538,6 +538,44 @@ L.Filter.IsBetween = L.Class.extend({
 
 L.Filter.isbetween = function(property, lowerBoundary, upperBoundary) {
   return new L.Filter.IsBetween(property, lowerBoundary, upperBoundary);
+};
+
+L.Filter.BinaryLogic = L.Class.extend({
+  tagName: null,
+
+  filters: null,
+
+  initialize: function () {
+    this.filters = [];
+    for (var i = 0; i < arguments.length; i++) {
+      this.filters.push(arguments[i]);
+    }
+  },
+
+  toGml: function () {
+    var filterElement = L.XmlUtil.createElementNS(this.tagName);
+    this.filters.forEach(function(filter) {
+      filterElement.appendChild(filter.toGml());
+    });
+
+    return filterElement;
+  }
+});
+
+L.Filter.And = L.Filter.BinaryLogic.extend({
+  tagName: 'And'
+});
+
+L.Filter.and = function() {
+  return new L.Filter.And(arguments);
+};
+
+L.Filter.Or = L.Filter.BinaryLogic.extend({
+  tagName: 'Or'
+});
+
+L.Filter.or = function() {
+  return new L.Filter.Or(arguments);
 };
 
 L.Format = {};
