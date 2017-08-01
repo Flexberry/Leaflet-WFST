@@ -185,14 +185,15 @@ L.Util.request = function (options) {
 };
 
 L.Filter = L.Class.extend({
-  filters: [],
+  filters: null,
 
-  initialize: function (filters) {
-    if (Array.isArray(filters)) {
-      this.filters = filters;
-    } else if (filters) {
-      this.filters.push(filters);
+  initialize: function () {
+    var filters = [];
+    for (var i = 0; i < arguments.length; i++) {
+      this.filters.push(arguments[i]);
     }
+
+    this.filters = filters;
   },
 
   /**
@@ -214,8 +215,8 @@ L.Filter = L.Class.extend({
   }
 });
 
-L.filter = function (filters) {
-  return new L.Filter(filters);
+L.filter = function () {
+  return  new (Function.prototype.bind.apply(L.Filter, arguments))();
 };
 
 L.Filter.BinarySpatial = L.Class.extend({
@@ -379,12 +380,8 @@ L.Filter.GmlObjectID = L.Class.extend({
   }
 });
 
-L.Filter.BinaryComparison = L.Class.extend({
+L.Filter.BinaryOperator = L.Class.extend({
   tagName: null,
-
-  options: {
-    matchCase: true
-  },
 
   initialize: function (firstValue, secondValue, options) {
     this.firstValue = firstValue;
@@ -393,7 +390,7 @@ L.Filter.BinaryComparison = L.Class.extend({
   },
 
   toGml: function () {
-    var filterElement = L.XmlUtil.createElementNS(this.tagName, { matchCase: this.options.matchCase });
+    var filterElement = L.XmlUtil.createElementNS(this.tagName);
     if (this.firstValue instanceof Element) {
       filterElement.appendChild(this.firstValue);
     } else if (this.firstValue && typeof (this.firstValue.toGml) === "function") {
@@ -410,6 +407,55 @@ L.Filter.BinaryComparison = L.Class.extend({
       filterElement.appendChild(L.GmlUtil.literal(this.secondValue));
     }
 
+    return filterElement;
+  }
+});
+
+L.Filter.Add = L.Filter.BinaryOperator.extend({
+  tagName: 'Add'
+});
+
+L.Filter.add = function(a, b) {
+  return new L.Filter.Add(a, b);
+};
+
+L.Filter.Sub = L.Filter.BinaryOperator.extend({
+  tagName: 'Sub'
+});
+
+L.Filter.sub = function(a, b) {
+  return new L.Filter.Sub(a, b);
+};
+
+L.Filter.Mul = L.Filter.BinaryOperator.extend({
+  tagName: 'Mul'
+});
+
+L.Filter.mul = function(a, b) {
+  return new L.Filter.Mul(a, b);
+};
+
+L.Filter.Div = L.Filter.BinaryOperator.extend({
+  tagName: 'Div'
+});
+
+L.Filter.div = function(a, b) {
+  return new L.Filter.Div(a, b);
+};
+
+L.Filter.BinaryComparison = L.Filter.BinaryOperator.extend({
+  options: {
+    matchCase: false
+  },
+
+  initialize: function(firstValue, secondValue, options) {
+    L.Filter.BinaryOperator.prototype.initialize.call(this, firstValue, secondValue);
+    L.Util.setOptions(this, options);
+  },
+
+  toGml: function() {
+    var filterElement =  L.Filter.BinaryOperator.prototype.toGml.call(this);
+    filterElement.setAttribute('matchCase', this.options.matchCase);
     return filterElement;
   }
 });
@@ -550,10 +596,12 @@ L.Filter.BinaryLogic = L.Class.extend({
   filters: null,
 
   initialize: function () {
-    this.filters = [];
+    var filters = [];
     for (var i = 0; i < arguments.length; i++) {
-      this.filters.push(arguments[i]);
+      filters.push(arguments[i]);
     }
+
+    this.filters = filters;
   },
 
   toGml: function () {
@@ -571,7 +619,7 @@ L.Filter.And = L.Filter.BinaryLogic.extend({
 });
 
 L.Filter.and = function() {
-  return new L.Filter.And(arguments);
+  return new (Function.prototype.bind.apply(L.Filter.And, arguments))();
 };
 
 L.Filter.Or = L.Filter.BinaryLogic.extend({
@@ -579,7 +627,7 @@ L.Filter.Or = L.Filter.BinaryLogic.extend({
 });
 
 L.Filter.or = function() {
-  return new L.Filter.Or(arguments);
+  return new (Function.prototype.bind.apply(L.Filter.Or, arguments))();
 };
 
 L.Format = {};

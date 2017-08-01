@@ -4,10 +4,12 @@ L.Filter.BinaryLogic = L.Class.extend({
   filters: null,
 
   initialize: function () {
-    this.filters = [];
+    var filters = [];
     for (var i = 0; i < arguments.length; i++) {
-      this.filters.push(arguments[i]);
+      filters.push(arguments[i]);
     }
+
+    this.filters = filters;
   },
 
   toGml: function () {

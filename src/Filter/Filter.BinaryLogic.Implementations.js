@@ -3,7 +3,7 @@ L.Filter.And = L.Filter.BinaryLogic.extend({
 });
 
 L.Filter.and = function() {
-  return new L.Filter.And(arguments);
+  return new (Function.prototype.bind.apply(L.Filter.And, arguments))();
 };
 
 L.Filter.Or = L.Filter.BinaryLogic.extend({
@@ -11,5 +11,5 @@ L.Filter.Or = L.Filter.BinaryLogic.extend({
 });
 
 L.Filter.or = function() {
-  return new L.Filter.Or(arguments);
+  return new (Function.prototype.bind.apply(L.Filter.Or, arguments))();
 };
