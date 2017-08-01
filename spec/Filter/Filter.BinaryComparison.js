@@ -61,4 +61,31 @@ describe('Filter.BinaryComparison', function () {
       expect(secondValueElement).to.be.equal(secondValue);
     });
   });
+
+  describe('#toGml with filter values', function () {
+    var filterElement;
+    var firstValue;
+    var secondValue;
+
+    before(function () {
+      firstValue = document.createElement('firstValue');
+      secondValue = document.createElement('secondValue');
+
+      var firstFilter = { toGml: function () { return firstValue; } };
+      var secondFilter = { toGml: function () { return secondValue; } };
+      var filter = new L.Filter.BinaryComparison(firstFilter, secondFilter);
+      filter.tagName = tagName;
+      filterElement = filter.toGml();
+    });
+
+    it('must have first child element equal to firstvalue', function () {
+      var firstValueElement = filterElement.childNodes[0];
+      expect(firstValueElement).to.be.equal(firstValue);
+    });
+
+    it('must have second child element equal to secondvalue', function () {
+      var secondValueElement = filterElement.childNodes[1];
+      expect(secondValueElement).to.be.equal(secondValue);
+    });
+  });
 });
