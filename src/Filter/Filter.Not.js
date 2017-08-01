@@ -8,4 +8,8 @@ L.Filter.Not = L.Class.extend({
     filterElement.appendChild(this.filter.toGml());
     return filterElement;
   }
-})
+});
+
+L.Filter.not = function(filter) {
+  return new L.Filter.Not(filter);
+};
