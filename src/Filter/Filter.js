@@ -36,5 +36,5 @@ L.Filter = L.Class.extend({
 });
 
 L.filter = function () {
-  return  new (Function.prototype.bind.apply(L.Filter, arguments))();
+  return new (Function.prototype.bind.apply(L.Filter, arguments))();
 };

@@ -216,7 +216,7 @@ L.Filter = L.Class.extend({
 });
 
 L.filter = function () {
-  return  new (Function.prototype.bind.apply(L.Filter, arguments))();
+  return new (Function.prototype.bind.apply(L.Filter, arguments))();
 };
 
 L.Filter.BinarySpatial = L.Class.extend({
@@ -629,6 +629,18 @@ L.Filter.Or = L.Filter.BinaryLogic.extend({
 L.Filter.or = function() {
   return new (Function.prototype.bind.apply(L.Filter.Or, arguments))();
 };
+
+L.Filter.Not = L.Class.extend({
+  initialize: function(filter) {
+    this.filter = filter;
+  },
+
+  toGml: function() {
+    var filterElement = L.XmlUtil.createElementNS('Not');
+    filterElement.appendChild(this.filter.toGml());
+    return filterElement;
+  }
+})
 
 L.Format = {};
 

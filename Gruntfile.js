@@ -37,6 +37,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Filter/Filter.IsBetween.js',
           '<%= srcPath %>/Filter/Filter.BinaryLogic.js',
           '<%= srcPath %>/Filter/Filter.BinaryLogic.Implementations.js',
+          '<%= srcPath %>/Filter/Filter.Not.js',
           '<%= srcPath %>/Format/Format.js',
           '<%= srcPath %>/Format/Scheme.js',
           '<%= srcPath %>/Format/Format.Base.js',
