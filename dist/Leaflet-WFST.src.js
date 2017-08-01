@@ -219,6 +219,64 @@ L.filter = function () {
   return new (Function.prototype.bind.apply(L.Filter, arguments))();
 };
 
+L.Filter.propertyName = function (value) {
+  return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
+};
+
+L.Filter.literal = function (value) {
+  return L.XmlUtil.createElementNS('ogc:Literal', {}, { value: value });
+};
+
+L.Filter.element = function(value) {
+  if(value instanceof Element) {
+    return value;
+  }
+
+  return value.toGml();
+};
+
+L.Filter.propertyElement = function (value) {
+  if (value instanceof Element) {
+    return value;
+  }
+
+  if (value && typeof (value.toGml) === "function") {
+    return value.toGml();
+  }
+
+  return L.Filter.propertyName(value);
+};
+
+L.Filter.literalElement = function (value) {
+  if (value instanceof Element) {
+    return value;
+  }
+
+  if (value && typeof (value.toGml) === "function") {
+    return value.toGml();
+  }
+
+  return L.Filter.literal(value);
+};
+
+L.Filter.Abstract = L.Class.extend({
+  attributes: {},
+
+  options: {},
+
+  tagName: null,
+
+  buildFilterContent: function() {
+    throw "Build filter content is abstract and should be implemented";
+  },
+
+  toGml: function() {
+    var filterElement = L.XmlUtil.createElementNS(this.tagName, this.attributes, this.options);
+    this.buildFilterContent(filterElement);
+    return filterElement;
+  }
+});
+
 L.Filter.BinarySpatial = L.Class.extend({
   tagName: null,
 
@@ -645,6 +703,31 @@ L.Filter.Not = L.Class.extend({
 L.Filter.not = function(filter) {
   return new L.Filter.Not(filter);
 };
+
+L.Filter.Function = L.Filter.Abstract.extend({
+  tagName: 'Function',
+
+  initialize: function () {
+    var functionName = arguments[0];
+    this.attributes = { name: functionName };
+    var expressions = [];
+    for (var i = 1; i < arguments.length; i++) {
+      expressions.push(arguments[i]);
+    }
+
+    this.expressions = expressions;
+  },
+
+  buildFilterContent: function (filterElement) {
+    var firstArgument = this.expressions[0];
+    filterElement.appendChild(L.Filter.propertyElement(firstArgument));
+
+    for (var i = 1; i < this.expressions.length; i++) {
+      var functionArgument = this.expressions[i];
+      filterElement.appendChild(L.Filter.literalElement(functionArgument));
+    }
+  }
+});
 
 L.Format = {};
 

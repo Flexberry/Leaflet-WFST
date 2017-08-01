@@ -1,7 +1,7 @@
 describe('Filter.Not', function () {
   describe('#toGml', function () {
-    it('shoud return element with tagName not and one childElement for passed filter', function () {
-      var valueGml = document.createElement();
+    it('should return element with tagName not and one childElement for passed filter', function () {
+      var valueGml = document.createElement('test');
       var valueFilter = { toGml: function () { return valueGml; } };
       var filter = new L.Filter.Not(valueFilter);
       var filterElement = filter.toGml();
