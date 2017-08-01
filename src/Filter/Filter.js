@@ -10,7 +10,7 @@ L.Filter = L.Class.extend({
   initialize: function () {
     var filters = [];
     for (var i = 0; i < arguments.length; i++) {
-      this.filters.push(arguments[i]);
+      filters.push(arguments[i]);
     }
 
     this.filters = filters;
