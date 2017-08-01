@@ -1,37 +1,24 @@
-L.Filter.IsBetween = L.Class.extend({
+L.Filter.IsBetween = L.Filter.Abstract.extend({
+  tagName: 'ogc:PropertyIsBetween',
+
   initialize: function (property, lowerBoundary, upperBoundary) {
     this.property = property;
     this.lowerBoundary = lowerBoundary;
     this.upperBoundary = upperBoundary;
   },
 
-  toGml: function () {
-    var filterElement = L.XmlUtil.createElementNS('ogc:PropertyIsBetween');
-    if (this.property instanceof Element) {
-      filterElement.appendChild(this.property);
-    } else {
-      filterElement.appendChild(L.GmlUtil.propertyName(this.property));
-    }
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyElement(this.property));
 
     var lowerBoundaryElement = L.XmlUtil.createElementNS('ogc:LowerBoundary');
-    if (this.lowerBoundary instanceof Element) {
-      lowerBoundaryElement.appendChild(this.lowerBoundary);
-    } else {
-      lowerBoundaryElement.appendChild(L.GmlUtil.literal(this.lowerBoundary));
-    }
+    lowerBoundaryElement.appendChild(L.Filter.literalElement(this.lowerBoundary));
 
     filterElement.appendChild(lowerBoundaryElement);
 
     var upperBoundaryElement = L.XmlUtil.createElementNS('ogc:UpperBoundary');
-    if (this.upperBoundary instanceof Element) {
-      upperBoundaryElement.appendChild(this.upperBoundary);
-    } else {
-      upperBoundaryElement.appendChild(L.GmlUtil.literal(this.upperBoundary));
-    }
+    upperBoundaryElement.appendChild(L.Filter.literalElement(this.upperBoundary));
 
     filterElement.appendChild(upperBoundaryElement);
-
-    return filterElement;
   }
 });
 

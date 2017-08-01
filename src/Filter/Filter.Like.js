@@ -1,21 +1,22 @@
-L.Filter.Like = L.Class.extend({
+L.Filter.Like = L.Filter.Abstract.extend({
+  tagName: 'ogc:PropertyIsLike',
+
+  attributes: {
+    wildCard: '*',
+    singleChar: '#',
+    escapeChar: '!',
+    matchCase: true
+  },
 
   initialize: function (name, val, attributes) {
     this.name = name;
     this.val = val;
-    this.attributes = attributes;
+    this.attributes = L.extend(this.attributes, attributes || {});
   },
 
-  toGml: function() {
-    var attributes = L.extend({
-      wildCard: '*',
-      singleChar: '#',
-      escapeChar: '!',
-      matchCase: true
-    }, this.attributes || {});
-    var filterElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
-    var nameElement = L.GmlUtil.propertyName(this.name);
-    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: this.val});
+  buildFilterContent: function (filterElement) {
+    var nameElement = L.Filter.propertyName(this.name);
+    var valueElement = L.Filter.literal(this.val);
     filterElement.appendChild(nameElement);
     filterElement.appendChild(valueElement);
     return filterElement;

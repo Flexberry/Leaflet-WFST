@@ -1,6 +1,4 @@
-L.Filter.BinaryLogic = L.Class.extend({
-  tagName: null,
-
+L.Filter.BinaryLogic = L.Filter.Abstract.extend({
   filters: null,
 
   initialize: function () {
@@ -12,12 +10,9 @@ L.Filter.BinaryLogic = L.Class.extend({
     this.filters = filters;
   },
 
-  toGml: function () {
-    var filterElement = L.XmlUtil.createElementNS(this.tagName);
+  buildFilterContent: function (filterElement) {
     this.filters.forEach(function(filter) {
-      filterElement.appendChild(filter.toGml());
+      filterElement.appendChild(L.Filter.element(filter));
     });
-
-    return filterElement;
   }
 });

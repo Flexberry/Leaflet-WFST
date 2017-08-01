@@ -1,7 +1,9 @@
-L.Filter.BBox = L.Class.extend({
-  bbox: null,
+L.Filter.BBox = L.Filter.Abstract.extend({
+  tagName: 'ogc:BBOX',
 
   geometryField: null,
+
+  bbox: null,
 
   crs: null,
 
@@ -11,14 +13,12 @@ L.Filter.BBox = L.Class.extend({
     this.crs = crs;
   },
 
-  toGml: function () {
-    var bboxElement = L.XmlUtil.createElementNS('ogc:BBOX');
+  buildFilterContent: function (filterElement) {
     if (this.geometryField) {
-      bboxElement.appendChild(L.GmlUtil.propertyName(this.geometryField));
+      filterElement.appendChild(L.Filter.propertyName(this.geometryField));
     }
 
-    bboxElement.appendChild(this.bbox.toGml(this.crs));
-    return bboxElement;
+    filterElement.appendChild(this.bbox.toGml(this.crs));
   }
 });
 

@@ -19,13 +19,5 @@ L.GmlUtil = {
 
     var posList = localcoords.join(' ');
     return L.XmlUtil.createElementNS('gml:posList', {}, { value: posList });
-  },
-
-  propertyName: function (value) {
-    return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
-  },
-
-  literal: function (value) {
-    return L.XmlUtil.createElementNS('ogc:Literal', {}, { value: value });
   }
 };

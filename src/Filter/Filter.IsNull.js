@@ -1,15 +1,14 @@
-L.Filter.IsNull = L.Class.extend({
+L.Filter.IsNull = L.Filter.Abstract.extend({
+  tagName: 'ogc:PropertyIsNull',
+
   initialize: function (propertyName) {
     this.propertyName = propertyName;
   },
 
-  toGml: function () {
-    var filterElement = L.XmlUtil.createElementNS('ogc:PropertyIsNull');
-    filterElement.appendChild(L.GmlUtil.propertyName(this.propertyName));
-    return filterElement;
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyName(this.propertyName));
   }
 });
-
 
 L.Filter.isnull = function(propertyName) {
   return new L.Filter.IsNull(propertyName);

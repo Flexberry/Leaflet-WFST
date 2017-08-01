@@ -1,12 +1,12 @@
-L.Filter.Not = L.Class.extend({
+L.Filter.Not = L.Filter.Abstract.extend({
+  tagName: 'Not',
+
   initialize: function(filter) {
     this.filter = filter;
   },
 
-  toGml: function() {
-    var filterElement = L.XmlUtil.createElementNS('Not');
-    filterElement.appendChild(this.filter.toGml());
-    return filterElement;
+  buildFilterContent: function(filterElement) {
+    filterElement.appendChild(L.Filter.element(this.filter));
   }
 });
 
