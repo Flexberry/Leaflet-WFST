@@ -681,6 +681,10 @@ L.Filter.Function = L.Filter.Abstract.extend({
   }
 });
 
+L.Filter.function = function() {
+  return new (Function.prototype.bind.apply(L.Filter.Function, arguments))();
+};
+
 L.Format = {};
 
 L.Format.Scheme = L.Class.extend({
