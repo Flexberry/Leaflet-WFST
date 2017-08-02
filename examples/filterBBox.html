@@ -31,7 +31,7 @@
 
     var objWfst = {
       url: 'http://geoserver.ics.perm.ru/geoserver/ows',
-      typeNS: 'osm_perm_region',
+      typeNS: 'ics',
       typeName: 'perm_water_polygon',
       crs: L.CRS.EPSG4326,
       geometryField: 'ogr_geometry',
@@ -43,13 +43,6 @@
     };
 
     var wfst = new L.WFST(objWfst).addTo(map);
-
-    map.on('moveend', function () {
-      wfst.clearLayers();
-      objWfst.filter = new L.Filter.BBox('ogr_geometry', map.getBounds(), L.CRS.EPSG4326);
-      wfst = new L.WFST(objWfst).addTo(map);
-    });
-
   </script>
 </body>
 
