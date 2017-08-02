@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.2.0-alpha04 2017-08-01 */
+/*! leaflet-wfst 1.2.0-alpha04 2017-08-02 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -187,13 +187,15 @@ L.Util.request = function (options) {
 L.Filter = L.Class.extend({
   filters: null,
 
-  initialize: function () {
-    var filters = [];
-    for (var i = 0; i < arguments.length; i++) {
-      filters.push(arguments[i]);
+  initialize: function (filter) {
+    if (Array.isArray(filter)) {
+      this.filters = filter;
+    } else {
+      this.filters = [];
+      if (filter) {
+        this.filters.push(filter);
+      }
     }
-
-    this.filters = filters;
   },
 
   /**
@@ -215,8 +217,8 @@ L.Filter = L.Class.extend({
   }
 });
 
-L.filter = function () {
-  return new (Function.prototype.bind.apply(L.Filter, arguments))();
+L.filter = function (filter) {
+  return new L.Filter(filter);
 };
 
 L.Filter.propertyName = function (value) {
@@ -1656,7 +1658,7 @@ L.WFST = L.WFS.extend({
   addLayer: function (layer) {
     L.FeatureGroup.prototype.addLayer.call(this, layer);
     if (!layer.feature) {
-      layer.feature = {properties: {}};
+      layer.feature = { properties: {} };
     }
 
     if (!layer.state) {
@@ -1698,7 +1700,7 @@ L.WFST = L.WFS.extend({
   },
 
   save: function () {
-    var transaction = L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
+    var transaction = L.XmlUtil.createElementNS('wfs:Transaction', { service: 'WFS', version: this.options.version });
 
     var inserted = [];
 
@@ -1738,7 +1740,7 @@ L.WFST = L.WFS.extend({
 
         that.loadFeatures(insertedIds);
       },
-      error: function(data){
+      error: function (data) {
         that.fire('save:failed', data);
       }
     });

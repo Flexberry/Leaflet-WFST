@@ -89,12 +89,13 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
   '</ows:ExceptionReport>';
 
   describe('#getFeature', function () {
-    var server;
     var feature;
 
-    beforeEach(function() {
-      // Create fake XHR.
-      server = sinon.fakeServer.create();
+    before(function() {
+      var TestFilter = L.Filter.Abstract.extend({
+        tagName: 'testFilter',
+        buildFilterContent: function() {}
+      });
 
       var options = {
         url: 'http://demo.opengeo.org/geoserver/ows',
@@ -105,32 +106,9 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
         maxFeatures: 5000
       };
 
-      // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
-        if (
-          xhr.method === 'POST' &&
-          xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0 &&
-          new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
-
-          // Respond with error to prevent DescribeFeatureType response parsing.
-          xhr.respond(500, { 'Content-Type': 'text/html' }, 'Error');
-          return;
-        }
-
-        throw new Error('Unexpected request');
-      });
-
+      sinon.stub(L.WFS, 'describeFeatureType');
       var wfs = new L.WFS(options);
-
-      // Force fake server to respond on sended requests.
-      server.respond();
-
-      feature = wfs.getFeature();
-    });
-
-    afterEach(function () {
-      // Restore original XHR.
-      server.restore();
+      feature = wfs.getFeature(new TestFilter());
     });
 
     it('should return Element object with tagName=GetFeature and must have attiributes "service" and "version"', function () {
@@ -148,6 +126,11 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       var query = feature.firstChild;
       expect(query.tagName).to.be.equal('wfs:Query');
       expect(query.getAttribute('typeName')).to.be.equal('topp:tasmania_cities');
+    });
+
+    it('should have ogc:Filter element as child of query', function () {
+      var filter = feature.firstChild.firstChild;
+      expect(filter.tagName).to.be.equal('ogc:Filter');
     });
   });
 
@@ -198,8 +181,8 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.not.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -240,8 +223,8 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -282,15 +265,15 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Force fake server to respond on 'DescribeFeatures' request.
       server.respond();
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler.notCalled).to.be.notCalled;
 
       // Force fake server to respond on 'GetFeature' request (which will be sended automatically when 'DescribeFeatures' request succeed).
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -331,15 +314,15 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Force fake server to respond on 'DescribeFeatures' request.
       server.respond();
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.notCalled;
 
       // Force fake server to respond on 'GetFeature' request (which will be sended automatically when 'DescribeFeatures' request succeed).
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -380,15 +363,15 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
 
       // Force fake server to respond on 'DescribeFeatures' request.
       server.respond();
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.notCalled;
 
       // Force fake server to respond on 'GetFeature' request (which will be sended automatically when 'DescribeFeatures' request succeed).
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.calledWithMatch({ responseText: getFeatureResponseText })).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.calledWithMatch({ responseText: getFeatureResponseText });
+      expect(onErrorEventHandler).to.be.notCalled;
     });
   });
 });

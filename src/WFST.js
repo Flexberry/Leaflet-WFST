@@ -17,7 +17,7 @@ L.WFST = L.WFS.extend({
   addLayer: function (layer) {
     L.FeatureGroup.prototype.addLayer.call(this, layer);
     if (!layer.feature) {
-      layer.feature = {properties: {}};
+      layer.feature = { properties: {} };
     }
 
     if (!layer.state) {
@@ -59,7 +59,7 @@ L.WFST = L.WFS.extend({
   },
 
   save: function () {
-    var transaction = L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
+    var transaction = L.XmlUtil.createElementNS('wfs:Transaction', { service: 'WFS', version: this.options.version });
 
     var inserted = [];
 
@@ -99,7 +99,7 @@ L.WFST = L.WFS.extend({
 
         that.loadFeatures(insertedIds);
       },
-      error: function(data){
+      error: function (data) {
         that.fire('save:failed', data);
       }
     });

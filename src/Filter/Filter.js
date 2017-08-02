@@ -7,13 +7,15 @@
 L.Filter = L.Class.extend({
   filters: null,
 
-  initialize: function () {
-    var filters = [];
-    for (var i = 0; i < arguments.length; i++) {
-      filters.push(arguments[i]);
+  initialize: function (filter) {
+    if (Array.isArray(filter)) {
+      this.filters = filter;
+    } else {
+      this.filters = [];
+      if (filter) {
+        this.filters.push(filter);
+      }
     }
-
-    this.filters = filters;
   },
 
   /**
@@ -35,6 +37,6 @@ L.Filter = L.Class.extend({
   }
 });
 
-L.filter = function () {
-  return new (Function.prototype.bind.apply(L.Filter, arguments))();
+L.filter = function (filter) {
+  return new L.Filter(filter);
 };
