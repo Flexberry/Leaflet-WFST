@@ -94,9 +94,9 @@ var boundaries = new L.WFS({
         weight: 2
     }
 }).addTo(map)
-        .on('load', function () {
-            map.fitBounds(boundaries);
-        })
+  .on('load', function () {
+      map.fitBounds(boundaries);
+  })
 ```
 
 # Methods
@@ -117,14 +117,52 @@ Markers geometry writes as posNode, for all other layers geometry writes as posL
 
 # Filter
 
-OGC Filter realization:
+Realization of OGC Filter Encoding v1.1.0
 
-## GmlObjectID filter
+Filter implementations return only inner content of filter element.
+
+Some considerations for all filter constructors:
+* "expression" - propertyName, literal, comparison filter or operator filter
+* "propertyExpression" - if argument on this position is not Element and is not "expression" method it suspect to be a propertyName
+* "literalExpression" - if argument on this position is not Element and is not "expression" it suspect to be a literal
+
+|Name|Constructor|
+|----|-----|
+|**ID**|
+|[GmlObjectId](#featureid)|L.Filter.GmlObjectId(value id)|
+|**Comparisons**|
+|[PropertyIsEqualTo](#propertyisequalto)|L.Filter.EQ(propertyExpression firstArgument, literalExpression secondArgument, bool matchCase)|
+|PropertyIsNotEqualTo|L.Filter.NotEQ(propertyExpression firstArgument, literalExpression secondArgument, bool matchCase)|
+|PropertyIsLessThan|L.Filter.LT(propertyExpression firstArgument, literalExpression secondArgument, bool matchCase)|
+|PropertyIsGreaterThan|L.Filter.GT(propertyExpression firstArgument, literalExpression secondArgument, bool matchCase)|
+|PropertyIsLessThanOrEqualTo|L.Filter.LEQ(propertyExpression firstArgument, literalExpression secondArgument, bool matchCase)|
+|PropertyIsGreaterThanOrEqualTo|L.Filter.GEQ(propertyExpression firstArgument, literalExpression secondArgument, bool matchCase)|
+|[PropertyIsLike](#propertyislike)|L.Filter.Like(string propertyName,string likeExpression,object attributes)|
+|PropertyIsNull|L.Filter.IsNull(string propertyName)|
+|PropertyIsBetween|L.Filter.IsBetween(propertyExpression firstArgument, literalExpression lowerBoundary, literalExpression upperBoundary)|
+|**Operators**|
+|Add|L.Filter.Add(expression, expression)|
+|Sub|L.Filter.Sub(expression, expression)|
+|Mul|L.Filter.Mul(expression, expression)|
+|Div|L.Filter.Div(expression, expression)|
+|**Logic**|
+|And|L.Filter.And(expression[, expression]*)|
+|Or|L.Filter.Or(expression[, expression]*)|
+|Not|L.Filter.Not(expression)|
+|**Spatial**|
+|BBox||
+|||
+
+
+## Examples
+
+### FeatureID filter
+
+In standard there are two filters - GmlObjectID and FeatureID, but latest is marked as deprecated and so is not implemented.   
 
 Example:
 ```javascript
-  var filter = new L.Filter.GmlObjectID().append(1);
-  filter.toGml()
+  var filter = new L.Filter.GmlObjectID(1);  
 ```
 code above will return xml:
 ```xml
@@ -135,31 +173,47 @@ code above will return xml:
 to load feature by id pass filter to WFS-layer options:
 ```javascript
   var wfs = new L.WFS({
-    filter: new L.Filter.GmlObjectID().append(1)
+    filter: new L.Filter.GmlObjectID(1)
   });
 ```
 
-## EQ filter
+### PropertyIsEqual
 
-Example:
 ```javascript
-  var filter = new L.Filter.EQ().append('city', 'Perm');
+  var filter = new L.Filter.EQ('city', 'Perm');
   filter.toGml()
 ```
 code above will return xml:
 ```xml
-  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-    <ogc:PropertyIsEqualTo>
-      <ogc:PropertyName>city</ogc:PropertyName>
-      <ogc:Literal>Perm</ogc:Literal>
-    </ogc:PropertyIsEqualTo>
-  </ogc:Filter>
+  <ogc:PropertyIsEqualTo>
+    <ogc:PropertyName>city</ogc:PropertyName>
+    <ogc:Literal>Perm</ogc:Literal>
+  </ogc:PropertyIsEqualTo>
 ```
-to load features by some property equality to the specified value pass filter to WFS-layer options:
+
+### PropertyIsLike
+
+This filter accept optional attributes object:
 ```javascript
-  var wfs = new L.WFS({
-    filter: new L.Filter.EQ().append('city', 'Perm')
-  });
+ attributes: {
+    wildCard: '*',
+    singleChar: '#',
+    escapeChar: '!',
+    matchCase: true
+  }
+```
+
+```javascript
+  var filter = new L.Filter.Like('city', '*perm*', { matchCase: false });
+  filter.toGml()
+```
+
+code above will return xml:
+```xml
+  <ogc:ogc:PropertyIsLike wildCard="*" singleChar="#" escapeChar="!" matchCase="false">
+    <ogc:PropertyName>city</ogc:PropertyName>
+    <ogc:Literal>*perm*</ogc:Literal>
+  </ogc:ogc:PropertyIsLike>
 ```
 
 ## BBox filter
