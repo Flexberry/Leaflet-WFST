@@ -19,8 +19,6 @@
 <body>
   <div id="map"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.1/leaflet.js"></script>
-  <script src="lib/proj4.js"></script>
-  <script src="lib/proj4leaflet.js"></script>
   <script src="../dist/Leaflet-WFST.src.js"></script>
   <script>
     var map = L.map('map').setView([60.372465778991284, 53.64349365234375], 9);
@@ -51,23 +49,21 @@
     var continueLoad = function () {
       var bounds = map.getBounds();
 
-      if(loadedBounds.contains(bounds)) {
+      if (loadedBounds.contains(bounds)) {
         return;
       }
 
-      var rectangle = L.rectangle(loadedBounds);
-      loadedPart = new L.Filter.Not(new L.Filter.Intersects(options.geometryField, rectangle, options.crs));
+      var oldRectangle = L.rectangle([loadedBounds.getSouthEast(), loadedBounds.getNorthWest()]);
+      loadedPart = new L.Filter.Not(new L.Filter.Intersects(options.geometryField, oldRectangle, options.crs));
 
       loadedBounds.extend(bounds);
-      var newRectangle = L.rectangle(loadedBounds);
+      var newRectangle = L.rectangle([loadedBounds.getSouthEast(), loadedBounds.getNorthWest()]);
       var newPart = new L.Filter.Intersects(options.geometryField, newRectangle, options.crs);
 
       wfst.loadFeatures(new L.Filter.And(newPart, loadedPart));
-
     };
-
-    map.on('zoomend', continueLoad);
     map.on('moveend', continueLoad);
+
   </script>
 </body>
 
