@@ -6,6 +6,9 @@ L.Filter.GmlObjectID = L.Filter.Abstract.extend({
   },
 
   buildFilterContent: function() {
-
   }
 });
+
+L.Filter.gmlobjectid = function(id) {
+  return new L.Filter.GmlObjectID(id);
+};

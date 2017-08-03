@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.2.0-alpha04 2017-08-02 */
+/*! leaflet-wfst 1.2.0-alpha04 2017-08-03 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -429,9 +429,12 @@ L.Filter.GmlObjectID = L.Filter.Abstract.extend({
   },
 
   buildFilterContent: function() {
-
   }
 });
+
+L.Filter.gmlobjectid = function(id) {
+  return new L.Filter.GmlObjectID(id);
+};
 
 L.Filter.BinaryOperator = L.Filter.Abstract.extend({
   initialize: function (firstValue, secondValue) {
@@ -484,9 +487,7 @@ L.Filter.BinaryComparison = L.Filter.BinaryOperator.extend({
 
   initialize: function(firstValue, secondValue, matchCase) {
     L.Filter.BinaryOperator.prototype.initialize.call(this, firstValue, secondValue);
-    if(matchCase !== undefined) {
-      this.attributes.matchCase = matchCase;
-    }
+    this.attributes.matchCase = !!matchCase;
   }
 });
 
@@ -562,6 +563,10 @@ L.Filter.Like = L.Filter.Abstract.extend({
     return filterElement;
   }
 });
+
+L.Filter.like = function(name, val, attributes) {
+  return new L.Filter.Like(name, val, attributes);
+};
 
 L.Filter.IsNull = L.Filter.Abstract.extend({
   tagName: 'ogc:PropertyIsNull',

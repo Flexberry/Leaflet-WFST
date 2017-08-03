@@ -22,3 +22,7 @@ L.Filter.Like = L.Filter.Abstract.extend({
     return filterElement;
   }
 });
+
+L.Filter.like = function(name, val, attributes) {
+  return new L.Filter.Like(name, val, attributes);
+};
