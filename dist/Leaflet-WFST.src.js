@@ -1086,6 +1086,8 @@ L.WFS = L.FeatureGroup.extend({
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;
 
+    this._updateOpacity();
+
     var that = this;
     this.describeFeatureType(function () {
       if (that.options.showExisting) {
@@ -1224,14 +1226,18 @@ L.WFS = L.FeatureGroup.extend({
   setOpacity: function (opacity) {
     this.options.opacity = opacity;
 
+    this._updateOpacity();
+
+    return this;
+  },
+
+  _updateOpacity: function () {
     var style = L.extend(this.options.style || {}, {
-      opacity: opacity,
-      fillOpacity: opacity
+      opacity: this.options.opacity,
+      fillOpacity: this.options.opacity
     });
 
     this.setStyle(style);
-
-    return this;
   }
 });
 
