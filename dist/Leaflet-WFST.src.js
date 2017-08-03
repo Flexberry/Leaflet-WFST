@@ -1258,7 +1258,7 @@ L.WFS = L.FeatureGroup.extend({
         var exceptionReport = L.XmlUtil.parseOwsExceptionReport(data);
         if (exceptionReport) {
           if (typeof (errorCallback) === 'function') {
-            errorCallback(exceptionReport.message);
+            errorCallback(new Error(exceptionReport.message));
           }
 
           return;
@@ -1276,7 +1276,7 @@ L.WFS = L.FeatureGroup.extend({
       },
       error: function (errorMessage) {
         if (typeof (errorCallback) === 'function') {
-          errorCallback(errorMessage);
+          errorCallback(new Error(errorMessage));
         }
       }
     });
@@ -1338,7 +1338,7 @@ L.WFS = L.FeatureGroup.extend({
       }
     }, function (errorMessage) {
       if (typeof (errorCallback) === 'function') {
-        errorCallback(errorMessage);
+        errorCallback(new Error(errorMessage));
       }
     });
   }
