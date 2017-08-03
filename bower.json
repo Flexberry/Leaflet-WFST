@@ -10,7 +10,10 @@
     "bower_components",
     "examples",
     "spec",
-    "src"
+    "src",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "publish.sh"
   ],
   "keywords": [
     "maps",
@@ -32,5 +35,9 @@
   },
   "resolutions": {
     "leaflet": "1.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Flexberry/Leaflet-WFST"
   }
 }
