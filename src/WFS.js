@@ -110,7 +110,7 @@ L.WFS = L.FeatureGroup.extend({
       }));
 
     if (filter) {
-      query.appendChild(L.filter(filter).toGml());
+      query.appendChild(L.filter(filter));
     }
 
     return request;

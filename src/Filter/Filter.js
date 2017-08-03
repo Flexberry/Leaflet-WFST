@@ -4,39 +4,18 @@
  * This class represents an OGC Filter
  */
 
-L.Filter = L.Class.extend({
-  filters: null,
+L.Filter = {};
 
-  initialize: function (filter) {
-    if (Array.isArray(filter)) {
-      this.filters = filter;
-    } else {
-      this.filters = [];
-      if (filter) {
-        this.filters.push(filter);
-      }
-    }
-  },
+L.filter = function (filters) {
+  var result = L.XmlUtil.createElementNS('ogc:Filter');
 
-  /**
-   * Represents this filter as GML node
-   *
-   * Returns:
-   * {XmlElement} Gml representation of this filter
-   */
-  toGml: function () {
-    var result = L.XmlUtil.createElementNS('ogc:Filter');
-    this.filters.forEach(function (element) {
+  if (Array.isArray(filters)) {
+    filters.forEach(function (element) {
       result.appendChild(element.toGml());
-    }, this);
-    return result;
-  },
-
-  append: function (filter) {
-    this.filters.push(filter);
+    });
+  } else if (filters) {
+    result.appendChild(filters.toGml());
   }
-});
 
-L.filter = function (filter) {
-  return new L.Filter(filter);
+  return result;
 };

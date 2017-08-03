@@ -184,41 +184,20 @@ L.Util.request = function (options) {
   xhr.send(options.data);
 };
 
-L.Filter = L.Class.extend({
-  filters: null,
+L.Filter = {};
 
-  initialize: function (filter) {
-    if (Array.isArray(filter)) {
-      this.filters = filter;
-    } else {
-      this.filters = [];
-      if (filter) {
-        this.filters.push(filter);
-      }
-    }
-  },
+L.filter = function (filters) {
+  var result = L.XmlUtil.createElementNS('ogc:Filter');
 
-  /**
-   * Represents this filter as GML node
-   *
-   * Returns:
-   * {XmlElement} Gml representation of this filter
-   */
-  toGml: function () {
-    var result = L.XmlUtil.createElementNS('ogc:Filter');
-    this.filters.forEach(function (element) {
+  if (Array.isArray(filters)) {
+    filters.forEach(function (element) {
       result.appendChild(element.toGml());
-    }, this);
-    return result;
-  },
-
-  append: function (filter) {
-    this.filters.push(filter);
+    });
+  } else if(filters) {
+    result.appendChild(filters.toGml());
   }
-});
 
-L.filter = function (filter) {
-  return new L.Filter(filter);
+  return result;
 };
 
 L.Filter.propertyName = function (value) {
@@ -1580,7 +1559,7 @@ L.WFS = L.FeatureGroup.extend({
       }));
 
     if (filter) {
-      query.appendChild(L.filter(filter).toGml());
+      query.appendChild(L.filter(filter));
     }
 
     return request;
@@ -1820,14 +1799,14 @@ L.WFST.include({
       layer.toGml(this.options.crs)));
 
     var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
-    node.appendChild(L.filter(idFilter).toGml());
+    node.appendChild(L.filter(idFilter));
     return node;
   },
 
   remove: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
     var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
-    node.appendChild(L.filter(idFilter).toGml());
+    node.appendChild(L.filter(idFilter));
     return node;
   }
 });

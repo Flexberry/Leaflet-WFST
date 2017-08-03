@@ -21,14 +21,14 @@ L.WFST.include({
       layer.toGml(this.options.crs)));
 
     var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
-    node.appendChild(L.filter(idFilter).toGml());
+    node.appendChild(L.filter(idFilter));
     return node;
   },
 
   remove: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
     var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
-    node.appendChild(L.filter(idFilter).toGml());
+    node.appendChild(L.filter(idFilter));
     return node;
   }
 });

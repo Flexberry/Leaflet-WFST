@@ -1,26 +1,29 @@
 describe('Filter', function () {
-  describe('initialize', function () {
-    it('should pass all arguments to inner filter array', function () {
-      var a = { a: 'a' }, b = { b: 'b' }, c = { c: 'c' };
-      var filter = new L.Filter([a, b, c]);
-      expect(filter.filters[0]).to.be.equal(a);
-      expect(filter.filters[1]).to.be.equal(b);
-      expect(filter.filters[2]).to.be.equal(c);
-
-    });
+  it('should return Element object with tagName ogc:Filter', function () {
+    var gml = L.filter();
+    expect(gml).to.be.instanceOf(Element);
+    expect(gml.tagName).to.be.equal('ogc:Filter');
   });
 
-  describe('#toGml', function () {
-    var gml;
+  it('should have childNode for single passed filter', function() {
+    var resultA = document.createElement('a');
+    var filter = L.filter({ toGml: function () { return resultA; } });
+    expect(filter.childNodes.length).to.be.equal(1);
+    expect(filter.childNodes[0]).to.be.equal(resultA);
+  });
 
-    before(function () {
-      var filter = new L.Filter();
-      gml = filter.toGml();
-    });
-
-    it('should return Element object with tagName ogc:Filter', function () {
-      expect(gml).to.be.instanceOf(Element);
-      expect(gml.tagName).to.be.equal('ogc:Filter');
-    });
+  it('should have childNodes for array filters argument', function () {
+    var resultA = document.createElement('a');
+    var resultB = document.createElement('b');
+    var resultC = document.createElement('c');
+    var filter = L.filter([
+      { toGml: function () { return resultA; } },
+      { toGml: function () { return resultB; } },
+      { toGml: function () { return resultC; } },
+    ]);
+    expect(filter.childNodes.length).to.be.equal(3);
+    expect(filter.childNodes[0]).to.be.equal(resultA);
+    expect(filter.childNodes[1]).to.be.equal(resultB);
+    expect(filter.childNodes[2]).to.be.equal(resultC);
   });
 });
