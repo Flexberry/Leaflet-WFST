@@ -14,23 +14,23 @@ describe('WFS', function () {
     'targetNamespace="http://www.openplans.org/topp"> ' +
     '<xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://demo.opengeo.org:80/geoserver/schemas/gml/3.1.1/base/gml.xsd"/>' +
     '<xsd:complexType name="tasmania_citiesType">' +
-      '<xsd:complexContent>' +
-        '<xsd:extension base="gml:AbstractFeatureType">' +
-          '<xsd:sequence>' +
-            '<xsd:element maxOccurs="1" minOccurs="0" name="the_geom" nillable="true" type="gml:MultiPointPropertyType"/>' +
-            '<xsd:element maxOccurs="1" minOccurs="0" name="CITY_NAME" nillable="true" type="xsd:string"/>' +
-            '<xsd:element maxOccurs="1" minOccurs="0" name="ADMIN_NAME" nillable="true" type="xsd:string"/>' +
-            '<xsd:element maxOccurs="1" minOccurs="0" name="CNTRY_NAME" nillable="true" type="xsd:string"/>' +
-            '<xsd:element maxOccurs="1" minOccurs="0" name="STATUS" nillable="true" type="xsd:string"/>' +
-            '<xsd:element maxOccurs="1" minOccurs="0" name="POP_CLASS" nillable="true" type="xsd:string"/>' +
-          '</xsd:sequence>' +
-        '</xsd:extension>' +
-      '</xsd:complexContent>' +
+    '<xsd:complexContent>' +
+    '<xsd:extension base="gml:AbstractFeatureType">' +
+    '<xsd:sequence>' +
+    '<xsd:element maxOccurs="1" minOccurs="0" name="the_geom" nillable="true" type="gml:MultiPointPropertyType"/>' +
+    '<xsd:element maxOccurs="1" minOccurs="0" name="CITY_NAME" nillable="true" type="xsd:string"/>' +
+    '<xsd:element maxOccurs="1" minOccurs="0" name="ADMIN_NAME" nillable="true" type="xsd:string"/>' +
+    '<xsd:element maxOccurs="1" minOccurs="0" name="CNTRY_NAME" nillable="true" type="xsd:string"/>' +
+    '<xsd:element maxOccurs="1" minOccurs="0" name="STATUS" nillable="true" type="xsd:string"/>' +
+    '<xsd:element maxOccurs="1" minOccurs="0" name="POP_CLASS" nillable="true" type="xsd:string"/>' +
+    '</xsd:sequence>' +
+    '</xsd:extension>' +
+    '</xsd:complexContent>' +
     '</xsd:complexType>' +
     '<xsd:element name="tasmania_cities" substitutionGroup="gml:_Feature" type="topp:tasmania_citiesType"/>' +
-  '</xsd:schema>';
+    '</xsd:schema>';
 
-var getFeatureResponseText = '<wfs:FeatureCollection ' +
+  var getFeatureResponseText = '<wfs:FeatureCollection ' +
     'xmlns:xs="http://www.w3.org/2001/XMLSchema" ' +
     'xmlns:nasa="http://nasa.gov" ' +
     'xmlns:ogc="http://www.opengis.net/ogc" ' +
@@ -47,52 +47,52 @@ var getFeatureResponseText = '<wfs:FeatureCollection ' +
     'xmlns:usgs="http://www.usgs.gov/" ' +
     'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
     'numberOfFeatures="1">' +
-      '<gml:boundedBy>' +
-          '<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">' +
-              '<gml:lowerCorner>147.2910004483 -42.851001816890005</gml:lowerCorner>' +
-              '<gml:upperCorner>147.2910004483 -42.851001816890005</gml:upperCorner>' +
-          '</gml:Envelope>' +
-      '</gml:boundedBy>' +
-      '<gml:featureMembers>' +
-          '<topp:tasmania_cities gml:id="tasmania_cities.1">' +
-              '<gml:boundedBy>' +
-                  '<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">' +
-                      '<gml:lowerCorner>147.2910004483 -42.851001816890005</gml:lowerCorner>' +
-                      '<gml:upperCorner>147.2910004483 -42.851001816890005</gml:upperCorner>' +
-                  '</gml:Envelope>' +
-              '</gml:boundedBy>' +
-              '<topp:the_geom>' +
-                  '<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">' +
-                      '<gml:pointMember>' +
-                          '<gml:Point srsDimension="2">' +
-                              '<gml:pos>147.2910004483 -42.851001816890005</gml:pos>' +
-                          '</gml:Point>' +
-                      '</gml:pointMember>' +
-                  '</gml:MultiPoint>' +
-              '</topp:the_geom>' +
-              '<topp:CITY_NAME>Hobart</topp:CITY_NAME>' +
-              '<topp:ADMIN_NAME>Tasmania</topp:ADMIN_NAME>' +
-              '<topp:CNTRY_NAME>Australia</topp:CNTRY_NAME>' +
-              '<topp:STATUS>Provincial capital</topp:STATUS>' +
-              '<topp:POP_CLASS>100,000 to 250,000</topp:POP_CLASS>' +
-          '</topp:tasmania_cities>' +
-      '</gml:featureMembers>' +
-  '</wfs:FeatureCollection>';
+    '<gml:boundedBy>' +
+    '<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">' +
+    '<gml:lowerCorner>147.2910004483 -42.851001816890005</gml:lowerCorner>' +
+    '<gml:upperCorner>147.2910004483 -42.851001816890005</gml:upperCorner>' +
+    '</gml:Envelope>' +
+    '</gml:boundedBy>' +
+    '<gml:featureMembers>' +
+    '<topp:tasmania_cities gml:id="tasmania_cities.1">' +
+    '<gml:boundedBy>' +
+    '<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">' +
+    '<gml:lowerCorner>147.2910004483 -42.851001816890005</gml:lowerCorner>' +
+    '<gml:upperCorner>147.2910004483 -42.851001816890005</gml:upperCorner>' +
+    '</gml:Envelope>' +
+    '</gml:boundedBy>' +
+    '<topp:the_geom>' +
+    '<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">' +
+    '<gml:pointMember>' +
+    '<gml:Point srsDimension="2">' +
+    '<gml:pos>147.2910004483 -42.851001816890005</gml:pos>' +
+    '</gml:Point>' +
+    '</gml:pointMember>' +
+    '</gml:MultiPoint>' +
+    '</topp:the_geom>' +
+    '<topp:CITY_NAME>Hobart</topp:CITY_NAME>' +
+    '<topp:ADMIN_NAME>Tasmania</topp:ADMIN_NAME>' +
+    '<topp:CNTRY_NAME>Australia</topp:CNTRY_NAME>' +
+    '<topp:STATUS>Provincial capital</topp:STATUS>' +
+    '<topp:POP_CLASS>100,000 to 250,000</topp:POP_CLASS>' +
+    '</topp:tasmania_cities>' +
+    '</gml:featureMembers>' +
+    '</wfs:FeatureCollection>';
 
-var exceptionReportResponseText = '<ows:ExceptionReport ' +
+  var exceptionReportResponseText = '<ows:ExceptionReport ' +
     'xmlns:xs="http://www.w3.org/2001/XMLSchema" ' +
     'xmlns:ows="http://www.opengis.net/ows" ' +
     'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
-    '<ows:Exception exceptionCode="404">'  +
-      '<ows:ExceptionText>Not Found</ows:ExceptionText>' +
+    '<ows:Exception exceptionCode="404">' +
+    '<ows:ExceptionText>Not Found</ows:ExceptionText>' +
     '</ows:Exception>' +
-  '</ows:ExceptionReport>';
+    '</ows:ExceptionReport>';
 
   describe('#getFeature', function () {
     var server;
     var feature;
 
-    beforeEach(function() {
+    beforeEach(function () {
       // Create fake XHR.
       server = sinon.fakeServer.create();
 
@@ -106,14 +106,16 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       };
 
       // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
+      server.respondWith(function (xhr, id) {
         if (
           xhr.method === 'POST' &&
           xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0 &&
           new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
 
           // Respond with error to prevent DescribeFeatureType response parsing.
-          xhr.respond(500, { 'Content-Type': 'text/html' }, 'Error');
+          xhr.respond(500, {
+            'Content-Type': 'text/html'
+          }, 'Error');
           return;
         }
 
@@ -154,7 +156,7 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
   describe('#error event', function () {
     var server;
 
-    beforeEach(function() {
+    beforeEach(function () {
       // Create fake XHR.
       server = sinon.fakeServer.create();
     });
@@ -174,13 +176,15 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       };
 
       // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
+      server.respondWith(function (xhr, id) {
         if (
           xhr.method === 'POST' &&
           xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0 &&
           new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
 
-          xhr.respond(404, { 'Content-Type': 'text/html' }, 'Not Found');
+          xhr.respond(404, {
+            'Content-Type': 'text/html'
+          }, 'Not Found');
           return;
         }
 
@@ -216,13 +220,15 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       };
 
       // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
+      server.respondWith(function (xhr, id) {
         if (
           xhr.method === 'POST' &&
           xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0 &&
           new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
 
-          xhr.respond(200, { 'Content-Type': 'text/xml' }, exceptionReportResponseText);
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, exceptionReportResponseText);
           return;
         }
 
@@ -259,13 +265,17 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       };
 
       // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
+      server.respondWith(function (xhr, id) {
         if (xhr.method === 'POST' && new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
           if (xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0) {
-            xhr.respond(200, { 'Content-Type': 'text/xml' }, describeFeaturesReponseText);
+            xhr.respond(200, {
+              'Content-Type': 'text/xml'
+            }, describeFeaturesReponseText);
             return;
           } else if (xhr.requestBody.indexOf('<wfs:GetFeature') === 0) {
-            xhr.respond(404, { 'Content-Type': 'text/html' }, 'Not found');
+            xhr.respond(404, {
+              'Content-Type': 'text/html'
+            }, 'Not found');
             return;
           }
         }
@@ -308,13 +318,17 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       };
 
       // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
+      server.respondWith(function (xhr, id) {
         if (xhr.method === 'POST' && new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
           if (xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0) {
-            xhr.respond(200, { 'Content-Type': 'text/xml' }, describeFeaturesReponseText);
+            xhr.respond(200, {
+              'Content-Type': 'text/xml'
+            }, describeFeaturesReponseText);
             return;
           } else if (xhr.requestBody.indexOf('<wfs:GetFeature') === 0) {
-            xhr.respond(200, { 'Content-Type': 'text/xml' }, exceptionReportResponseText);
+            xhr.respond(200, {
+              'Content-Type': 'text/xml'
+            }, exceptionReportResponseText);
             return;
           }
         }
@@ -357,13 +371,17 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       };
 
       // Prepare a handler for fake server possible requests.
-      server.respondWith(function(xhr, id) {
+      server.respondWith(function (xhr, id) {
         if (xhr.method === 'POST' && new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
           if (xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0) {
-            xhr.respond(200, { 'Content-Type': 'text/xml' }, describeFeaturesReponseText);
+            xhr.respond(200, {
+              'Content-Type': 'text/xml'
+            }, describeFeaturesReponseText);
             return;
           } else if (xhr.requestBody.indexOf('<wfs:GetFeature') === 0) {
-            xhr.respond(200, { 'Content-Type': 'text/xml' }, getFeatureResponseText);
+            xhr.respond(200, {
+              'Content-Type': 'text/xml'
+            }, getFeatureResponseText);
             return;
           }
         }
@@ -387,8 +405,66 @@ var exceptionReportResponseText = '<ows:ExceptionReport ' +
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.calledWithMatch({ responseText: getFeatureResponseText })).to.be.equal(true);
+      expect(onLoadEventHandler.calledWithMatch({
+        responseText: getFeatureResponseText
+      })).to.be.equal(true);
       expect(onErrorEventHandler.notCalled).to.be.equal(true);
+    });
+  });
+
+  describe('#setOpacity', function () {
+    var options1;
+    var options2;
+
+    beforeEach(function () {
+      options1 = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000
+      };
+
+      options2 = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000,
+        opacity: 0.8
+      };
+    });
+
+    it('layer should have opacity equals 1 if no initialization option provided', function () {
+      var wfs = new L.WFS(options1);
+      expect(wfs.options.opacity).to.be.equal(1);
+      expect(wfs.options.style.opacity).to.be.equal(1);
+      expect(wfs.options.style.fillOpacity).to.be.equal(1);
+    });
+
+    it('layer should have opacity equals initialization option provided', function () {
+      var wfs = new L.WFS(options2);
+      expect(wfs.options.opacity).to.be.equal(0.8);
+      expect(wfs.options.style.opacity).to.be.equal(0.8);
+      expect(wfs.options.style.fillOpacity).to.be.equal(0.8);
+    });
+
+    it('layer should have opacity equals setOpacity method\' argument provided', function () {
+      var wfs = new L.WFS(options1);
+      wfs.setOpacity(0.5);
+
+      expect(wfs.options.opacity).to.be.equal(0.5);
+      expect(wfs.options.style.opacity).to.be.equal(0.5);
+      expect(wfs.options.style.fillOpacity).to.be.equal(0.5);
+
+      wfs = new L.WFS(options2);
+      wfs.setOpacity(1);
+
+      expect(wfs.options.opacity).to.be.equal(1);
+      expect(wfs.options.style.opacity).to.be.equal(1);
+      expect(wfs.options.style.fillOpacity).to.be.equal(1);
     });
   });
 });

@@ -28,6 +28,7 @@ where #v1.1.1 is version of specific [release](https://github.com/Flexberry/Leaf
         url: '',
         typeNS: '',
         typeName: '',
+        opacity: 1,
         style: {
             color: 'black',
             weight: 1
@@ -46,6 +47,7 @@ const wfstPointOptions = {
   typeNS: 'test',
   typeName: 'test',
   maxFeatures: 90,
+  opacity: 1,
   style: function(layer) {
     // you can use if statemt etc
     return {
@@ -76,6 +78,7 @@ wfstPoint.addTo(map);
 |typeName|-|type name|
 |typeNSName|-|type namespace name|
 |namespaceUri|-|namespace URI|
+|opacity|1|layer's opacity|
 |style|-|leaflet vector style. function or object|
 |filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
