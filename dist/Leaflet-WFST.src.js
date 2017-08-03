@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.2.0-alpha04 2017-06-29 */
+/*! leaflet-wfst 1.2.0-alpha04 2017-08-03 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -1057,9 +1057,12 @@ L.WFS = L.FeatureGroup.extend({
     typeNSName: '',
     maxFeatures: null,
     filter: null,
+    opacity: 1,
     style: {
       color: 'black',
-      weight: 1
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 1
     },
     namespaceUri: ''
   },
@@ -1069,7 +1072,9 @@ L.WFS = L.FeatureGroup.extend({
   initialize: function (options, readFormat) {
     L.setOptions(this, options);
 
-    this.state = {exist: 'exist'};
+    this.state = {
+      exist: 'exist'
+    };
 
     this._layers = {};
 
@@ -1086,7 +1091,7 @@ L.WFS = L.FeatureGroup.extend({
       if (that.options.showExisting) {
         that.loadFeatures(that.options.filter);
       }
-    }, function(errorMessage) {
+    }, function (errorMessage) {
       that.fire('error', {
         error: new Error(errorMessage)
       });
@@ -1102,7 +1107,9 @@ L.WFS = L.FeatureGroup.extend({
       service: 'WFS',
       version: this.options.version
     });
-    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {value: this.options.typeNSName}));
+    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {
+      value: this.options.typeNSName
+    }));
 
     var that = this;
     L.Util.request({
@@ -1114,7 +1121,7 @@ L.WFS = L.FeatureGroup.extend({
         // and such situation must be handled.
         var exceptionReport = L.XmlUtil.parseOwsExceptionReport(data);
         if (exceptionReport) {
-          if (typeof(errorCallback) === 'function') {
+          if (typeof (errorCallback) === 'function') {
             errorCallback(exceptionReport.message);
           }
 
@@ -1125,12 +1132,12 @@ L.WFS = L.FeatureGroup.extend({
         var featureInfo = xmldoc.documentElement;
         that.readFormat.setFeatureDescription(featureInfo);
         that.options.namespaceUri = featureInfo.attributes.targetNamespace.value;
-        if (typeof(successCallback) === 'function') {
+        if (typeof (successCallback) === 'function') {
           successCallback();
         }
       },
-      error: function(errorMessage) {
-        if (typeof(errorCallback) === 'function') {
+      error: function (errorMessage) {
+        if (typeof (errorCallback) === 'function') {
           errorCallback(errorMessage);
         }
       }
@@ -1138,19 +1145,17 @@ L.WFS = L.FeatureGroup.extend({
   },
 
   getFeature: function (filter) {
-    var request = L.XmlUtil.createElementNS('wfs:GetFeature',
-      {
-        service: 'WFS',
-        version: this.options.version,
-        maxFeatures: this.options.maxFeatures,
-        outputFormat: this.readFormat.outputFormat
-      });
+    var request = L.XmlUtil.createElementNS('wfs:GetFeature', {
+      service: 'WFS',
+      version: this.options.version,
+      maxFeatures: this.options.maxFeatures,
+      outputFormat: this.readFormat.outputFormat
+    });
 
-    var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query',
-      {
-        typeName: this.options.typeNSName,
-        srsName: this.options.srsName
-      }));
+    var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query', {
+      typeName: this.options.typeNSName,
+      srsName: this.options.srsName
+    }));
 
     if (filter && filter.toGml) {
       query.appendChild(filter.toGml());
@@ -1189,7 +1194,7 @@ L.WFS = L.FeatureGroup.extend({
             element.state = that.state.exist;
             if (element.setStyle) {
               element.setStyle(that.options.style(element));
-        		}
+            }
             that.addLayer(element);
           });
         } else {
@@ -1206,7 +1211,7 @@ L.WFS = L.FeatureGroup.extend({
 
         return that;
       },
-      error: function(errorMessage) {
+      error: function (errorMessage) {
         that.fire('error', {
           error: new Error(errorMessage)
         });
@@ -1214,6 +1219,19 @@ L.WFS = L.FeatureGroup.extend({
         return that;
       }
     });
+  },
+
+  setOpacity: function (opacity) {
+    this.options.opacity = opacity;
+
+    var style = L.extend(this.options.style || {}, {
+      opacity: opacity,
+      fillOpacity: opacity
+    });
+
+    this.setStyle(style);
+
+    return this;
   }
 });
 
