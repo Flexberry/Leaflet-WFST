@@ -122,10 +122,10 @@ describe('WFS', function () {
   describe('#getFeature', function () {
     var feature;
 
-    beforeEach(function () {
+    before(function () {
       var TestFilter = L.Filter.Abstract.extend({
         tagName: 'testFilter',
-        buildFilterContent: function() {}
+        buildFilterContent: function () {}
       });
 
       var options = {
@@ -136,6 +136,8 @@ describe('WFS', function () {
         namespaceUri: 'testUri',
         maxFeatures: 5000
       };
+
+      sinon.stub(L.WFS, 'describeFeatureType');
 
       var wfs = new L.WFS(options);
       feature = wfs.getFeature(new TestFilter());
@@ -421,11 +423,9 @@ describe('WFS', function () {
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.calledWithMatch({
+      expect(onLoadEventHandler).to.be.calledWithMatch({
         responseText: getFeatureResponseText
-      })).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
-      expect(onLoadEventHandler).to.be.calledWithMatch({ responseText: getFeatureResponseText });
+      });
       expect(onErrorEventHandler).to.be.notCalled;
     });
   });
