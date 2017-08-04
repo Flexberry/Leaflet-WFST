@@ -7,37 +7,34 @@ describe('Filter.Like', function () {
     propertyName = 'foobar';
     propertyValue = '*100500*';
 
-    filter = new L.Filter.Like().append(propertyName, propertyValue);
+    filter = new L.Filter.Like(propertyName, propertyValue);
   });
 
   describe('#toGml', function () {
-    var gml;
+    var likeElement;
 
     before(function () {
-      gml = filter.toGml();
+      likeElement = filter.toGml();
     });
 
     it('must have first child element with tagName = ogc:PropertyIsLike with default attributes', function() {
-      var eqElement = gml.firstChild;
-      expect(eqElement.tagName).to.be.equal('ogc:PropertyIsLike');
-      expect(eqElement.getAttribute('wildCard')).to.be.equal('*');
-      expect(eqElement.getAttribute('singleChar')).to.be.equal('#');
-      expect(eqElement.getAttribute('escapeChar')).to.be.equal('!');
-      expect(eqElement.getAttribute('matchCase')).to.be.equal('true');
-      
+      expect(likeElement.tagName).to.be.equal('ogc:PropertyIsLike');
+      expect(likeElement.getAttribute('wildCard')).to.be.equal('*');
+      expect(likeElement.getAttribute('singleChar')).to.be.equal('#');
+      expect(likeElement.getAttribute('escapeChar')).to.be.equal('!');
+      expect(likeElement.getAttribute('matchCase')).to.be.equal('true');
+
     });
 
     it('must have child element with tagName = ogc:PropertyName & textContent = foobar', function() {
-      var eqElement = gml.firstChild;
-      var propertyNameElement = eqElement.firstChild;
+      var propertyNameElement = likeElement.firstChild;
 
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(propertyName);
     });
 
     it('must have child element with tagName = ogc:Literal & textContent = *100500*', function() {
-      var eqElement = gml.firstChild;
-      var propertyValueElement = eqElement.lastChild;
+      var propertyValueElement = likeElement.lastChild;
 
       expect(propertyValueElement.tagName).to.be.equal('ogc:Literal');
       expect(propertyValueElement.textContent).to.be.equal(propertyValue);
@@ -45,20 +42,19 @@ describe('Filter.Like', function () {
   });
 
   describe('#toGml with custom attributes', function() {
-    var gml;
+    var likeElement;
 
     before(function () {
-      var customFilter = new L.Filter.Like().append(propertyName, propertyValue, { wildCard: '##', singleChar: '$$', escapeChar: '\\', matchCase: false });
-      gml = customFilter.toGml();
+      var customFilter = new L.Filter.Like(propertyName, propertyValue, { wildCard: '##', singleChar: '$$', escapeChar: '\\', matchCase: false });
+      likeElement = customFilter.toGml();
     });
 
     it('must have first child element with tagName = ogc:PropertyIsLike with custom attributes', function() {
-      var eqElement = gml.firstChild;
-      expect(eqElement.tagName).to.be.equal('ogc:PropertyIsLike');
-      expect(eqElement.getAttribute('wildCard')).to.be.equal('##');
-      expect(eqElement.getAttribute('singleChar')).to.be.equal('$$');
-      expect(eqElement.getAttribute('escapeChar')).to.be.equal('\\');
-      expect(eqElement.getAttribute('matchCase')).to.be.equal('false');
+      expect(likeElement.tagName).to.be.equal('ogc:PropertyIsLike');
+      expect(likeElement.getAttribute('wildCard')).to.be.equal('##');
+      expect(likeElement.getAttribute('singleChar')).to.be.equal('$$');
+      expect(likeElement.getAttribute('escapeChar')).to.be.equal('\\');
+      expect(likeElement.getAttribute('matchCase')).to.be.equal('false');
     });
   });
 });

@@ -192,86 +192,492 @@ L.Util.request = function (options) {
   xhr.send(options.data);
 };
 
-L.Filter = L.Class.extend({
+L.Filter = {};
+
+L.filter = function (filters) {
+  var result = L.XmlUtil.createElementNS('ogc:Filter');
+
+  if (Array.isArray(filters)) {
+    filters.forEach(function (element) {
+      result.appendChild(element.toGml());
+    });
+  } else if (filters) {
+    result.appendChild(filters.toGml());
+  }
+
+  return result;
+};
+
+L.Filter.propertyName = function (value) {
+  return L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: value });
+};
+
+L.Filter.literal = function (value) {
+  return L.XmlUtil.createElementNS('ogc:Literal', {}, { value: value });
+};
+
+L.Filter.element = function(value) {
+  if(value instanceof Element) {
+    return value;
+  }
+
+  return value.toGml();
+};
+
+L.Filter.propertyElement = function (value) {
+  if (value instanceof Element) {
+    return value;
+  }
+
+  if (value && typeof (value.toGml) === "function") {
+    return value.toGml();
+  }
+
+  return L.Filter.propertyName(value);
+};
+
+L.Filter.literalElement = function (value) {
+  if (value instanceof Element) {
+    return value;
+  }
+
+  if (value && typeof (value.toGml) === "function") {
+    return value.toGml();
+  }
+
+  return L.Filter.literal(value);
+};
+
+L.Filter.Abstract = L.Class.extend({
+  attributes: {},
+
+  options: {},
+
+  tagName: null,
+
+  buildFilterContent: function() {
+    throw "Build filter content is abstract and should be implemented";
+  },
+
+  toGml: function() {
+    var filterElement = L.XmlUtil.createElementNS(this.tagName, this.attributes, this.options);
+    this.buildFilterContent(filterElement);
+    return filterElement;
+  }
+});
+
+L.Filter.BinarySpatial = L.Filter.Abstract.extend({
+  initialize: function (propertyName, value, crs) {
+    this.propertyName = propertyName;
+    this.value = value;
+    this.crs = crs;
+  },
+
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyName(this.propertyName));
+    if (typeof(this.value) === "string") {
+      filterElement.appendChild(L.Filter.propertyName(this.value));
+    } else {
+      filterElement.appendChild(this.value.toGml(this.crs));
+    }
+    return filterElement;
+  }
+});
+
+L.Filter.Equals = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Equals'
+});
+
+L.Filter.equals = function(options) {
+  return new L.Filter.Equals(options);
+};
+
+L.Filter.Disjoint = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Disjoint'
+});
+
+L.Filter.disjoint = function(options) {
+  return new L.Filter.Disjoint(options);
+};
+
+L.Filter.Touches = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Touches'
+});
+
+L.Filter.touches = function(options) {
+  return new L.Filter.Touches(options);
+};
+
+L.Filter.Within = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Within'
+});
+
+L.Filter.within = function(options) {
+  return new L.Filter.Within(options);
+};
+
+L.Filter.Overlaps = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Overlaps'
+});
+
+L.Filter.overlaps = function(options) {
+  return new L.Filter.Overlaps(options);
+};
+
+L.Filter.Crosses = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Crosses'
+});
+
+L.Filter.crosses = function(options) {
+  return new L.Filter.Crosses(options);
+};
+
+L.Filter.Intersects = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Intersects'
+});
+
+L.Filter.intersects = function(options) {
+  return new L.Filter.Intersects(options);
+};
+
+L.Filter.Contains = L.Filter.BinarySpatial.extend({
+  tagName: 'ogc:Contains'
+});
+
+L.Filter.contains = function(options) {
+  return new L.Filter.Contains(options);
+};
+
+L.Filter.DistanceBuffer = L.Filter.Abstract.extend({
+  initialize: function (propertyName, geometry, crs, distance, units) {
+    this.propertyName = propertyName;
+    this.geomerty = geometry;
+    this.crs = crs;
+    this.distance = distance;
+    this.units = units;
+  },
+
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyName(this.propertyName));
+    filterElement.appendChild(this.geomerty.toGml(this.crs));
+    filterElement.appendChild(L.XmlUtil.createElementNS('ogc:Distance', { 'units': this.units }, { value: this.distance }));
+  }
+});
+
+L.Filter.DWithin = L.Filter.DistanceBuffer.extend({
+  tagName: 'ogc:DWithin'
+});
+
+L.Filter.dwithin = function(propertyName, geometry, crs, distance, units) {
+  return new L.Filter.DWithin(propertyName, geometry, crs, distance, units);
+};
+
+L.Filter.Beyond = L.Filter.DistanceBuffer.extend({
+  tagName: 'ogc:Beyond'
+});
+
+L.Filter.beyond = function(propertyName, geometry, crs, distance, units) {
+  return new L.Filter.Beyond(propertyName, geometry, crs, distance, units);
+};
+
+L.Filter.BBox = L.Filter.Abstract.extend({
+  tagName: 'ogc:BBOX',
+
+  geometryField: null,
+
+  bbox: null,
+
+  crs: null,
+
+  initialize: function (geometryField, bbox, crs) {
+    this.bbox = bbox;
+    this.geometryField = geometryField;
+    this.crs = crs;
+  },
+
+  buildFilterContent: function (filterElement) {
+    if (this.geometryField) {
+      filterElement.appendChild(L.Filter.propertyName(this.geometryField));
+    }
+
+    filterElement.appendChild(this.bbox.toGml(this.crs));
+  }
+});
+
+L.Filter.bbox = function (geometryField, bbox, crs) {
+  return new L.Filter.BBox(geometryField, bbox, crs);
+};
+
+L.Filter.GmlObjectID = L.Filter.Abstract.extend({
+  tagName: 'ogc:GmlObjectId',
+
+  initialize: function (id) {
+    this.attributes =  { 'gml:id': id };
+  },
+
+  buildFilterContent: function() {
+  }
+});
+
+L.Filter.gmlobjectid = function(id) {
+  return new L.Filter.GmlObjectID(id);
+};
+
+L.Filter.BinaryOperator = L.Filter.Abstract.extend({
+  initialize: function (firstValue, secondValue) {
+    this.firstValue = firstValue;
+    this.secondValue = secondValue;
+  },
+
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyElement(this.firstValue));
+    filterElement.appendChild(L.Filter.literalElement(this.secondValue));
+  }
+});
+
+L.Filter.Add = L.Filter.BinaryOperator.extend({
+  tagName: 'Add'
+});
+
+L.Filter.add = function(a, b) {
+  return new L.Filter.Add(a, b);
+};
+
+L.Filter.Sub = L.Filter.BinaryOperator.extend({
+  tagName: 'Sub'
+});
+
+L.Filter.sub = function(a, b) {
+  return new L.Filter.Sub(a, b);
+};
+
+L.Filter.Mul = L.Filter.BinaryOperator.extend({
+  tagName: 'Mul'
+});
+
+L.Filter.mul = function(a, b) {
+  return new L.Filter.Mul(a, b);
+};
+
+L.Filter.Div = L.Filter.BinaryOperator.extend({
+  tagName: 'Div'
+});
+
+L.Filter.div = function(a, b) {
+  return new L.Filter.Div(a, b);
+};
+
+L.Filter.BinaryComparison = L.Filter.BinaryOperator.extend({
+  attributes: {
+    matchCase: false
+  },
+
+  initialize: function(firstValue, secondValue, matchCase) {
+    L.Filter.BinaryOperator.prototype.initialize.call(this, firstValue, secondValue);
+    this.attributes.matchCase = !!matchCase;
+  }
+});
+
+L.Filter.EQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsEqualTo'
+});
+
+L.Filter.eq = function(firstValue, secondValue) {
+  return new L.Filter.EQ(firstValue, secondValue);
+};
+
+L.Filter.NotEQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsNotEqualTo'
+});
+
+L.Filter.neq = function(firstValue, secondValue) {
+  return new L.Filter.NotEQ(firstValue, secondValue);
+};
+
+L.Filter.LT = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsLessThan'
+});
+
+L.Filter.lt = function(firstValue, secondValue) {
+  return new L.Filter.LT(firstValue, secondValue);
+};
+
+L.Filter.GT = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsGreaterThan'
+});
+
+L.Filter.gt = function(firstValue, secondValue) {
+  return new L.Filter.GT(firstValue, secondValue);
+};
+
+L.Filter.LEQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsLessThanOrEqualTo'
+});
+
+L.Filter.leq = function(firstValue, secondValue) {
+  return new L.Filter.LEQ(firstValue, secondValue);
+};
+
+L.Filter.GEQ = L.Filter.BinaryComparison.extend({
+  tagName: 'ogc:PropertyIsGreaterThanOrEqualTo'
+});
+
+L.Filter.geq = function(firstValue, secondValue) {
+  return new L.Filter.GEQ(firstValue, secondValue);
+};
+
+L.Filter.Like = L.Filter.Abstract.extend({
+  tagName: 'ogc:PropertyIsLike',
+
+  attributes: {
+    wildCard: '*',
+    singleChar: '#',
+    escapeChar: '!',
+    matchCase: true
+  },
+
+  initialize: function (name, val, attributes) {
+    this.name = name;
+    this.val = val;
+    this.attributes = L.extend(this.attributes, attributes || {});
+  },
+
+  buildFilterContent: function (filterElement) {
+    var nameElement = L.Filter.propertyName(this.name);
+    var valueElement = L.Filter.literal(this.val);
+    filterElement.appendChild(nameElement);
+    filterElement.appendChild(valueElement);
+    return filterElement;
+  }
+});
+
+L.Filter.like = function(name, val, attributes) {
+  return new L.Filter.Like(name, val, attributes);
+};
+
+L.Filter.IsNull = L.Filter.Abstract.extend({
+  tagName: 'ogc:PropertyIsNull',
+
+  initialize: function (propertyName) {
+    this.propertyName = propertyName;
+  },
+
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyName(this.propertyName));
+  }
+});
+
+L.Filter.isnull = function(propertyName) {
+  return new L.Filter.IsNull(propertyName);
+};
+
+L.Filter.IsBetween = L.Filter.Abstract.extend({
+  tagName: 'ogc:PropertyIsBetween',
+
+  initialize: function (property, lowerBoundary, upperBoundary) {
+    this.property = property;
+    this.lowerBoundary = lowerBoundary;
+    this.upperBoundary = upperBoundary;
+  },
+
+  buildFilterContent: function (filterElement) {
+    filterElement.appendChild(L.Filter.propertyElement(this.property));
+
+    var lowerBoundaryElement = L.XmlUtil.createElementNS('ogc:LowerBoundary');
+    lowerBoundaryElement.appendChild(L.Filter.literalElement(this.lowerBoundary));
+
+    filterElement.appendChild(lowerBoundaryElement);
+
+    var upperBoundaryElement = L.XmlUtil.createElementNS('ogc:UpperBoundary');
+    upperBoundaryElement.appendChild(L.Filter.literalElement(this.upperBoundary));
+
+    filterElement.appendChild(upperBoundaryElement);
+  }
+});
+
+L.Filter.isbetween = function(property, lowerBoundary, upperBoundary) {
+  return new L.Filter.IsBetween(property, lowerBoundary, upperBoundary);
+};
+
+L.Filter.BinaryLogic = L.Filter.Abstract.extend({
+  filters: null,
+
   initialize: function () {
-    this.filter = L.XmlUtil.createElementNS('ogc:Filter');
+    var filters = [];
+    for (var i = 0; i < arguments.length; i++) {
+      filters.push(arguments[i]);
+    }
+
+    this.filters = filters;
   },
 
-  /**
-   * Represents this filter as GML node
-   *
-   * Returns:
-   * {XmlElement} Gml representation of this filter
-   */
-  toGml: function () {
-    return this.filter;
+  buildFilterContent: function (filterElement) {
+    this.filters.forEach(function(filter) {
+      filterElement.appendChild(L.Filter.element(filter));
+    });
+  }
+});
+
+L.Filter.And = L.Filter.BinaryLogic.extend({
+  tagName: 'And'
+});
+
+L.Filter.and = function() {
+  return new (Function.prototype.bind.apply(L.Filter.And, arguments))();
+};
+
+L.Filter.Or = L.Filter.BinaryLogic.extend({
+  tagName: 'Or'
+});
+
+L.Filter.or = function() {
+  return new (Function.prototype.bind.apply(L.Filter.Or, arguments))();
+};
+
+L.Filter.Not = L.Filter.Abstract.extend({
+  tagName: 'Not',
+
+  initialize: function(filter) {
+    this.filter = filter;
   },
 
-  append: function () {
-    return this;
+  buildFilterContent: function(filterElement) {
+    filterElement.appendChild(L.Filter.element(this.filter));
   }
 });
 
-L.Filter.GmlObjectID = L.Filter.extend({
-  append: function (id) {
-    this.filter.appendChild(L.XmlUtil.createElementNS('ogc:GmlObjectId', {'gml:id': id}));
-    return this;
+L.Filter.not = function(filter) {
+  return new L.Filter.Not(filter);
+};
+
+L.Filter.Function = L.Filter.Abstract.extend({
+  tagName: 'Function',
+
+  initialize: function () {
+    var functionName = arguments[0];
+    this.attributes = { name: functionName };
+    var expressions = [];
+    for (var i = 1; i < arguments.length; i++) {
+      expressions.push(arguments[i]);
+    }
+
+    this.expressions = expressions;
+  },
+
+  buildFilterContent: function (filterElement) {
+    var firstArgument = this.expressions[0];
+    filterElement.appendChild(L.Filter.propertyElement(firstArgument));
+
+    for (var i = 1; i < this.expressions.length; i++) {
+      var functionArgument = this.expressions[i];
+      filterElement.appendChild(L.Filter.literalElement(functionArgument));
+    }
   }
 });
 
-L.Filter.BBox = L.Filter.extend({
-  append: function(bbox, geometryField, crs) {
-    var bboxElement = L.XmlUtil.createElementNS('ogc:BBOX');
-    bboxElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
-    bboxElement.appendChild(bbox.toGml(crs));
-
-    this.filter.appendChild(bboxElement);
-
-    return this; 
-  }
-});
-
-L.Filter.Intersects = L.Filter.extend({
-  append: function(geometryLayer, geometryField, crs) {
-    var intersectsElement = L.XmlUtil.createElementNS('ogc:Intersects');
-    intersectsElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
-    intersectsElement.appendChild(geometryLayer.toGml(crs));
-
-    this.filter.appendChild(intersectsElement);
-
-    return this; 
-  }
-});
-
-L.Filter.EQ = L.Filter.extend({
-  append: function (name, val) {
-    var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsEqualTo');
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
-    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
-    eqElement.appendChild(nameElement);
-    eqElement.appendChild(valueElement);
-    this.filter.appendChild(eqElement);
-    return this;
-  }
-});
-
-L.Filter.Like = L.Filter.extend({
-  append: function (name, val, attributes) {
-    attributes = L.extend({
-      wildCard: '*',
-      singleChar: '#',
-      escapeChar: '!',
-      matchCase: true
-    }, attributes || {});
-    var eqElement = L.XmlUtil.createElementNS('ogc:PropertyIsLike', attributes);
-    var nameElement = L.XmlUtil.createElementNS('ogc:PropertyName', {}, {value: name});
-    var valueElement = L.XmlUtil.createElementNS('ogc:Literal', {}, {value: val});
-    eqElement.appendChild(nameElement);
-    eqElement.appendChild(valueElement);
-    this.filter.appendChild(eqElement);
-    return this;
-  }
-});
+L.Filter.function = function() {
+  return new (Function.prototype.bind.apply(L.Filter.Function, arguments))();
+};
 
 L.Format = {};
 
@@ -924,9 +1330,9 @@ L.Util.project = function (crs, latlngs) {
   }
 };
 
-L.GMLUtil = {
+L.GmlUtil = {
   posNode: function (coord) {
-    return L.XmlUtil.createElementNS('gml:pos', {srsDimension: 2}, {value: coord.x + ' ' + coord.y});
+    return L.XmlUtil.createElementNS('gml:pos', { srsDimension: 2 }, { value: coord.x + ' ' + coord.y });
   },
 
   posListNode: function (coords, close) {
@@ -940,14 +1346,14 @@ L.GMLUtil = {
     }
 
     var posList = localcoords.join(' ');
-    return L.XmlUtil.createElementNS('gml:posList', {}, {value: posList});
+    return L.XmlUtil.createElementNS('gml:posList', {}, { value: posList });
   }
 };
 
 L.CircleMarker.include({
   toGml: function(crs) {
     var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
-    node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+    node.appendChild(L.GmlUtil.posNode(L.Util.project(crs, this.getLatLng())));
     return node;
   }
 });
@@ -966,7 +1372,7 @@ L.LatLngBounds.prototype.toGml = function (crs) {
 L.Marker.include({
   toGml: function (crs) {
     var node = L.XmlUtil.createElementNS('gml:Point', {srsName: crs.code});
-    node.appendChild(L.GMLUtil.posNode(L.Util.project(crs, this.getLatLng())));
+    node.appendChild(L.GmlUtil.posNode(L.Util.project(crs, this.getLatLng())));
     return node;
   }
 });
@@ -982,13 +1388,13 @@ L.Polygon.include({
       var node = L.XmlUtil.createElementNS('gml:Polygon', {srsName: crs.code, srsDimension: 2});
       node.appendChild(L.XmlUtil.createElementNS('gml:exterior'))
         .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))
-        .appendChild(L.GMLUtil.posListNode(L.Util.project(crs, flat ? polygonCoordinates : polygonCoordinates[0]), true));
+        .appendChild(L.GmlUtil.posListNode(L.Util.project(crs, flat ? polygonCoordinates : polygonCoordinates[0]), true));
 
       if (!flat) {
         for (var hole = 1; hole < polygonCoordinates.length; hole++) {
           node.appendChild(L.XmlUtil.createElementNS('gml:interior'))
             .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))
-            .appendChild(L.GMLUtil.posListNode(L.Util.project(crs, polygonCoordinates[hole]), true));
+            .appendChild(L.GmlUtil.posListNode(L.Util.project(crs, polygonCoordinates[hole]), true));
         }
       }
 
@@ -1011,7 +1417,7 @@ L.Polygon.include({
 L.Polyline.include({
   _lineStringNode: function (crs, latlngs) {
     var node = L.XmlUtil.createElementNS('gml:LineString', {srsName: crs.code, srsDimension: 2});
-    node.appendChild(L.GMLUtil.posListNode(L.Util.project(crs, latlngs), false));
+    node.appendChild(L.GmlUtil.posListNode(L.Util.project(crs, latlngs), false));
     return node;
   },
 
@@ -1069,9 +1475,12 @@ L.WFS = L.FeatureGroup.extend({
     typeNSName: '',
     maxFeatures: null,
     filter: null,
+    opacity: 1,
     style: {
       color: 'black',
-      weight: 1
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 1
     },
     namespaceUri: ''
   },
@@ -1094,6 +1503,8 @@ L.WFS = L.FeatureGroup.extend({
 
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;
+
+    this._updateOpacity();
 
     var that = this;
     this.describeFeatureType(function () {
@@ -1166,8 +1577,8 @@ L.WFS = L.FeatureGroup.extend({
       srsName: this.options.srsName
     }));
 
-    if (filter && filter.toGml) {
-      query.appendChild(filter.toGml());
+    if (filter) {
+      query.appendChild(L.filter(filter));
     }
 
     return request;
@@ -1350,6 +1761,23 @@ L.WFS = L.FeatureGroup.extend({
         errorCallback(new Error(errorMessage));
       }
     });
+  },
+
+  setOpacity: function (opacity) {
+    this.options.opacity = opacity;
+
+    this._updateOpacity();
+
+    return this;
+  },
+
+  _updateOpacity: function () {
+    var style = L.extend(this.options.style || {}, {
+      opacity: this.options.opacity,
+      fillOpacity: this.options.opacity
+    });
+
+    this.setStyle(style);
   }
 });
 
@@ -1372,7 +1800,7 @@ L.WFST = L.WFS.extend({
   addLayer: function (layer) {
     L.FeatureGroup.prototype.addLayer.call(this, layer);
     if (!layer.feature) {
-      layer.feature = {properties: {}};
+      layer.feature = { properties: {} };
     }
 
     if (!layer.state) {
@@ -1414,7 +1842,7 @@ L.WFST = L.WFS.extend({
   },
 
   save: function () {
-    var transaction = L.XmlUtil.createElementNS('wfs:Transaction', {service: 'WFS', version: this.options.version});
+    var transaction = L.XmlUtil.createElementNS('wfs:Transaction', { service: 'WFS', version: this.options.version });
 
     var inserted = [];
 
@@ -1436,10 +1864,10 @@ L.WFST = L.WFS.extend({
       headers: this.options.headers || {},
       success: function (data) {
         var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
-        var filter = new L.Filter.GmlObjectID();
+        var insertedIds = [];
         var id = insertResult.iterateNext();
         while (id) {
-          filter.append(id.value);
+          insertedIds.push(new L.Filter.GmlObjectId(id));
           id = insertResult.iterateNext();
         }
 
@@ -1452,9 +1880,9 @@ L.WFST = L.WFS.extend({
           that.changes = {};
         });
 
-        that.loadFeatures(filter);
+        that.loadFeatures(insertedIds);
       },
-      error: function(data){
+      error: function (data) {
         that.fire('save:failed', data);
       }
     });
@@ -1528,15 +1956,15 @@ L.WFST.include({
     node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
       layer.toGml(this.options.crs)));
 
-    var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
-    node.appendChild(filter.toGml());
+    var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
+    node.appendChild(L.filter(idFilter));
     return node;
   },
 
   remove: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
-    var filter = new L.Filter.GmlObjectID().append(layer.feature.id);
-    node.appendChild(filter.toGml());
+    var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
+    node.appendChild(L.filter(idFilter));
     return node;
   }
 });

@@ -120,12 +120,13 @@ describe('WFS', function () {
     '</ows:ExceptionReport>';
 
   describe('#getFeature', function () {
-    var server;
     var feature;
 
     beforeEach(function () {
-      // Create fake XHR.
-      server = sinon.fakeServer.create();
+      var TestFilter = L.Filter.Abstract.extend({
+        tagName: 'testFilter',
+        buildFilterContent: function() {}
+      });
 
       var options = {
         url: 'http://demo.opengeo.org/geoserver/ows',
@@ -136,34 +137,8 @@ describe('WFS', function () {
         maxFeatures: 5000
       };
 
-      // Prepare a handler for fake server possible requests.
-      server.respondWith(function (xhr, id) {
-        if (
-          xhr.method === 'POST' &&
-          xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0 &&
-          new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
-
-          // Respond with error to prevent DescribeFeatureType response parsing.
-          xhr.respond(500, {
-            'Content-Type': 'text/html'
-          }, 'Error');
-          return;
-        }
-
-        throw new Error('Unexpected request');
-      });
-
       var wfs = new L.WFS(options);
-
-      // Force fake server to respond on sended requests.
-      server.respond();
-
-      feature = wfs.getFeature();
-    });
-
-    afterEach(function () {
-      // Restore original XHR.
-      server.restore();
+      feature = wfs.getFeature(new TestFilter());
     });
 
     it('should return Element object with tagName=GetFeature and must have attiributes "service" and "version"', function () {
@@ -181,6 +156,11 @@ describe('WFS', function () {
       var query = feature.firstChild;
       expect(query.tagName).to.be.equal('wfs:Query');
       expect(query.getAttribute('typeName')).to.be.equal('topp:tasmania_cities');
+    });
+
+    it('should have ogc:Filter element as child of query', function () {
+      var filter = feature.firstChild.firstChild;
+      expect(filter.tagName).to.be.equal('ogc:Filter');
     });
   });
 
@@ -233,8 +213,8 @@ describe('WFS', function () {
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.not.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -277,8 +257,8 @@ describe('WFS', function () {
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -323,15 +303,15 @@ describe('WFS', function () {
 
       // Force fake server to respond on 'DescribeFeatures' request.
       server.respond();
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler.notCalled).to.be.notCalled;
 
       // Force fake server to respond on 'GetFeature' request (which will be sended automatically when 'DescribeFeatures' request succeed).
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -376,15 +356,15 @@ describe('WFS', function () {
 
       // Force fake server to respond on 'DescribeFeatures' request.
       server.respond();
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.notCalled;
 
       // Force fake server to respond on 'GetFeature' request (which will be sended automatically when 'DescribeFeatures' request succeed).
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.calledOnce).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.calledOnce;
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
@@ -434,8 +414,8 @@ describe('WFS', function () {
 
       // Force fake server to respond on 'DescribeFeatures' request.
       server.respond();
-      expect(onLoadEventHandler.notCalled).to.be.equal(true);
-      expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.notCalled;
+      expect(onErrorEventHandler).to.be.notCalled;
 
       // Force fake server to respond on 'GetFeature' request (which will be sended automatically when 'DescribeFeatures' request succeed).
       server.respond();
@@ -445,6 +425,64 @@ describe('WFS', function () {
         responseText: getFeatureResponseText
       })).to.be.equal(true);
       expect(onErrorEventHandler.notCalled).to.be.equal(true);
+      expect(onLoadEventHandler).to.be.calledWithMatch({ responseText: getFeatureResponseText });
+      expect(onErrorEventHandler).to.be.notCalled;
+    });
+  });
+
+  describe('#setOpacity', function () {
+    var options1;
+    var options2;
+
+    beforeEach(function () {
+      options1 = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000
+      };
+
+      options2 = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000,
+        opacity: 0.8
+      };
+    });
+
+    it('layer should have opacity equals 1 if no initialization option provided', function () {
+      var wfs = new L.WFS(options1);
+      expect(wfs.options.opacity).to.be.equal(1);
+      expect(wfs.options.style.opacity).to.be.equal(1);
+      expect(wfs.options.style.fillOpacity).to.be.equal(1);
+    });
+
+    it('layer should have opacity equals initialization option provided', function () {
+      var wfs = new L.WFS(options2);
+      expect(wfs.options.opacity).to.be.equal(0.8);
+      expect(wfs.options.style.opacity).to.be.equal(0.8);
+      expect(wfs.options.style.fillOpacity).to.be.equal(0.8);
+    });
+
+    it('layer should have opacity equals setOpacity method\' argument provided', function () {
+      var wfs = new L.WFS(options1);
+      wfs.setOpacity(0.5);
+
+      expect(wfs.options.opacity).to.be.equal(0.5);
+      expect(wfs.options.style.opacity).to.be.equal(0.5);
+      expect(wfs.options.style.fillOpacity).to.be.equal(0.5);
+
+      wfs = new L.WFS(options2);
+      wfs.setOpacity(1);
+
+      expect(wfs.options.opacity).to.be.equal(1);
+      expect(wfs.options.style.opacity).to.be.equal(1);
+      expect(wfs.options.style.fillOpacity).to.be.equal(1);
     });
   });
 

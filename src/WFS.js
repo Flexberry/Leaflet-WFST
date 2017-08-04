@@ -18,9 +18,12 @@ L.WFS = L.FeatureGroup.extend({
     typeNSName: '',
     maxFeatures: null,
     filter: null,
+    opacity: 1,
     style: {
       color: 'black',
-      weight: 1
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 1
     },
     namespaceUri: ''
   },
@@ -43,6 +46,8 @@ L.WFS = L.FeatureGroup.extend({
 
     this.options.typeNSName = this.namespaceName(this.options.typeName);
     this.options.srsName = this.options.crs.code;
+
+    this._updateOpacity();
 
     var that = this;
     this.describeFeatureType(function () {
@@ -115,8 +120,8 @@ L.WFS = L.FeatureGroup.extend({
       srsName: this.options.srsName
     }));
 
-    if (filter && filter.toGml) {
-      query.appendChild(filter.toGml());
+    if (filter) {
+      query.appendChild(L.filter(filter));
     }
 
     return request;
@@ -299,6 +304,23 @@ L.WFS = L.FeatureGroup.extend({
         errorCallback(new Error(errorMessage));
       }
     });
+  },
+
+  setOpacity: function (opacity) {
+    this.options.opacity = opacity;
+
+    this._updateOpacity();
+
+    return this;
+  },
+
+  _updateOpacity: function () {
+    var style = L.extend(this.options.style || {}, {
+      opacity: this.options.opacity,
+      fillOpacity: this.options.opacity
+    });
+
+    this.setStyle(style);
   }
 });
 
