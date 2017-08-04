@@ -3,6 +3,10 @@
  */
 L.WFS = L.FeatureGroup.extend({
 
+  _capabilities: null,
+
+  _boundingBox: null,
+
   options: {
     crs: L.CRS.EPSG3857,
     showExisting: true,
@@ -176,6 +180,128 @@ L.WFS = L.FeatureGroup.extend({
         });
 
         return that;
+      }
+    });
+  },
+
+  getCapabilities: function (successCallback, errorCallback) {
+    var capabilities = this._capabilities;
+
+    // Check if capabilities were already received & cached.
+    if (capabilities) {
+      if (typeof (successCallback) === 'function') {
+        successCallback(capabilities);
+
+        return;
+      }
+    }
+
+    var requestData = L.XmlUtil.createElementNS('wfs:GetCapabilities', {
+      service: 'WFS',
+      version: this.options.version
+    });
+
+    var that = this;
+    L.Util.request({
+      url: this.options.url,
+      data: L.XmlUtil.serializeXmlDocumentString(requestData),
+      headers: this.options.headers || {},
+      success: function (data) {
+        // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
+        // and such situation must be handled.
+        var exceptionReport = L.XmlUtil.parseOwsExceptionReport(data);
+        if (exceptionReport) {
+          if (typeof (errorCallback) === 'function') {
+            errorCallback(new Error(exceptionReport.message));
+          }
+
+          return;
+        }
+
+        try {
+          // Request was truly successful (without exception report), parse WFS_Capabilities.
+          capabilities = L.XmlUtil.parseXml(data).documentElement;
+        } catch (error) {
+          // If parsing failed.
+          if (typeof (errorCallback) === 'function') {
+            errorCallback(error);
+          }
+
+          return;
+        }
+
+        // Cache received capabilities.
+        that._capabilities = capabilities;
+
+        if (typeof (successCallback) === 'function') {
+          successCallback(capabilities);
+        }
+      },
+      error: function (errorMessage) {
+        if (typeof (errorCallback) === 'function') {
+          errorCallback(new Error(errorMessage));
+        }
+      }
+    });
+  },
+
+  getBoundingBox: function (successCallback, errorCallback) {
+    var boundingBox = this._boundingBox;
+
+    // Check if bounding box was already received & cached.
+    if (boundingBox) {
+      if (typeof (successCallback) === 'function') {
+        successCallback(boundingBox);
+
+        return;
+      }
+    }
+
+    var that = this;
+    this.getCapabilities(function (capabilities) {
+      var featureTypeListElement = capabilities.getElementsByTagName('FeatureTypeList')[0];
+
+      // Extract all 'FeatureType' nodes to list.
+      var featureTypeList = featureTypeListElement.getElementsByTagName('FeatureType');
+
+      for (var i = 0, len = featureTypeList.length; i < len; i++) {
+        var featureType = featureTypeList[i];
+
+        // Extract current FeatureType's name.
+        var featureTypeNSName = L.XmlUtil.getNodeText(featureType.getElementsByTagName('Name')[0]);
+
+        // Find node with current layer instance's name and namespace.
+        if (featureTypeNSName === that.options.typeNSName) {
+          // The <WGS84BoundingBox> element is used to indicate the edges of an
+          // enclosing rectangle in decimal degrees of latitude and longitude in WGS84.
+          var wgs84BoundingBox = featureType.getElementsByTagName('WGS84BoundingBox')[0];
+          var lowerCornerElement = wgs84BoundingBox.getElementsByTagName('LowerCorner')[0];
+          var upperCornerElement = wgs84BoundingBox.getElementsByTagName('UpperCorner')[0];
+
+          // Corner node's inner text format is like '-74.047185 40.679648', Lng and Lat with a space between.
+          var lowerCorner = L.XmlUtil.getNodeText(lowerCornerElement);
+          var upperCorner = L.XmlUtil.getNodeText(upperCornerElement);
+
+          // Extract LngLats and reverse it to LatLngs.
+          var sw = lowerCorner.split(' ').reverse();
+          var ne = upperCorner.split(' ').reverse();
+
+          // Wrap it into LatLngBounds.
+          boundingBox = L.latLngBounds([sw, ne]);
+
+          break;
+        }
+      }
+
+      // Cache received and calculated bounding box.
+      that._boundingBox = boundingBox;
+
+      if (typeof (successCallback) === 'function') {
+        successCallback(boundingBox);
+      }
+    }, function (errorMessage) {
+      if (typeof (errorCallback) === 'function') {
+        errorCallback(new Error(errorMessage));
       }
     });
   },
