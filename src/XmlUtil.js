@@ -68,6 +68,14 @@ L.XmlUtil = {
     return this.xmldoc.createTextNode('');
   },
 
+  getNodeText: function (node) {
+    if (!node) {
+      return '';
+    }
+
+    return node.innerText || node.textContent || node.text;
+  },
+
   serializeXmlDocumentString: function (node) {
     var doc = document.implementation.createDocument('', '', null);
     doc.appendChild(node);
@@ -82,7 +90,7 @@ L.XmlUtil = {
 
   parseXml: function (rawXml) {
     if (typeof window.DOMParser !== 'undefined') {
-      return ( new window.DOMParser() ).parseFromString(rawXml, 'text/xml');
+      return (new window.DOMParser()).parseFromString(rawXml, 'text/xml');
     } else if (typeof window.ActiveXObject !== 'undefined' && new window.ActiveXObject('Microsoft.XMLDOM')) {
       var xmlDoc = new window.ActiveXObject('Microsoft.XMLDOM');
       xmlDoc.async = 'false';
@@ -93,7 +101,7 @@ L.XmlUtil = {
     }
   },
 
-  parseOwsExceptionReport: function(rawXml) {
+  parseOwsExceptionReport: function (rawXml) {
     var exceptionReportElement = L.XmlUtil.parseXml(rawXml).documentElement;
     if (!exceptionReportElement || exceptionReportElement.tagName !== 'ows:ExceptionReport') {
       return null;

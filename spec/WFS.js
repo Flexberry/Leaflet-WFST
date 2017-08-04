@@ -79,6 +79,37 @@ describe('WFS', function () {
     '</gml:featureMembers>' +
     '</wfs:FeatureCollection>';
 
+  var getCapabilitiesResponseText =
+    '<wfs:WFS_Capabilities ' +
+    'xmlns="http://www.opengis.net/wfs" ' +
+    'xmlns:ows="http://www.opengis.net/ows" ' +
+    'xmlns:wfs="http://www.opengis.net/wfs" ' +
+    'xmlns:ogc="http://www.opengis.net/ogc" ' +
+    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+    '<FeatureTypeList>' +
+    '<FeatureType xmlns:ics="http://geoserver.ics.perm.ru">' +
+    '<Name>ics:water_polygon_all</Name>' +
+    '<ows:WGS84BoundingBox>' +
+    '<ows:LowerCorner>51.9373658 56.1549586</ows:LowerCorner>' +
+    '<ows:UpperCorner>59.4000255784893 61.489845980256874</ows:UpperCorner>' +
+    '</ows:WGS84BoundingBox>' +
+    '</FeatureType>' +
+    '<FeatureType xmlns:ics="http://geoserver.ics.perm.ru">' +
+    '<Name>ics:zayavki</Name>' +
+    '<ows:WGS84BoundingBox>' +
+    '<ows:LowerCorner>39.0 42.0</ows:LowerCorner>' +
+    '<ows:UpperCorner>41.0 45.0</ows:UpperCorner>' +
+    '</ows:WGS84BoundingBox>' +
+    '</FeatureType>' +
+    '</FeatureTypeList>' +
+    '<ows:ServiceIdentification></ows:ServiceIdentification>' +
+    '<ows:ServiceProvider></ows:ServiceProvider>' +
+    '<ows:OperationsMetadata></ows:OperationsMetadata>' +
+    '<ogc:Filter_Capabilities></ogc:Filter_Capabilities>' +
+    '</wfs:WFS_Capabilities>';
+
+  var capabilitiesRequiredTags = ['FeatureTypeList', 'ows:ServiceIdentification', 'ows:ServiceProvider', 'ows:OperationsMetadata', 'ogc:Filter_Capabilities'];
+
   var exceptionReportResponseText = '<ows:ExceptionReport ' +
     'xmlns:xs="http://www.w3.org/2001/XMLSchema" ' +
     'xmlns:ows="http://www.opengis.net/ows" ' +
@@ -91,10 +122,10 @@ describe('WFS', function () {
   describe('#getFeature', function () {
     var feature;
 
-    before(function() {
+    before(function () {
       var TestFilter = L.Filter.Abstract.extend({
         tagName: 'testFilter',
-        buildFilterContent: function() {}
+        buildFilterContent: function () {}
       });
 
       var options = {
@@ -107,6 +138,7 @@ describe('WFS', function () {
       };
 
       sinon.stub(L.WFS, 'describeFeatureType');
+
       var wfs = new L.WFS(options);
       feature = wfs.getFeature(new TestFilter());
     });
@@ -364,6 +396,11 @@ describe('WFS', function () {
               'Content-Type': 'text/xml'
             }, getFeatureResponseText);
             return;
+          } else if (xhr.requestBody.indexOf('<wfs:GetCapabilities') === 0) {
+            xhr.respond(200, {
+              'Content-Type': 'text/xml'
+            }, getCapabilitiesResponseText);
+            return;
           }
         }
 
@@ -386,7 +423,9 @@ describe('WFS', function () {
       server.respond();
 
       // Check events handlers.
-      expect(onLoadEventHandler).to.be.calledWithMatch({ responseText: getFeatureResponseText });
+      expect(onLoadEventHandler).to.be.calledWithMatch({
+        responseText: getFeatureResponseText
+      });
       expect(onErrorEventHandler).to.be.notCalled;
     });
   });
@@ -444,6 +483,269 @@ describe('WFS', function () {
       expect(wfs.options.opacity).to.be.equal(1);
       expect(wfs.options.style.opacity).to.be.equal(1);
       expect(wfs.options.style.fillOpacity).to.be.equal(1);
+    });
+  });
+
+  describe('#getCapabilities', function () {
+    var server;
+    var capabilityElement;
+    var successCallback;
+    var wfs;
+
+    beforeEach(function () {
+      // Create fake XHR.
+      server = sinon.fakeServer.create();
+
+      var options = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000
+      };
+
+      // Prepare a handler for fake server possible requests.
+      server.respondWith(function (xhr, id) {
+        if (xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0) {
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, describeFeaturesReponseText);
+          return;
+        } else if (xhr.requestBody.indexOf('<wfs:GetFeature') === 0) {
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, getFeatureResponseText);
+          return;
+        } else if (xhr.requestBody.indexOf('<wfs:GetCapabilities') === 0) {
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, getCapabilitiesResponseText);
+          return;
+        }
+
+        throw new Error('Unexpected request');
+      });
+
+      // Prepare 'successCallback' callback.
+      successCallback = sinon.spy();
+
+      wfs = new L.WFS(options);
+
+      wfs.getCapabilities(successCallback);
+
+      // Force fake server to respond on sended requests.
+      server.respond();
+
+      capabilityElement = successCallback.getCall(0).args[0];
+    });
+
+    afterEach(function () {
+      // Restore original XHR.
+      server.restore();
+    });
+
+    it('should return Element object with tagName=wfs:WFS_Capabilities', function () {
+      expect(capabilityElement).to.be.instanceOf(Element);
+      expect(capabilityElement.tagName).to.be.equal('wfs:WFS_Capabilities');
+    });
+
+    it('should return node with ows:ServiceIdentification, ows:ServiceProvider, ows:OperationsMetadata, FeatureTypeList, ogc:Filter_Capabilities childnodes',
+      function () {
+        var childnodes = capabilityElement.childNodes;
+
+        // Check retrieved elements.
+        for (var i = 0, len = childnodes.length; i < len; i++) {
+          expect(capabilitiesRequiredTags.indexOf(childnodes[i].tagName) >= 0).to.be.equal(true);
+        }
+      });
+
+    it('caches received capabilities', function () {
+      expect(successCallback.calledOnce).to.be.equal(true);
+      expect(wfs._capabilities).to.be.deep.equal(capabilityElement);
+
+      wfs.getCapabilities(successCallback);
+      var capabilityElement2 = successCallback.getCall(1).args[0];
+
+      expect(successCallback.calledTwice).to.be.equal(true);
+      expect(capabilityElement).to.be.deep.equal(capabilityElement2);
+    });
+  });
+
+  describe('#errorCallback', function () {
+    var server;
+
+    beforeEach(function () {
+      // Create fake XHR.
+      server = sinon.fakeServer.create();
+    });
+
+    afterEach(function () {
+      // Restore original XHR.
+      server.restore();
+    });
+
+    it('should trigger \'errorCallback\' if \'GetCapabilities\' request failed', function () {
+      var options = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        crs: L.CRS.EPSG4326,
+        geometryField: 'the_geom'
+      };
+
+      // Prepare a handler for fake server possible requests.
+      server.respondWith(function (xhr, id) {
+        if (
+          xhr.method === 'POST' &&
+          xhr.requestBody.indexOf('<wfs:GetCapabilities') === 0 &&
+          new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
+
+          xhr.respond(404, {
+            'Content-Type': 'text/html'
+          }, 'Not Found');
+          return;
+        }
+      });
+
+      // Create layer & attach evens handlers.
+      var successCallback = sinon.spy();
+      var errorCallback = sinon.spy();
+
+      var wfs = new L.WFS(options);
+      wfs.getCapabilities(successCallback, errorCallback);
+
+      // Force fake server to respond on sended requests.
+      server.respond();
+
+      // Check events handlers.
+      expect(successCallback.notCalled).to.be.equal(true);
+      expect(errorCallback.calledOnce).to.be.equal(true);
+
+      var error = errorCallback.getCall(0).args[0];
+      expect(error).to.be.instanceOf(Error).and.have.property('message', 'Not Found');
+    });
+
+    it('should trigger \'errorCallback\' if \'GetCapabilities\' request succeed but with ExceptionReport', function () {
+      var options = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        crs: L.CRS.EPSG4326,
+        geometryField: 'the_geom'
+      };
+
+      // Prepare a handler for fake server possible requests.
+      server.respondWith(function (xhr, id) {
+        if (
+          xhr.method === 'POST' &&
+          xhr.requestBody.indexOf('<wfs:GetCapabilities') === 0 &&
+          new RegExp(options.url + '.*', 'gi').test(xhr.url)) {
+
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, exceptionReportResponseText);
+          return;
+        }
+      });
+
+      // Create layer & attach evens handlers.
+      var successCallback = sinon.spy();
+      var errorCallback = sinon.spy();
+
+      var wfs = new L.WFS(options);
+      wfs.getCapabilities(successCallback, errorCallback);
+
+      // Force fake server to respond on sended requests.
+      server.respond();
+
+      // Check events handlers.
+      expect(successCallback.notCalled).to.be.equal(true);
+      expect(errorCallback.calledOnce).to.be.equal(true);
+
+      var error = errorCallback.getCall(0).args[0];
+      expect(error).to.be.instanceOf(Error).and.have.property('message', '404 - Not Found');
+    });
+  });
+
+  describe('#getBoundingBox', function () {
+    var server;
+    var bounds;
+    var successCallback;
+    var wfs;
+
+    beforeEach(function () {
+      // Create fake XHR.
+      server = sinon.fakeServer.create();
+
+      var options = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'ics',
+        typeName: 'zayavki',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000
+      };
+
+      // Prepare a handler for fake server possible requests.
+      server.respondWith(function (xhr, id) {
+        if (xhr.requestBody.indexOf('<wfs:DescribeFeatureType') === 0) {
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, describeFeaturesReponseText);
+          return;
+        } else if (xhr.requestBody.indexOf('<wfs:GetFeature') === 0) {
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, getFeatureResponseText);
+          return;
+        } else if (xhr.requestBody.indexOf('<wfs:GetCapabilities') === 0) {
+          xhr.respond(200, {
+            'Content-Type': 'text/xml'
+          }, getCapabilitiesResponseText);
+          return;
+        }
+
+        throw new Error('Unexpected request');
+      });
+
+      // Prepare 'successCallback' callback.
+      successCallback = sinon.spy();
+
+      wfs = new L.WFS(options);
+
+      wfs.getBoundingBox(successCallback);
+
+      // Force fake server to respond on sended requests.
+      server.respond();
+
+      bounds = successCallback.getCall(0).args[0];
+    });
+
+    afterEach(function () {
+      // Restore original XHR.
+      server.restore();
+    });
+
+    it('returns valid LatLngBounds', function () {
+      var latLngsBounds = L.latLngBounds([
+        [42, 39],
+        [45, 41]
+      ]);
+
+      expect(bounds.isValid()).to.be.equal(true);
+      expect(bounds).to.be.deep.equal(latLngsBounds);
+    });
+
+    it('caches received bounding box', function () {
+      expect(successCallback.calledOnce).to.be.equal(true);
+      expect(wfs._boundingBox).to.be.deep.equal(bounds);
+
+      wfs.getBoundingBox(successCallback);
+      var bounds2 = successCallback.getCall(1).args[0];
+
+      expect(successCallback.calledTwice).to.be.equal(true);
+      expect(bounds).to.be.deep.equal(bounds2);
     });
   });
 });
