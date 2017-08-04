@@ -1,4 +1,4 @@
-/*! leaflet-wfst 1.2.0-alpha04 2017-08-03 */
+/*! leaflet-wfst 1.2.0-alpha04 2017-08-04 */
 (function(window, document, undefined) {
 
 "use strict";
@@ -1264,8 +1264,17 @@ L.WFS = L.FeatureGroup.extend({
           return;
         }
 
-        // Request was truly successful (without exception report), parse WFS_Capabilities.
-        capabilities = L.XmlUtil.parseXml(data).documentElement;
+        try {
+          // Request was truly successful (without exception report), parse WFS_Capabilities.
+          capabilities = L.XmlUtil.parseXml(data).documentElement;
+        } catch (error) {
+          // If parsing failed.
+          if (typeof (errorCallback) === 'function') {
+            errorCallback(error);
+          }
+
+          return;
+        }
 
         // Cache received capabilities.
         that._capabilities = capabilities;

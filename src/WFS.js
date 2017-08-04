@@ -213,8 +213,17 @@ L.WFS = L.FeatureGroup.extend({
           return;
         }
 
-        // Request was truly successful (without exception report), parse WFS_Capabilities.
-        capabilities = L.XmlUtil.parseXml(data).documentElement;
+        try {
+          // Request was truly successful (without exception report), parse WFS_Capabilities.
+          capabilities = L.XmlUtil.parseXml(data).documentElement;
+        } catch (error) {
+          // If parsing failed.
+          if (typeof (errorCallback) === 'function') {
+            errorCallback(error);
+          }
+
+          return;
+        }
 
         // Cache received capabilities.
         that._capabilities = capabilities;
