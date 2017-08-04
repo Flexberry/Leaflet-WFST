@@ -116,8 +116,8 @@ L.WFS = L.FeatureGroup.extend({
       srsName: this.options.srsName
     }));
 
-    if (filter && filter.toGml) {
-      query.appendChild(filter.toGml());
+    if (filter) {
+      query.appendChild(L.filter(filter));
     }
 
     return request;
