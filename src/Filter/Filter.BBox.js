@@ -1,11 +1,27 @@
-L.Filter.BBox = L.Filter.extend({
-  append: function(bbox, geometryField, crs) {
-    var bboxElement = L.XmlUtil.createElementNS('ogc:BBOX');
-    bboxElement.appendChild(L.XmlUtil.createElementNS('ogc:PropertyName', {}, { value: geometryField }));
-    bboxElement.appendChild(bbox.toGml(crs));
+L.Filter.BBox = L.Filter.Abstract.extend({
+  tagName: 'ogc:BBOX',
 
-    this.filter.appendChild(bboxElement);
+  geometryField: null,
 
-    return this; 
+  bbox: null,
+
+  crs: null,
+
+  initialize: function (geometryField, bbox, crs) {
+    this.bbox = bbox;
+    this.geometryField = geometryField;
+    this.crs = crs;
+  },
+
+  buildFilterContent: function (filterElement) {
+    if (this.geometryField) {
+      filterElement.appendChild(L.Filter.propertyName(this.geometryField));
+    }
+
+    filterElement.appendChild(this.bbox.toGml(this.crs));
   }
 });
+
+L.Filter.bbox = function (geometryField, bbox, crs) {
+  return new L.Filter.BBox(geometryField, bbox, crs);
+};

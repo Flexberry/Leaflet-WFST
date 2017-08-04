@@ -13,13 +13,13 @@ L.Polygon.include({
       var node = L.XmlUtil.createElementNS('gml:Polygon', {srsName: crs.code, srsDimension: 2});
       node.appendChild(L.XmlUtil.createElementNS('gml:exterior'))
         .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))
-        .appendChild(L.GMLUtil.posListNode(L.Util.project(crs, flat ? polygonCoordinates : polygonCoordinates[0]), true));
+        .appendChild(L.GmlUtil.posListNode(L.Util.project(crs, flat ? polygonCoordinates : polygonCoordinates[0]), true));
 
       if (!flat) {
         for (var hole = 1; hole < polygonCoordinates.length; hole++) {
           node.appendChild(L.XmlUtil.createElementNS('gml:interior'))
             .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))
-            .appendChild(L.GMLUtil.posListNode(L.Util.project(crs, polygonCoordinates[hole]), true));
+            .appendChild(L.GmlUtil.posListNode(L.Util.project(crs, polygonCoordinates[hole]), true));
         }
       }
 
