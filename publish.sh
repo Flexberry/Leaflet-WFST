@@ -25,11 +25,6 @@ git commit -m "v$VERSION"
 git tag v$VERSION
 git push --tags
 
-echo "Publish to npm?"
-read -n1 -r -p "Press Ctrl+C to cancel, or any other key to continue." key
-
-npm publish
-
 git checkout master
 git branch -D build
 
