@@ -14,18 +14,15 @@ read -n1 -r -p "Press Ctrl+C to cancel, or any other key to continue." key
 
 git checkout -b build
 
-export NODE_ENV=release
-
 echo "Creating git tag v$VERSION..."
 
 git add dist/leaflet-wfst.src.js dist/leaflet-wfst.min.js -f
 
 git commit -m "v$VERSION"
 
-git tag v$VERSION
-git push --tags
+git tag v$VERSION || echo "Release with same name already exists"
 
 git checkout master
 git branch -D build
 
-echo "All done."
+echo "Release $VERSION prepared, dont forget to call git push --tags."
