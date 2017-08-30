@@ -89,17 +89,17 @@ describe('WFS', function () {
     '<FeatureTypeList>' +
     '<FeatureType xmlns:ics="http://geoserver.ics.perm.ru">' +
     '<Name>ics:water_polygon_all</Name>' +
-    '<ows:WGS84BoundingBox>' +
-    '<ows:LowerCorner>51.9373658 56.1549586</ows:LowerCorner>' +
-    '<ows:UpperCorner>59.4000255784893 61.489845980256874</ows:UpperCorner>' +
-    '</ows:WGS84BoundingBox>' +
+    '<WGS84BoundingBox>' +
+    '<LowerCorner>51.9373658 56.1549586</LowerCorner>' +
+    '<UpperCorner>59.4000255784893 61.489845980256874</UpperCorner>' +
+    '</WGS84BoundingBox>' +
     '</FeatureType>' +
     '<FeatureType xmlns:ics="http://geoserver.ics.perm.ru">' +
     '<Name>ics:zayavki</Name>' +
-    '<ows:WGS84BoundingBox>' +
-    '<ows:LowerCorner>39.0 42.0</ows:LowerCorner>' +
-    '<ows:UpperCorner>41.0 45.0</ows:UpperCorner>' +
-    '</ows:WGS84BoundingBox>' +
+    '<WGS84BoundingBox>' +
+    '<LowerCorner>39.0 42.0</LowerCorner>' +
+    '<UpperCorner>41.0 45.0</UpperCorner>' +
+    '</WGS84BoundingBox>' +
     '</FeatureType>' +
     '</FeatureTypeList>' +
     '<ows:ServiceIdentification></ows:ServiceIdentification>' +
