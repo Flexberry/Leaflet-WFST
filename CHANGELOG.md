@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0-beta.1] - 2017-08-25
+## [2.0.0] - 2017-08-30
 ### Added
 * Add `getCapabilities` and `getBoundingBox` methods.
 * Add new and refactor old filters: Equals, Disjoint, Touches, Within, Overlaps, Crosses, Intersects, Contains, Dwithin, Beyond, BBox, GmlObjectID, Add, Sub, Mul, Div, EQ, NotEQ, LT, GT, LEQ, GEQ, Like, IsNull, IsBetween, And, Or, Not, Function.
