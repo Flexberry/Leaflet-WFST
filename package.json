@@ -1,6 +1,6 @@
 {
   "name": "leaflet-wfst",
-  "version": "v2.0.1-beta.1",
+  "version": "2.0.1-beta.1",
   "description": "WFST plugin for Leaflet",
   "main": "dist/leaflet-wfst.src.js",
   "directories": {
