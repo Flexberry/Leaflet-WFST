@@ -274,9 +274,9 @@ L.WFS = L.FeatureGroup.extend({
         if (featureTypeNSName === that.options.typeNSName) {
           // The <WGS84BoundingBox> element is used to indicate the edges of an
           // enclosing rectangle in decimal degrees of latitude and longitude in WGS84.
-          var wgs84BoundingBox = featureType.getElementsByTagName('WGS84BoundingBox')[0];
-          var lowerCornerElement = wgs84BoundingBox.getElementsByTagName('LowerCorner')[0];
-          var upperCornerElement = wgs84BoundingBox.getElementsByTagName('UpperCorner')[0];
+          var wgs84BoundingBox = featureType.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'WGS84BoundingBox')[0];
+          var lowerCornerElement = wgs84BoundingBox.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'LowerCorner')[0];
+          var upperCornerElement = wgs84BoundingBox.getElementsByTagNameNS(L.XmlUtil.namespaces.ows, 'UpperCorner')[0];
 
           // Corner node's inner text format is like '-74.047185 40.679648', Lng and Lat with a space between.
           var lowerCorner = L.XmlUtil.getNodeText(lowerCornerElement);
