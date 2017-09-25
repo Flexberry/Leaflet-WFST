@@ -96,10 +96,10 @@ describe('WFS', function () {
     '</FeatureType>' +
     '<FeatureType xmlns:ics="http://geoserver.ics.perm.ru">' +
     '<Name>ics:zayavki</Name>' +
-    '<WGS84BoundingBox>' +
-    '<LowerCorner>39.0 42.0</LowerCorner>' +
-    '<UpperCorner>41.0 45.0</UpperCorner>' +
-    '</WGS84BoundingBox>' +
+    '<ows:WGS84BoundingBox>' +
+    '<ows:LowerCorner>39.0 42.0</ows:LowerCorner>' +
+    '<ows:UpperCorner>41.0 45.0</ows:UpperCorner>' +
+    '</ows:WGS84BoundingBox>' +
     '</FeatureType>' +
     '</FeatureTypeList>' +
     '<ows:ServiceIdentification></ows:ServiceIdentification>' +
