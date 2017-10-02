@@ -451,7 +451,8 @@ describe('WFS', function () {
         geometryField: 'the_geom',
         namespaceUri: 'testUri',
         maxFeatures: 5000,
-        opacity: 0.8
+        opacity: 0.8,
+        fillOpacity: 0.8
       };
     });
 

@@ -19,6 +19,7 @@ L.WFS = L.FeatureGroup.extend({
     maxFeatures: null,
     filter: null,
     opacity: 1,
+    fillOpacity: 1,
     style: {
       color: 'black',
       weight: 1,
@@ -306,8 +307,9 @@ L.WFS = L.FeatureGroup.extend({
     });
   },
 
-  setOpacity: function (opacity) {
+  setOpacity: function (opacity, fillOpacity) {
     this.options.opacity = opacity;
+    this.options.fillOpacity = fillOpacity || opacity;
 
     this._updateOpacity();
 
@@ -317,7 +319,7 @@ L.WFS = L.FeatureGroup.extend({
   _updateOpacity: function () {
     var style = L.extend(this.options.style || {}, {
       opacity: this.options.opacity,
-      fillOpacity: this.options.opacity
+      fillOpacity: this.options.fillOpacity
     });
 
     this.setStyle(style);
