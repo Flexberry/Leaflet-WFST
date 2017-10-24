@@ -11,7 +11,7 @@ L.Polyline.include({
 
   toGml: function (crs) {
     var latLngs = this.getLatLngs();
-    if (L.Polyline._flat(latLngs)) return this._lineStringNode(crs, latLngs);
+    if (L.Util.isFlat(latLngs)) return this._lineStringNode(crs, latLngs);
 
     //we have multiline
     var multi = L.XmlUtil.createElementNS('gml:MultiLineString', {srsName: crs.code, srsDimension: 2});
