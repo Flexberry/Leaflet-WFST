@@ -42,6 +42,7 @@ L.GML.FeatureType = L.Class.extend({
     L.setOptions(this, options);
 
     this.fields = {};
+    this.types = {};
   },
 
   appendField: function (name, type) {
