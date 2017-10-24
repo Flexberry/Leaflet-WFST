@@ -1,13 +1,14 @@
 {
   "name": "leaflet-wfst",
-  "version": "2.0.0",
+  "version": "2.0.1-beta.4",
   "description": "WFST plugin for Leaflet",
-  "main": "dist/Leaflet-WFST-src.js",
+  "main": "dist/leaflet-wfst.src.js",
   "directories": {
     "example": "./examples",
     "source": "./src",
     "tests": "./spec"
   },
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "https://github.com/Flexberry/Leaflet-WFST.git"

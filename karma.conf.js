@@ -16,10 +16,10 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       'bower_components/leaflet/dist/leaflet.js',
-      'dist/Leaflet-WFST.src.js',
+      'dist/leaflet-wfst.min.js',
       'spec/**/*.js',
-      {pattern: 'spec/Format/*.xml', autoWatch: true, included: false, served: true},
-      {pattern: 'spec/Format/*.json', autoWatch: true, included: false, served: true}
+      { pattern: 'spec/Format/*.xml', autoWatch: true, included: false, served: true },
+      { pattern: 'spec/Format/*.json', autoWatch: true, included: false, served: true }
     ],
 
 
