@@ -42,7 +42,7 @@ L.GML.FeatureType = L.Class.extend({
     L.setOptions(this, options);
 
     this.fields = {};
-    this.types = {};
+    this.fieldTypes = {};
   },
 
   appendField: function (name, type) {
@@ -50,7 +50,7 @@ L.GML.FeatureType = L.Class.extend({
     this.primitives.forEach(function (primitive) {
       if (primitive.types.indexOf(type) !== -1) {
         that.fields[name] = primitive.parse;
-        that.types[name] = primitive.type;
+        that.fieldTypes[name] = primitive.type;
       }
     });
   },
