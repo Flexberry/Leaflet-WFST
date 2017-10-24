@@ -12,25 +12,29 @@ L.GML.FeatureType = L.Class.extend({
       types: ['byte', 'decimal', 'int', 'integer', 'long', 'short'],
       parse: function (input) {
         return Number(input);
-      }
+      },
+      type: 'number'
     },
     {
       types: ['string'],
       parse: function (input) {
         return input;
-      }
+      },
+      type: 'string'
     },
     {
       types: ['boolean'],
       parse: function (input) {
         return input !== 'false';
-      }
+      },
+      type: 'boolean'
     },
     {
       types: ['date', 'time', 'datetime'],
       parse: function (input) {
         return new Date(input);
-      }
+      },
+      type: 'date'
     }
   ],
 
@@ -38,6 +42,7 @@ L.GML.FeatureType = L.Class.extend({
     L.setOptions(this, options);
 
     this.fields = {};
+    this.fieldTypes = {};
   },
 
   appendField: function (name, type) {
@@ -45,6 +50,7 @@ L.GML.FeatureType = L.Class.extend({
     this.primitives.forEach(function (primitive) {
       if (primitive.types.indexOf(type) !== -1) {
         that.fields[name] = primitive.parse;
+        that.fieldTypes[name] = primitive.type;
       }
     });
   },
