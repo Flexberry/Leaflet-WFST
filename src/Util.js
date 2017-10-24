@@ -10,8 +10,10 @@ L.Util.project = function (crs, latlngs) {
     });
 
     return result;
-  }
-  else {
+  } else {
     return crs.projection.project(latlngs);
   }
 };
+
+// 1.0.1 <=> 1.1.0 <=> 1.2.0 compatibility.
+L.Util.isFlat = L.LineUtil.isFlat || L.LineUtil._flat || L.Polyline._flat;

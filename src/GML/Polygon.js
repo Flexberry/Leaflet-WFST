@@ -9,7 +9,7 @@ L.Polygon.include({
 
     for (var i = 0; i < polygons.length; i++) {
       var polygonCoordinates = polygons[i];
-      var flat = L.Polyline._flat(polygonCoordinates);
+      var flat = L.Util.isFlat(polygonCoordinates);
       var node = L.XmlUtil.createElementNS('gml:Polygon', {srsName: crs.code, srsDimension: 2});
       node.appendChild(L.XmlUtil.createElementNS('gml:exterior'))
         .appendChild(L.XmlUtil.createElementNS('gml:LinearRing', {srsDimension: 2}))

@@ -11,10 +11,10 @@ L.filter = function (filters) {
 
   if (Array.isArray(filters)) {
     filters.forEach(function (element) {
-      result.appendChild(element.toGml());
+      result.appendChild(element instanceof Element ? element : element.toGml());
     });
   } else if (filters) {
-    result.appendChild(filters.toGml());
+    result.appendChild(filters instanceof Element ? filters : filters.toGml());
   }
 
   return result;
