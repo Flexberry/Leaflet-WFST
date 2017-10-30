@@ -7,4 +7,19 @@ describe('Filter.BinaryComparison', function () {
       expect(filterElement.attributes.matchCase.value).to.be.equal('true');
     });
   });
+
+  describe('#create filters with different attributes', function() {
+    var firstFilter;
+    var secondFilter;
+
+    before(function () {
+      firstFilter = new L.Filter.BinaryComparison('a', 'b', true);
+      secondFilter = new L.Filter.BinaryComparison('a', 'b', false);
+    });
+
+    it('must have different attributes', function() {
+      expect(firstFilter.attributes.matchCase).to.be.equal(true);
+      expect(secondFilter.attributes.matchCase).to.be.equal(false);
+    });
+  });
 });
