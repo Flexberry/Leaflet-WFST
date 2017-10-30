@@ -1,17 +1,16 @@
 L.Filter.Like = L.Filter.Abstract.extend({
   tagName: 'ogc:PropertyIsLike',
 
-  attributes: {
-    wildCard: '*',
-    singleChar: '#',
-    escapeChar: '!',
-    matchCase: true
-  },
+  wildCard: '*',
+  singleChar: '#',
+  escapeChar: '!',
+  matchCase: true,
 
   initialize: function (name, val, attributes) {
     this.name = name;
     this.val = val;
-    this.attributes = L.extend(this.attributes, attributes || {});
+    var defaultAttributes = { wildCard: this.wildCard, singleChar: this.singleChar, escapeChar: this.escapeChar, matchCase: this.matchCase };
+    this.attributes = L.extend(defaultAttributes, attributes || {});
   },
 
   buildFilterContent: function (filterElement) {

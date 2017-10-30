@@ -57,4 +57,25 @@ describe('Filter.Like', function () {
       expect(likeElement.getAttribute('matchCase')).to.be.equal('false');
     });
   });
+
+  describe('#create filters with different attributes', function() {
+    var firstFilter;
+    var secondFilter;
+
+    before(function () {
+      firstFilter = new L.Filter.Like(propertyName, propertyValue, { wildCard: '##', singleChar: '$$', escapeChar: '\\', matchCase: false });
+      secondFilter = new L.Filter.Like(propertyName, propertyValue, { wildCard: '#', singleChar: '$', escapeChar: '\\', matchCase: true });
+    });
+
+    it('must have different attributes', function() {
+      expect(firstFilter.attributes.wildCard).to.be.equal('##');
+      expect(firstFilter.attributes.singleChar).to.be.equal('$$');
+      expect(firstFilter.attributes.escapeChar).to.be.equal('\\');
+      expect(firstFilter.attributes.matchCase).to.be.equal(false);
+      expect(secondFilter.attributes.wildCard).to.be.equal('#');
+      expect(secondFilter.attributes.singleChar).to.be.equal('$');
+      expect(secondFilter.attributes.escapeChar).to.be.equal('\\');
+      expect(secondFilter.attributes.matchCase).to.be.equal(true);
+    });
+  });
 });
