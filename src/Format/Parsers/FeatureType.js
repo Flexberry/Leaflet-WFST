@@ -9,7 +9,7 @@ L.GML.FeatureType = L.Class.extend({
 
   primitives: [
     {
-      types: ['byte', 'decimal', 'int', 'integer', 'long', 'short'],
+      types: ['byte', 'decimal', 'int', 'integer', 'long', 'short', 'double'],
       parse: function (input) {
         return Number(input);
       },
