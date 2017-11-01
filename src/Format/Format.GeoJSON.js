@@ -15,7 +15,10 @@ L.Format.GeoJSON = L.Format.Base.extend({
     var geoJson = JSON.parse(rawData);
 
     for (var i = 0; i < geoJson.features.length; i++) {
-      layers.push(this.processFeature(geoJson.features[i]));
+      var layer = this.processFeature(geoJson.features[i]);
+      if (layer) {
+        layers.push(layer);
+      }
     }
 
     return layers;
@@ -23,6 +26,10 @@ L.Format.GeoJSON = L.Format.Base.extend({
 
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
+    if (!layer) {
+      return null;
+    }
+
     layer.feature = feature;
     return layer;
   },
