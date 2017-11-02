@@ -35,6 +35,15 @@ L.Format.GeoJSON = L.Format.Base.extend({
   },
 
   generateLayer: function (feature) {
-    return L.GeoJSON.geometryToLayer(feature, this.options || null);
+    var layer = L.GeoJSON.geometryToLayer(feature, this.options || null);
+    if (!layer) {
+      console.log(
+        'Geometry field doesn\' exist inside received feature: \'' + feature + '\', ' +
+        'so feature will be skipped and won\'t be converted into leaflet layer');
+
+        return null;
+    }
+
+    return layer;
   }
 });

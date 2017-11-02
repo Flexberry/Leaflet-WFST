@@ -28,9 +28,9 @@ L.Format.GML = L.Format.Base.extend({
     var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
     for (var i = 0; i < featureMemberNodes.length; i++) {
       var feature = featureMemberNodes[i].firstChild;
-      var layer = this.processFeature(feature);
-      if (layer) {
-        layers.push(layer);
+      var featureAsLayer = this.processFeature(feature);
+      if (featureAsLayer) {
+        layers.push(featureAsLayer);
       }
     }
 
@@ -39,8 +39,13 @@ L.Format.GML = L.Format.Base.extend({
       var features = featureMembersNode[0].childNodes;
       for (var j = 0; j < features.length; j++) {
         var node = features[j];
-        if (node.nodeType === document.ELEMENT_NODE) {
-          layers.push(this.processFeature(node));
+        if (node.nodeType !== document.ELEMENT_NODE) {
+          continue;
+        }
+
+        var nodeAsLayer = this.processFeature(node);
+        if (nodeAsLayer) {
+          layers.push(nodeAsLayer);
         }
       }
     }
@@ -61,12 +66,11 @@ L.Format.GML = L.Format.Base.extend({
   generateLayer: function (feature) {
     var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
     if (!geometryField) {
-      throw new Error(
-        'Geometry field \'' +
-        this.options.geometryField +
-        '\' doesn\' exist inside received feature: \'' +
-        feature.innerHTML +
-        '\'');
+      console.log(
+        'Geometry field \'' + this.options.geometryField + '\' doesn\' exist inside received feature: \'' + feature.innerHTML + '\', ' +
+        'so feature will be skipped and won\'t be converted into leaflet layer');
+
+      return null;
     }
 
     return this.parseElement(geometryField.firstChild, this.options);
