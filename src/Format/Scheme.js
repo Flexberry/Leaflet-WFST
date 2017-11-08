@@ -43,7 +43,7 @@ L.Format.Scheme = L.Class.extend({
       var typeName = typeAttr.value.split(':').pop();
 
       if (propertyName === this.options.geometryField) {
-        featureType.geometryTypes.push(typeName);
+        featureType.geometryTypes[propertyName] = typeName;
       }
 
       featureType.appendField(propertyName, typeName);
