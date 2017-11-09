@@ -29,9 +29,6 @@ L.Format.Scheme = L.Class.extend({
       }
 
       var propertyName = node.attributes.name.value;
-      if (propertyName === this.options.geometryField) {
-        continue;
-      }
 
       var typeAttr = node.attributes.type;
       if (!typeAttr) {
@@ -44,6 +41,11 @@ L.Format.Scheme = L.Class.extend({
       }
 
       var typeName = typeAttr.value.split(':').pop();
+
+      if (propertyName === this.options.geometryField) {
+        featureType.geometryFields[propertyName] = typeName;
+        continue;
+      }
 
       featureType.appendField(propertyName, typeName);
     }
