@@ -9,7 +9,7 @@ L.GML.FeatureType = L.Class.extend({
 
   primitives: [
     {
-      types: ['byte', 'decimal', 'int', 'integer', 'long', 'short', 'double'],
+      types: ['byte', 'short', 'int', 'integer', 'long', 'decimal','float', 'double'],
       parse: function (input) {
         return Number(input);
       },
@@ -30,7 +30,7 @@ L.GML.FeatureType = L.Class.extend({
       type: 'boolean'
     },
     {
-      types: ['date', 'time', 'datetime'],
+      types: ['date', 'time', 'datetime', 'dateTime'],
       parse: function (input) {
         return new Date(input);
       },
