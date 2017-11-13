@@ -84,7 +84,7 @@ L.WFST = L.WFS.extend({
         var insertedIds = [];
         var id = insertResult.iterateNext();
         while (id) {
-          insertedIds.push(new L.Filter.GmlObjectID(id));
+          insertedIds.push(new L.Filter.GmlObjectID(id.value));
           id = insertResult.iterateNext();
         }
 
