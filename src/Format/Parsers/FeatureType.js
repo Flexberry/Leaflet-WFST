@@ -47,7 +47,7 @@ L.GML.FeatureType = L.Class.extend({
       types: ['date', 'time', 'datetime'],
       parse: function (input) {
         input = String.prototype.trim.call(input || '');
-        return input === '' ? null : Date(input);
+        return input === '' ? null : new Date(input);
       },
       validate: function (parsedValue) {
         // Invalid date also can be detected by isNaN check.
