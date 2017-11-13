@@ -4,13 +4,13 @@
 
 L.WFST.include({
 
-  insert: function (layer) {
+  insertElement: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Insert');
     node.appendChild(this.gmlFeature(layer));
     return node;
   },
 
-  update: function (layer) {
+  updateElement: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.options.typeNSName});
     var feature = layer.feature;
     for (var propertyName in feature.properties) {
@@ -25,7 +25,7 @@ L.WFST.include({
     return node;
   },
 
-  remove: function (layer) {
+  removeElement: function (layer) {
     var node = L.XmlUtil.createElementNS('wfs:Delete', {typeName: this.options.typeNSName});
     var idFilter = new L.Filter.GmlObjectID(layer.feature.id);
     node.appendChild(L.filter(idFilter));

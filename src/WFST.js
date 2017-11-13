@@ -6,9 +6,9 @@ L.WFST = L.WFS.extend({
   initialize: function (options, readFormat) {
     L.WFS.prototype.initialize.call(this, options, readFormat);
     this.state = L.extend(this.state, {
-      insert: 'insert',
-      update: 'update',
-      remove: 'remove'
+      insert: 'insertElement',
+      update: 'updateElement',
+      remove: 'removeElement'
     });
 
     this.changes = {};
