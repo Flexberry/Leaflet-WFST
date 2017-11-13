@@ -14,7 +14,9 @@ L.WFST.include({
     var node = L.XmlUtil.createElementNS('wfs:Update', {typeName: this.options.typeNSName});
     var feature = layer.feature;
     for (var propertyName in feature.properties) {
-      node.appendChild(this.wfsProperty(propertyName, feature.properties[propertyName]));
+      if (feature.properties.hasOwnProperty(propertyName)) {
+        node.appendChild(this.wfsProperty(propertyName, feature.properties[propertyName]));
+      }
     }
 
     node.appendChild(this.wfsProperty(this.namespaceName(this.options.geometryField),
