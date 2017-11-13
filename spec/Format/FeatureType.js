@@ -2,7 +2,7 @@
  * Created by PRadostev on 10.06.2015.
  */
 
-describe("L.GML.FeatureType", function () {
+describe('L.GML.FeatureType', function () {
   var parser;
 
   beforeEach(function () {
