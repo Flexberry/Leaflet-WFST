@@ -34,7 +34,7 @@ describe('WFST.Requests', function () {
       sinon.stub(wfst, 'gmlFeature').callsFake(function () {
         return document.createElement('dummy');
       });
-      var result = wfst.insert(layer);
+      var result = wfst.insertElement(layer);
       expect(result).to.be.instanceOf(Element);
       expect(result.tagName).to.be.equal('wfs:Insert');
     });
@@ -45,7 +45,7 @@ describe('WFST.Requests', function () {
       sinon.stub(wfst, 'wfsProperty').callsFake(function () {
         return document.createElement('dummy');
       });
-      var result = wfst.update(layer);
+      var result = wfst.updateElement(layer);
       expect(result).to.be.instanceOf(Element);
       expect(result.tagName).to.be.equal('wfs:Update');
     });
@@ -53,7 +53,7 @@ describe('WFST.Requests', function () {
 
   describe('#remove', function () {
     it('should return Element object with tagName "wfs:Delete" and attribute "typeName"', function () {
-      var result = wfst.remove(layer);
+      var result = wfst.removeElement(layer);
       expect(result).to.be.instanceOf(Element);
       expect(result.tagName).to.be.equal('wfs:Delete');
       expect(result.attributes.typeName).to.not.be.undefined;
