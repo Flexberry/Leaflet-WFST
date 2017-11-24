@@ -58,6 +58,27 @@ describe('WFST.Helpers', function () {
       expect(result.tagName).to.be.equal('propertyName');
       stub.restore();
     });
+
+    it('should create element with specified property', function () {
+      var stub = sinon.stub(wfst, 'namespaceName').callsFake(function (name) {
+        return name;
+      });
+
+      var result = wfst.gmlProperty('propertyName', 'propertyValue');
+      expect(result.textContent).to.be.equal('propertyValue');
+
+      stub.restore();
+    });
+
+    it('should create element with xsi:nil attribute for non specified property', function () {
+      var stub = sinon.stub(wfst, 'namespaceName').callsFake(function (name) {
+        return name;
+      });
+
+      var result = wfst.gmlProperty('propertyName', '');
+      expect(result.getAttribute('xsi:nil')).to.be.equal('true');
+      stub.restore();
+    });
   });
 
   describe('#wfsProperty', function () {

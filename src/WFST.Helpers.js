@@ -4,7 +4,7 @@
 
 L.WFST.include({
   gmlFeature: function (layer) {
-    var featureNode = L.XmlUtil.createElementNS(this.options.typeNSName, {}, {uri: this.options.namespaceUri});
+    var featureNode = L.XmlUtil.createElementNS(this.options.typeNSName, {}, { uri: this.options.namespaceUri });
     var feature = layer.feature;
     for (var propertyName in feature.properties) {
       featureNode.appendChild(this.gmlProperty(propertyName,
@@ -21,8 +21,10 @@ L.WFST.include({
     if (value instanceof Element) {
       propertyNode.appendChild(value);
     }
-    else {
+    else if (value) {
       propertyNode.appendChild(L.XmlUtil.createTextNode(value));
+    } else {
+      L.XmlUtil.setAttributes(propertyNode, { 'xsi:nil': true });
     }
 
     return propertyNode;
@@ -30,7 +32,7 @@ L.WFST.include({
 
   wfsProperty: function (name, value) {
     var propertyNode = L.XmlUtil.createElementNS('wfs:Property');
-    propertyNode.appendChild(L.XmlUtil.createElementNS('wfs:Name', {}, {value: name}));
+    propertyNode.appendChild(L.XmlUtil.createElementNS('wfs:Name', {}, { value: name }));
     var valueNode = L.XmlUtil.createElementNS('wfs:Value');
     if (value instanceof Element) {
       valueNode.appendChild(value);
