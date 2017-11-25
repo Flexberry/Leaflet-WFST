@@ -23,9 +23,12 @@ L.XmlUtil = {
     }
   },
 
-  evaluate: function (xpath, rawxml) {
-    var parser = new DOMParser();
-    var xmlDoc = parser.parseFromString(rawxml, 'text/xml');
+  evaluate: function (xpath, xml) {
+    var xmlDoc = xml;
+    if (!(xmlDoc instanceof Document)) {
+      xmlDoc = this.parseXml(xml);
+    }
+
     var xpe = new XPathEvaluator();
     var nsResolver = xpe.createNSResolver(xmlDoc.documentElement);
 
@@ -101,8 +104,13 @@ L.XmlUtil = {
     }
   },
 
-  parseOwsExceptionReport: function (rawXml) {
-    var exceptionReportElement = L.XmlUtil.parseXml(rawXml).documentElement;
+  parseOwsExceptionReport: function (xml) {
+    var xmlDoc = xml;
+    if (!(xmlDoc instanceof Document)) {
+      xmlDoc = this.parseXml(xml);
+    }
+
+    var exceptionReportElement = xmlDoc.documentElement;
     if (!exceptionReportElement || exceptionReportElement.tagName !== 'ows:ExceptionReport') {
       return null;
     }

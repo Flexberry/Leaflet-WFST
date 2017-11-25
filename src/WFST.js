@@ -1,8 +1,8 @@
-/**
- * Created by PRadostev on 06.02.2015.
- */
-
 L.WFST = L.WFS.extend({
+  options: {
+    forceMulti: false
+  },
+
   initialize: function (options, readFormat) {
     L.WFS.prototype.initialize.call(this, options, readFormat);
     this.state = L.extend(this.state, {
@@ -79,8 +79,16 @@ L.WFST = L.WFS.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(transaction),
       headers: this.options.headers || {},
+      withCredentials: true,
       success: function (data) {
-        var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
+        var xmlDoc = L.XmlUtil.parseXml(data);
+        var exception = L.XmlUtil.parseOwsExceptionReport(xmlDoc);
+        if(exception !== null) {
+          that.fire('save:failed', exception);
+          return;
+        }
+
+        var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', xmlDoc);
         var insertedIds = [];
         var id = insertResult.iterateNext();
         while (id) {

@@ -87,7 +87,14 @@ describe('WFST', function () {
       expect(transactionRequest.requestBody.indexOf('<wfs:Transaction')).to.be.equal(0);
       transactionRequest.respond(200, { "Content-Type": "text/xml" },
       '<?xml version="1.0" encoding="UTF-8"?>' +
-      '<wfs:TransactionResponse xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd">' +
+      '<wfs:TransactionResponse xmlns:xs="http://www.w3.org/2001/XMLSchema"' +
+      ' xmlns:wfs="http://www.opengis.net/wfs"' +
+      ' xmlns:gml="http://www.opengis.net/gml"' +
+      ' xmlns:ogc="http://www.opengis.net/ogc"' +
+      ' xmlns:ows="http://www.opengis.net/ows"' +
+      ' xmlns:xlink="http://www.w3.org/1999/xlink"' +
+      ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0"' +
+      ' xsi:schemaLocation="http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd">' +
         '<wfs:TransactionSummary>' +
           '<wfs:totalInserted>1</wfs:totalInserted>' +
           '<wfs:totalUpdated>0</wfs:totalUpdated>' +

@@ -3,7 +3,7 @@
  */
 
 describe("L.Polygon.toGml()", function () {
-  var polygon, polygonGml;
+  var polygon;
   beforeEach(function () {
     polygon = new L.Polygon(
       [
@@ -22,32 +22,48 @@ describe("L.Polygon.toGml()", function () {
           ]
         ]
       ]);
-    polygonGml = polygon.toGml(L.CRS.Simple);
   });
 
-  it('should be not empty', function () {
-    expect(polygon.getLatLngs().length).to.be.greaterThan(0);
-  });
+  describe('Simple polygon', function () {
+    var polygonGml;
 
-  it('should return Element object with tagName gml:Polygon', function () {
-    expect(polygonGml).to.be.instanceOf(Element);
-    expect(polygonGml.tagName).to.be.equal('gml:Polygon');
-  });
+    beforeEach(function () {
+      polygonGml = polygon.toGml(L.CRS.Simple);
+    });
 
-  it('should have first child element gml:exterior with child element gml:LinearRing', function () {
-    var exterior = polygonGml.firstChild;
-    expect(exterior.tagName).to.be.equal('gml:exterior');
+    it('should return Element object with tagName gml:Polygon', function () {
+      expect(polygonGml).to.be.instanceOf(Element);
+      expect(polygonGml.tagName).to.be.equal('gml:Polygon');
+    });
 
-    var linearRing = exterior.firstChild;
-    expect(linearRing.tagName).to.be.equal('gml:LinearRing');
-  });
+    it('should have first child element gml:exterior with child element gml:LinearRing', function () {
+      var exterior = polygonGml.firstChild;
+      expect(exterior.tagName).to.be.equal('gml:exterior');
 
-  it('may have child elements gml:interior with child element gml:LinearRing', function () {
-    var interiors = polygonGml.getElementsByTagName('gml:interior');
-    for (var i = 0; i < interiors.length; i++) {
-      var interior = interiors[i];
-      var linearRing = interior.firstChild;
+      var linearRing = exterior.firstChild;
       expect(linearRing.tagName).to.be.equal('gml:LinearRing');
-    }
+    });
+
+    it('may have child elements gml:interior with child element gml:LinearRing', function () {
+      var interiors = polygonGml.getElementsByTagName('gml:interior');
+      for (var i = 0; i < interiors.length; i++) {
+        var interior = interiors[i];
+        var linearRing = interior.firstChild;
+        expect(linearRing.tagName).to.be.equal('gml:LinearRing');
+      }
+    });
+  });
+
+  describe('Polygon with forceMulti', function () {
+    var polygonGml;
+
+    beforeEach(function () {
+      polygonGml = polygon.toGml(L.CRS.Simple, true);
+    });
+
+    it('should return Element object with tagName gml:MultiPolygon', function () {
+      expect(polygonGml).to.be.instanceOf(Element);
+      expect(polygonGml.tagName).to.be.equal('gml:MultiPolygon');
+    });
   });
 });

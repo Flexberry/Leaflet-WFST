@@ -9,15 +9,26 @@ L.Polyline.include({
     return node;
   },
 
-  toGml: function (crs) {
+  toGml: function (crs, forceMulti) {
     var latLngs = this.getLatLngs();
-    if (L.Util.isFlat(latLngs)) return this._lineStringNode(crs, latLngs);
+    var gmlElements = [];
 
-    //we have multiline
+    if (L.Util.isFlat(latLngs)) {
+       gmlElements.push(this._lineStringNode(crs, latLngs));
+    } else {
+      for (var i = 0; i < latLngs.length; i++) {
+        gmlElements.push(this._lineStringNode(crs, latLngs[i]));
+      }
+    }
+
+    if(gmlElements.length === 1 && !forceMulti) {
+      return gmlElements[0];
+    }
+
     var multi = L.XmlUtil.createElementNS('gml:MultiLineString', {srsName: crs.code, srsDimension: 2});
     var collection = multi.appendChild(L.XmlUtil.createElementNS('gml:lineStringMembers'));
-    for (var i = 0; i < latLngs.length; i++) {
-      collection.appendChild(this._lineStringNode(crs, latLngs[i]));
+    for (var lines = 0; lines < gmlElements.length; lines++) {
+      collection.appendChild(gmlElements[lines]);
     }
 
     return multi;

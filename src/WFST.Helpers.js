@@ -11,8 +11,16 @@ L.WFST.include({
         feature.properties[propertyName]));
     }
 
-    featureNode.appendChild(this.gmlProperty(this.options.geometryField,
-      layer.toGml(this.options.crs)));
+    featureNode.appendChild(
+      this.gmlProperty(
+        this.options.geometryField,
+        layer.toGml(
+          this.options.crs,
+          this.options.forceMulti
+        )
+      )
+    );
+
     return featureNode;
   },
 
