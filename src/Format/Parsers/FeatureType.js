@@ -11,6 +11,9 @@ L.GML.FeatureType = L.Class.extend({
     {
       types: ['byte', 'short', 'int', 'integer', 'long', 'float', 'double', 'decimal'],
       parse: function (input) {
+        if (input === 0) {
+          return 0;
+        }
         input = String.prototype.trim.call(input || '');
         return input === '' ? null : Number(input);
       },
