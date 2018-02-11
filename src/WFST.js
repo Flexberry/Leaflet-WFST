@@ -1,14 +1,14 @@
-/**
- * Created by PRadostev on 06.02.2015.
- */
-
 L.WFST = L.WFS.extend({
+  options: {
+    forceMulti: false
+  },
+
   initialize: function (options, readFormat) {
     L.WFS.prototype.initialize.call(this, options, readFormat);
     this.state = L.extend(this.state, {
-      insert: 'insert',
-      update: 'update',
-      remove: 'remove'
+      insert: 'insertElement',
+      update: 'updateElement',
+      remove: 'removeElement'
     });
 
     this.changes = {};
@@ -83,12 +83,20 @@ L.WFST = L.WFS.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(transaction),
       headers: this.options.headers || {},
+      withCredentials: true,
       success: function (data) {
-        var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', data);
+        var xmlDoc = L.XmlUtil.parseXml(data);
+        var exception = L.XmlUtil.parseOwsExceptionReport(xmlDoc);
+        if(exception !== null) {
+          that.fire('save:failed', exception);
+          return;
+        }
+
+        var insertResult = L.XmlUtil.evaluate('//wfs:InsertResults/wfs:Feature/ogc:FeatureId/@fid', xmlDoc);
         var insertedIds = [];
         var id = insertResult.iterateNext();
         while (id) {
-          insertedIds.push(new L.Filter.GmlObjectId(id));
+          insertedIds.push(new L.Filter.GmlObjectID(id.value));
           id = insertResult.iterateNext();
         }
 

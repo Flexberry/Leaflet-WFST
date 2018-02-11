@@ -10,6 +10,7 @@ L.Util.request = function (options) {
     params: {},
     headers: {},
     url: window.location.href,
+    withCredentials: false,
     success: function (data) {
       console.log(data);
     },
@@ -34,6 +35,7 @@ L.Util.request = function (options) {
       options.complete();
     }
   };
+  xhr.withCredentials = options.withCredentials;
 
   var url = options.url + L.Util.getParamString(options.params, options.url);
 

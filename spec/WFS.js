@@ -121,6 +121,7 @@ describe('WFS', function () {
 
   describe('#getFeature', function () {
     var feature;
+    var describeFeatureTypeOriginalMethod;
 
     before(function () {
       var TestFilter = L.Filter.Abstract.extend({
@@ -137,10 +138,15 @@ describe('WFS', function () {
         maxFeatures: 5000
       };
 
-      sinon.stub(L.WFS, 'describeFeatureType');
+      describeFeatureTypeOriginalMethod = L.WFS.prototype.describeFeatureType;
+      sinon.stub(L.WFS.prototype, 'describeFeatureType');
 
       var wfs = new L.WFS(options);
       feature = wfs.getFeature(new TestFilter());
+    });
+
+    after(function() {
+      L.WFS.prototype.describeFeatureType = describeFeatureTypeOriginalMethod;
     });
 
     it('should return Element object with tagName=GetFeature and must have attiributes "service" and "version"', function () {

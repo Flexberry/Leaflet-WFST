@@ -3,7 +3,7 @@
  */
 
 L.Polygon.include({
-  toGml: function (crs) {
+  toGml: function (crs, forceMulti) {
     var polygons = this.getLatLngs();
     var gmlPolygons = [];
 
@@ -26,7 +26,7 @@ L.Polygon.include({
       gmlPolygons.push(node);
     }
 
-    if (gmlPolygons.length === 1) return gmlPolygons[0];
+    if (gmlPolygons.length === 1 && !forceMulti) return gmlPolygons[0];
 
     // else make multipolygon
     var multi = L.XmlUtil.createElementNS('gml:MultiPolygon', {srsName: crs.code, srsDimension: 2});

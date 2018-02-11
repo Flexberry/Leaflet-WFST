@@ -58,11 +58,21 @@ describe("L.Format", function () {
 
         it('should return array with 10 elements', function () {
           var stub = sinon.stub(format, 'processFeature').callsFake(function () {
-            return 0;
+            return {};
           });
 
           var layers = format.responseToLayers(testData);
           expect(layers.length).to.equal(10);
+          stub.restore();
+        });
+
+        it('should return array with 0 elements', function () {
+          var stub = sinon.stub(format, 'processFeature').callsFake(function () {
+            return null;
+          });
+
+          var layers = format.responseToLayers(testData);
+          expect(layers.length).to.equal(0);
           stub.restore();
         });
       });
