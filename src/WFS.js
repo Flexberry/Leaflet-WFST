@@ -71,7 +71,12 @@ L.WFS = L.FeatureGroup.extend({
       service: 'WFS',
       version: this.options.version
     });
-    requestData.appendChild(L.XmlUtil.createElementNS('TypeName', {}, {
+
+    if ((this.options.typeNS != null) && (this.options.namespaceUri != null)) {
+      requestData.setAttribute("xmlns:" + this.options.typeNS, this.options.namespaceUri);
+    }
+
+    requestData.appendChild(L.XmlUtil.createElementNS('wfs:TypeName', {}, {
       value: this.options.typeNSName
     }));
 
@@ -115,6 +120,10 @@ L.WFS = L.FeatureGroup.extend({
       maxFeatures: this.options.maxFeatures,
       outputFormat: this.readFormat.outputFormat
     });
+
+    if ((this.options.typeNS != null) && (this.options.namespaceUri != null)) {
+      requestData.setAttribute("xmlns:" + this.options.typeNS, this.options.namespaceUri);
+    }
 
     var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query', {
       typeName: this.options.typeNSName,
