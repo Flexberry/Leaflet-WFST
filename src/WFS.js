@@ -122,7 +122,7 @@ L.WFS = L.FeatureGroup.extend({
     });
 
     if ((this.options.typeNS != null) && (this.options.namespaceUri != null)) {
-      requestData.setAttribute("xmlns:" + this.options.typeNS, this.options.namespaceUri);
+      request.setAttribute("xmlns:" + this.options.typeNS, this.options.namespaceUri);
     }
 
     var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query', {
