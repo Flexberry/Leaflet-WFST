@@ -42,7 +42,7 @@ L.WFST.include({
     if (value instanceof Element) {
       propertyNode.appendChild(value);
     }
-    else if (value === null || value === undefined) {
+    else if (value === null || value === undefined || value === '') {
       L.XmlUtil.setAttributes(propertyNode, { 'xsi:nil': true });
     } else {
       propertyNode.appendChild(L.XmlUtil.createTextNode(value));
