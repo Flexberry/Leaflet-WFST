@@ -62,13 +62,13 @@ L.XmlUtil = {
   },
 
   createTextNode: function (value) {
-    if (value ||
-      value === 0) {
-
-      return this.xmldoc.createTextNode(value);
+    if(value === null || value === undefined) {
+      value = '';
+    } else if(value instanceof Date) {
+      value = value.toISOString();
     }
 
-    return this.xmldoc.createTextNode('');
+    return this.xmldoc.createTextNode(value);
   },
 
   getNodeText: function (node) {
