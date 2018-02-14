@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+* Option `forceMulti` for explicitly create Multi GML even when L.Layer is simple polyline or polygon
+* Add xsi:nil attribute for non-value properties in transaction requests
+* Store geometryTypeName in featureType
+* Add parsing for double primitive
+
+### Fixed
+* Transaction request represent dates as ISO formatted strings
+
+
+### Changed
+* helper function in wfst change names to insertElement, updateElement, removeElement
+
 ## [2.0.0] - 2017-08-30
 ### Added
 * Add `getCapabilities` and `getBoundingBox` methods.
