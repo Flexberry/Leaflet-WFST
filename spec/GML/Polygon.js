@@ -61,9 +61,9 @@ describe("L.Polygon.toGml()", function () {
       polygonGml = polygon.toGml(L.CRS.Simple, true);
     });
 
-    it('should return Element object with tagName gml:MultiPolygon', function () {
+    it('should return Element object with tagName gml:MultiSurface', function () {
       expect(polygonGml).to.be.instanceOf(Element);
-      expect(polygonGml.tagName).to.be.equal('gml:MultiPolygon');
+      expect(polygonGml.tagName).to.be.equal('gml:MultiSurface');
     });
   });
 });
