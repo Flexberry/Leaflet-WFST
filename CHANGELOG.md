@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 * helper function in wfst change names to insertElement, updateElement, removeElement
+* Change multiclasses `toGml` to gml3 syntax
 
 ## [2.0.0] - 2017-08-30
 ### Added
