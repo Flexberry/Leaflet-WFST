@@ -30,13 +30,13 @@ describe("L.MultiPolygon.toGml()", function () {
     members = multiGml.firstChild;
   });
 
-  it('should return Element object with tagName gml:MultiPolygon', function () {
+  it('should return Element object with tagName gml:MultiSurface', function () {
     expect(multiGml).to.be.instanceOf(Element);
-    expect(multiGml.tagName).to.be.equal('gml:MultiPolygon');
+    expect(multiGml.tagName).to.be.equal('gml:MultiSurface');
   });
 
-  it('should have first child element gml:polygonMembers', function () {
-    expect(members.tagName).to.be.equal('gml:polygonMembers');
+  it('should have first child element gml:surfaceMembers', function () {
+    expect(members.tagName).to.be.equal('gml:surfaceMembers');
   });
 
   it('should have 3 child nodes of members', function () {

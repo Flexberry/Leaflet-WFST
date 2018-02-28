@@ -30,13 +30,13 @@ describe("L.MultiPolyline.toGml()", function () {
     members = multiGml.firstChild;
   });
 
-  it('should return Element object with tagName gml:MultiLineString ', function () {
+  it('should return Element object with tagName gml:MultiCurve', function () {
     expect(multiGml).to.be.instanceOf(Element);
-    expect(multiGml.tagName).to.be.equal('gml:MultiLineString');
+    expect(multiGml.tagName).to.be.equal('gml:MultiCurve');
   });
 
-  it('should have first child element gml:lineStringMembers', function () {
-    expect(members.tagName).to.be.equal('gml:lineStringMembers');
+  it('should have first child element gml:curveMembers', function () {
+    expect(members.tagName).to.be.equal('gml:curveMembers');
   });
 
   it('should have 3 child nodes of members', function () {

@@ -25,8 +25,8 @@ L.Polyline.include({
       return gmlElements[0];
     }
 
-    var multi = L.XmlUtil.createElementNS('gml:MultiLineString', {srsName: crs.code, srsDimension: 2});
-    var collection = multi.appendChild(L.XmlUtil.createElementNS('gml:lineStringMembers'));
+    var multi = L.XmlUtil.createElementNS('gml:MultiCurve', {srsName: crs.code, srsDimension: 2});
+    var collection = multi.appendChild(L.XmlUtil.createElementNS('gml:curveMembers'));
     for (var lines = 0; lines < gmlElements.length; lines++) {
       collection.appendChild(gmlElements[lines]);
     }

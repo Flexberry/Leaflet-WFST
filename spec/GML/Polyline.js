@@ -41,13 +41,13 @@ describe("L.Polyline.toGml()", function () {
       polylineGml = collectionGml.firstChild;
     });
 
-    it('should return Element object with tagName gml:MultiLineString', function () {
+    it('should return Element object with tagName gml:MultiCurve', function () {
       expect(multiGml).to.be.instanceOf(Element);
-      expect(multiGml.tagName).to.be.equal('gml:MultiLineString');
+      expect(multiGml.tagName).to.be.equal('gml:MultiCurve');
     });
 
-    it('should have child Element with tagName gml:lineStringMembers', function () {
-      expect(collectionGml.tagName).to.be.equal('gml:lineStringMembers');
+    it('should have child Element with tagName gml:curveMembers', function () {
+      expect(collectionGml.tagName).to.be.equal('gml:curveMembers');
     });
 
     it('gml:lineStringMembers should have child Element with tagName gml:LineString', function () {
