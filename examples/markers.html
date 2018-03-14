@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css"/>
-  <link rel="stylesheet" type="text/css" href="lib/leaflet.toolbar.css"/>
-  <link rel="stylesheet" type="text/css" href="lib/leaflet.label.css"/>
-  <link rel="stylesheet" type="text/css" href="lib/MarkerCluster.css"/>
-  <link rel="stylesheet" type="text/css" href="lib/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.toolbar.js/0.3.0/leaflet.toolbar.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/MarkerCluster.Default.css" />
   <link rel="stylesheet" type="text/css" href="lib/L.Control.Sidebar.css"/>
+  <link rel="stylesheet" type="text/css" href="lib/leaflet.label.css"/>
 
   <title>WFS-T Markers Test</title>
   <style>
@@ -66,11 +66,11 @@
   <input id="applyButton" type="button" value="Apply" disabled/>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/leaflet.markercluster.js"></script>
 <script src="lib/spin.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-<script src="lib/leaflet.toolbar.js"></script>
+<script src="lib/leaflet.toolbar-src.js"></script>
 <script src="lib/leaflet.label.js"></script>
-<script src="lib/leaflet.markercluster.js"></script>
 <script src="editableMarkercluster/leaflet.markercluster.editablemarker.js"></script>
 <script src="lib/L.Control.Sidebar.js"></script>
 <script src="../dist/leaflet-wfst.src.js"></script>
@@ -181,7 +181,6 @@
     typeName: 'perm_points_of_interest',
     crs: L.CRS.EPSG4326,
     geometryField: 'ogr_geometry',
-    maxFeatures:5,
     pointToLayer: function (featureData, latlng) {
       return createEditableMarker(latlng);
     }
@@ -301,12 +300,12 @@
       addWfstMarker(layer);
     });
 
+    loadFinished = true;
+
     if (isFirstLoad) {
       map.fitBounds(markers);
       isFirstLoad = false;
     }
-
-    loadFinished = true;
   });
 
   wfst.on('save:success', function (data) {
@@ -321,10 +320,10 @@
     console.error(data);
   });
 
-  new L.Toolbar.Control({
+  new L.Toolbar2.Control({
     position: 'topleft',
     actions: [
-      L.ToolbarAction.extend({
+      L.Toolbar2.Action.extend({
         options: {
           toolbarIcon: {
             className: 'fa fa-lg fa-map-marker'
@@ -358,7 +357,6 @@
               direction: 'auto',
               pane: map.getPanes.popupPane
             });
-            newMarker.showLabel();
           };
 
           var processAdding = function (e) {
@@ -399,7 +397,7 @@
           newMarker.once('click', finishAdding)
         }
       }),
-      L.ToolbarAction.extend({
+      L.Toolbar2.Action.extend({
         options: {
           toolbarIcon: {
             className: 'fa fa-lg fa-save'

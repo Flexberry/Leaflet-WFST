@@ -25,7 +25,7 @@
   }).addTo(map);
 
   var boundaries = new L.WFS({
-    url: 'http://demo.opengeo.org/geoserver/ows',
+    url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'topp',
     typeName: 'tasmania_state_boundaries',
     crs: L.CRS.EPSG4326,
@@ -41,7 +41,7 @@
     });
 
   var roads = new L.WFS({
-    url: 'http://demo.opengeo.org/geoserver/ows',
+    url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'topp',
     typeName: 'tasmania_roads',
     crs: L.CRS.EPSG4326,
@@ -53,7 +53,7 @@
   }).addTo(map);
 
   var cities = new L.WFS({
-    url: 'http://demo.opengeo.org/geoserver/ows',
+    url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'topp',
     typeName: 'tasmania_cities',
     crs: L.CRS.EPSG4326,

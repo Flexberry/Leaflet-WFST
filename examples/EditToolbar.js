@@ -2,7 +2,7 @@
  * Created by PRadostev on 10.03.2015.
  */
 
-L.DeletePopup = L.ToolbarAction.extend({
+L.DeletePopup = L.Toolbar2.Action.extend({
   options: {
     toolbarIcon: {className: 'fa fa-lg fa-trash'}
   },
@@ -11,7 +11,7 @@ L.DeletePopup = L.ToolbarAction.extend({
     this._map = map;
     this._layer = shape;
 
-    L.ToolbarAction.prototype.initialize.call(this, map, options);
+    L.Toolbar2.Action.prototype.initialize.call(this, map, options);
   },
 
   addHooks: function () {
@@ -21,7 +21,7 @@ L.DeletePopup = L.ToolbarAction.extend({
   }
 });
 
-L.EditPopup = L.ToolbarAction.extend({
+L.EditPopup = L.Toolbar2.Action.extend({
   options: {
     toolbarIcon: {className: 'fa fa-lg fa-edit'}
   },
@@ -30,7 +30,7 @@ L.EditPopup = L.ToolbarAction.extend({
     this._map = map;
     this._layer = shape;
 
-    L.ToolbarAction.prototype.initialize.call(this, map, options);
+    L.Toolbar2.Action.prototype.initialize.call(this, map, options);
   },
 
   enable: function () {
@@ -46,7 +46,7 @@ L.EditPopup = L.ToolbarAction.extend({
   }
 });
 
-L.EditPopupToolbar = L.Toolbar.Popup.extend({
+L.EditPopupToolbar = L.Toolbar2.Popup.extend({
   options: {
     actions: [
       L.EditPopup,
@@ -66,6 +66,6 @@ L.EditPopupToolbar = L.Toolbar.Popup.extend({
       map.removeLayer(that);
     });
 
-    L.Toolbar.Popup.prototype.onAdd.call(this, map);
+    L.Toolbar2.Popup.prototype.onAdd.call(this, map);
   }
 });

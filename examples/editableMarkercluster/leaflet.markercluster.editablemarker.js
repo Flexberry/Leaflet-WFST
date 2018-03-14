@@ -1,5 +1,5 @@
 (function (window, document, undefined) {
-  var editMarkerToolbarAction = L.ToolbarAction.extend({
+  var editMarkerToolbarAction = L.Toolbar2.Action.extend({
     initialize: function (map, marker, options) {
       this._map = map;
       this._marker = marker;
@@ -18,7 +18,7 @@
 
       L.Util.setOptions(this, options);
 
-      L.ToolbarAction.prototype.initialize.call(this, map, options);
+      L.Toolbar2.Action.prototype.initialize.call(this, map, options);
     },
 
     addHooks: function () {
@@ -31,7 +31,6 @@
         }
         that._marker._dragged = true;
       };
-
       that._marker._popupToolbar._onMarkerDragEnd = function (e) {
         if (that._marker._popupToolbar._bringToFront) {
           that._marker._popupToolbar._bringToFront();
@@ -125,7 +124,7 @@
     }
   });
 
-  var deleteMarkerToolbarAction = L.ToolbarAction.extend({
+  var deleteMarkerToolbarAction = L.Toolbar2.Action.extend({
     initialize: function (map, marker, options) {
       this._map = map;
       this._marker = marker;
@@ -144,7 +143,7 @@
 
       L.Util.setOptions(this, options);
 
-      L.ToolbarAction.prototype.initialize.call(this, map, options);
+      L.Toolbar2.Action.prototype.initialize.call(this, map, options);
     },
 
     addHooks: function () {
@@ -174,7 +173,7 @@
     }
   });
 
-  var closeMarkerToolbarAction = L.ToolbarAction.extend({
+  var closeMarkerToolbarAction = L.Toolbar2.Action.extend({
     initialize: function (map, marker, options) {
       this._map = map;
       this._marker = marker;
@@ -193,7 +192,7 @@
 
       L.Util.setOptions(this, options);
 
-      L.ToolbarAction.prototype.initialize.call(this, map, options);
+      L.Toolbar2.Action.prototype.initialize.call(this, map, options);
     },
 
     addHooks: function () {
@@ -207,7 +206,7 @@
     }
   });
 
-  var editableMarkerPopupToolbar = L.Toolbar.Popup.extend({
+  var editableMarkerPopupToolbar = L.Toolbar2.Popup.extend({
     options: {
       actions: [
         editMarkerToolbarAction,
@@ -226,7 +225,7 @@
         this.options.anchor = L.point([popupAnchor[0], popupAnchor[1] - 6]);
       }
 
-      L.Toolbar.Popup.prototype.onAdd.call(this, map);
+      L.Toolbar2.Popup.prototype.onAdd.call(this, map);
 
       if (marker.options.clusterGroup) {
         that._onClusterGroupAnimationEnd = function (e) {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css"/>
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" type="text/css" href="lib/leaflet.toolbar.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.toolbar.js/0.3.0/leaflet.toolbar.css" />
   <style>
     html, body, #map {
       margin: 0;
@@ -18,12 +18,12 @@
 <div id="map"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
-<script src="lib/leaflet.toolbar.js"></script>
-<script src="lib/Leaflet.Editable.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.1.0/Leaflet.Editable.js"></script>
+<script src="lib/leaflet.toolbar-src.js"></script>
 <script src="EditToolbar.js"></script>
 
-<script src="lib/proj4.js"></script>
-<script src="lib/proj4leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.js"></script>
 
 <script src="../dist/leaflet-wfst.src.js"></script>
 <script>
@@ -48,10 +48,10 @@
       map.fitBounds(wfst);
     });
 
-  new L.Toolbar.Control({
+  new L.Toolbar2.Control({
     position: 'topleft',
     actions: [
-      L.ToolbarAction.extend({
+      L.Toolbar2.Action.extend({
         options: {
           toolbarIcon: {
             className: 'fa fa-lg fa-square'
@@ -61,7 +61,7 @@
           map.editTools.startPolygon();
         }
       }),
-      L.ToolbarAction.extend({
+      L.Toolbar2.Action.extend({
         options: {
           toolbarIcon: {
             className: 'fa fa-lg fa-save'
