@@ -303,7 +303,7 @@
     loadFinished = true;
 
     if (isFirstLoad) {
-      map.fitBounds(markers);
+      map.fitBounds(markers.getBounds());
       isFirstLoad = false;
     }
   });
