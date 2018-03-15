@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css"/>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.toolbar.js/0.3.0/leaflet.toolbar.css" />
+  <style>
+    html, body, #map {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  <title>Leaflet-WFST Polyline demo</title>
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.1.0/Leaflet.Editable.js"></script>
+<script src="lib/leaflet.toolbar-src.js"></script>
+<script src="EditToolbar.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.js"></script>
+
+<script src="../dist/leaflet-wfst.src.js"></script>
+<script>
+  var map = L.map('map', {editable: true}).setView([0, 0], 2);
+  // add an OpenStreetMap tile layer
+  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var wfst = new L.WFST({
+    url: 'http://geoserver.ics.perm.ru/geoserver/ows',
+    typeNS: 'ics',
+    typeName: 'perm_water_line',
+    crs: L.CRS.EPSG4326,
+    geometryField: 'ogr_geometry',
+    style: {
+      color: 'blue',
+      weight: 2
+    }
+  }).addTo(map)
+    .once('load', function () {
+      map.fitBounds(wfst);
+    });
+
+  new L.Toolbar2.Control({
+    position: 'topleft',
+    actions: [
+      L.Toolbar2.Action.extend({
+        options: {
+          toolbarIcon: {
+            className: 'fa fa-lg fa-square'
+          }
+        },
+        addHooks: function () {
+          map.editTools.startPolyline();
+        }
+      }),
+      L.Toolbar2.Action.extend({
+        options: {
+          toolbarIcon: {
+            className: 'fa fa-lg fa-save'
+          }
+        },
+        addHooks: function () {
+          wfst.save();
+        }
+      })
+    ]
+  }).addTo(map);
+
+  wfst.on('click', function (event) {
+    new L.EditPopupToolbar(event.latlng).addTo(map, event.layer);
+  });
+
+  map.on('editable:created', function (e) {
+    wfst.addLayer(e.layer);
+  });
+
+  map.on('editable:editing', function (e) {
+    wfst.editLayer(e.layer);
+  });
+
+  map.on('editable:delete', function (e) {
+    wfst.removeLayer(e.layer);
+  });
+</script>
+</body>
+</html>

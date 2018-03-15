@@ -1,0 +1,8 @@
+title: Leaflet-WFST
+description: 
+google_analytics: UA-60149862-1
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
