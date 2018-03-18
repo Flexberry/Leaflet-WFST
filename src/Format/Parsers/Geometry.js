@@ -7,6 +7,13 @@ L.GML.Geometry = L.GML.Element.extend({
     DIM: 2
   },
 
+  /**
+   * Extract dimension option from element attributes
+   *
+   * @method dimensions
+   * @param {Element} element
+   * @return {int} dimension property for that element if it exists
+   */
   dimensions: function (element) {
     if (element.attributes.srsDimension) {
       return parseInt(element.attributes.srsDimension.value);

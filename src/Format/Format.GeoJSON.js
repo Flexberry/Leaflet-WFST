@@ -1,6 +1,8 @@
 /**
- * Created by PRadostev on 30.01.2015.
  * Translate GeoJSON to leaflet structures
+ *
+ * @class Format.GeoJSON
+ * @extends Format.Base
  */
 
 L.Format.GeoJSON = L.Format.Base.extend({
@@ -10,6 +12,13 @@ L.Format.GeoJSON = L.Format.Base.extend({
     this.outputFormat = 'application/json';
   },
 
+  /**
+   * Convert raw data to leaflet layers array
+   *
+   * @method responseToLayers
+   * @param {string} rawData
+   * @return {Array} Array of leaflet layers
+   */
   responseToLayers: function (rawData) {
     var layers = [];
     var geoJson = JSON.parse(rawData);
@@ -24,6 +33,14 @@ L.Format.GeoJSON = L.Format.Base.extend({
     return layers;
   },
 
+  /**
+   * Create layer and set its properties from geoJson feature
+   *
+   * @method processFeature
+   * @param {json} feature
+   * @return {Layer} leaflet layer with "feature" property with feature fields values
+   * @private
+   */
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
     if (!layer) {
@@ -34,6 +51,14 @@ L.Format.GeoJSON = L.Format.Base.extend({
     return layer;
   },
 
+  /**
+   * Create leaflet layer from geoJson feature
+   *
+   * @method generateLayer
+   * @param {json} feature
+   * @return {Layer} leaflet layer
+   * @private
+   */
   generateLayer: function (feature) {
     var layer = L.GeoJSON.geometryToLayer(feature, this.options || null);
     if (!layer) {

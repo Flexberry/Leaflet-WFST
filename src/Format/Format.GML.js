@@ -1,7 +1,9 @@
 /**
- * Created by PRadostev on 30.01.2015.
+ * Parser for WFS responses with GML3 syntax
+ *
+ * @class Format.GML
+ * @extends Format.Base
  */
-
 
 L.Format.GML = L.Format.Base.extend({
 
@@ -21,6 +23,13 @@ L.Format.GML = L.Format.Base.extend({
     this.appendParser(new L.GML.MultiPoint());
   },
 
+  /**
+   * Convert raw data to leaflet layers array
+   *
+   * @method responseToLayers
+   * @param {string} rawData
+   * @return {Array} Array of leaflet layers
+   */
   responseToLayers: function (rawData) {
     var layers = [];
     var xmlDoc = L.XmlUtil.parseXml(rawData);
@@ -53,6 +62,14 @@ L.Format.GML = L.Format.Base.extend({
     return layers;
   },
 
+  /**
+   * Create layer and set its properties from xml feature element
+   *
+   * @method processFeature
+   * @param {Element} feature
+   * @return {Layer} leaflet layer with "feature" property with feature fields values
+   * @private
+   */
   processFeature: function (feature) {
     var layer = this.generateLayer(feature);
     if (!layer) {
@@ -63,6 +80,14 @@ L.Format.GML = L.Format.Base.extend({
     return layer;
   },
 
+  /**
+   * Create leaflet layer from xml feature element
+   *
+   * @method generateLayer
+   * @param {Element} feature
+   * @return {Layer} leaflet layer
+   * @private
+   */
   generateLayer: function (feature) {
     var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
     if (!geometryField) {
