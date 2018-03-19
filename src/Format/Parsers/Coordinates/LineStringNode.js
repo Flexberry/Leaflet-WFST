@@ -1,5 +1,8 @@
 /**
- * Created by PRadostev on 11.08.2015.
+ * Coordinate parser for gml:LineString element.
+ *
+ * @class GML.LineStringNode
+ * @extends GML.PointSequence
  */
 
 L.GML.LineStringNode = L.GML.PointSequence.extend({

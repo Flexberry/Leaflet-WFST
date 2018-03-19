@@ -8,7 +8,7 @@ L.GML.Polygon = L.GML.PolygonNode.extend({
 
   parse: function (element, options) {
     var layer = new L.Polygon([]);
-    var coordinates = L.GML.PolygonNode.prototype.parse.call(this, element);
+    var coordinates = L.GML.PolygonNode.prototype.parse.call(this, element, options);
     layer.setLatLngs(this.transform(coordinates, options));
     return layer;
   }

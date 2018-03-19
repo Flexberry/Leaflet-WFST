@@ -6,7 +6,7 @@ L.GML.Point = L.GML.PointNode.extend({
   includes: L.GML.CoordsToLatLngMixin,
 
   parse: function (element, options) {
-    var coords = L.GML.PointNode.prototype.parse.call(this, element);
+    var coords = L.GML.PointNode.prototype.parse.call(this, element, options);
     var layer = new L.Marker();
     layer.setLatLng(this.transform(coords, options));
     return layer;
