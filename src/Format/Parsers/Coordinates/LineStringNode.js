@@ -6,8 +6,5 @@
  */
 
 L.GML.LineStringNode = L.GML.PointSequence.extend({
-  initialize: function () {
-    this.elementTag = 'gml:LineString';
-    L.GML.PointSequence.prototype.initialize.call(this);
-  }
+  elementTag: 'gml:LineString'
 });

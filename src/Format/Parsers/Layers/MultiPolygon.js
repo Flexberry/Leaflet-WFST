@@ -1,10 +1,9 @@
 /**
- * Created by PRadostev on 09.06.2015.
+ * Layer parser for gml:MultiPolygon element
+ * @class GML.MultiPolygon
+ * @extends GML.AbstractMultiPolygon
  */
 
 L.GML.MultiPolygon = L.GML.AbstractMultiPolygon.extend({
-  initialize: function () {
-    L.GML.AbstractMultiPolygon.prototype.initialize.call(this);
-    this.elementTag = 'gml:MultiPolygon';
-  }
+  elementTag: 'gml:MultiPolygon'
 });

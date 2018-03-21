@@ -6,10 +6,8 @@
  */
 
 L.GML.LinearRing = L.GML.PointSequence.extend({
-  initialize: function () {
-    L.GML.PointSequence.prototype.initialize.call(this);
-    this.elementTag = 'gml:LinearRing';
-  },
+
+  elementTag: 'gml:LinearRing',
 
   /**
    * Parse element into array of coordinates

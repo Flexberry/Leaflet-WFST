@@ -3,15 +3,17 @@
  *
  * @class Format.GML
  * @extends Format.Base
+ * @uses GML.ParserContainerMixin
  */
 
 L.Format.GML = L.Format.Base.extend({
 
   includes: L.GML.ParserContainerMixin,
 
+  outputFormat: 'text/xml; subtype=gml/3.1.1',
+
   initialize: function (options) {
     L.Format.Base.prototype.initialize.call(this, options);
-    this.outputFormat = 'text/xml; subtype=gml/3.1.1';
     this.initializeParserContainer();
     this.appendParser(new L.GML.Point());
     this.appendParser(new L.GML.LineString());

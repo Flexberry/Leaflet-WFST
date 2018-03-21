@@ -7,10 +7,7 @@
 
 L.Format.GeoJSON = L.Format.Base.extend({
 
-  initialize: function (options) {
-    L.Format.Base.prototype.initialize.call(this, options);
-    this.outputFormat = 'application/json';
-  },
+  outputFormat: 'application/json',
 
   /**
    * Convert raw data to leaflet layers array

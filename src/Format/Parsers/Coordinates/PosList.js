@@ -7,9 +7,7 @@ L.GML.PosList = L.GML.Element.extend({
     DIM: 2
   },
 
-  initialize: function () {
-    this.elementTag = 'gml:posList';
-  },
+  elementTag: 'gml:posList',
 
   parse: function (element, options) {
     var result = [];

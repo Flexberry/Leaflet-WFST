@@ -1,11 +1,15 @@
 /**
- * Created by PRadostev on 10.06.2015.
+ * Layer parser for gml:MultiPoint element, creates FeatureGroup layer with Marker members
+ *
+ * @class GML.MultiPoint
+ * @extends GML.MultiGeometry
  */
 
 L.GML.MultiPoint = L.GML.MultiGeometry.extend({
+  elementTag: 'gml:MultiPoint',
+
   initialize: function () {
     L.GML.MultiGeometry.prototype.initialize.call(this);
-    this.elementTag = 'gml:MultiPoint';
     this.appendParser(new L.GML.PointNode());
   },
 

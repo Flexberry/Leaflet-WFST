@@ -10,9 +10,7 @@ L.GML.Coordinates = L.GML.Element.extend({
     ts: ' ' // tuple separator
   },
 
-  initialize: function () {
-    this.elementTag = 'gml:coordinates';
-  },
+  elementTag: 'gml:coordinates',
 
   parse: function (element) {
 
