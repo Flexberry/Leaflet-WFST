@@ -14,6 +14,6 @@ L.GML.PointNode = L.GML.Geometry.extend({
 
   parse: function (element, options) {
     options = this.elementOptions(element, options);
-    return this.parseElement(element.firstChild, options);
+    return this.parseElement(element.firstElementChild, options);
   }
 });

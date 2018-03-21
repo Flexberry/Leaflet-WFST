@@ -18,7 +18,7 @@ L.GML.PointSequence = L.GML.Geometry.extend({
 
   parse: function (element, options) {
     options = this.elementOptions(element, options);
-    var firstChild = element.firstChild;
+    var firstChild = element.firstElementChild;
     var coords = [];
     var tagName = firstChild.tagName;
     if (tagName === 'gml:pos' || tagName === 'gml:Point') {

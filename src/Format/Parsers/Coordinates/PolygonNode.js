@@ -12,12 +12,11 @@ L.GML.PolygonNode = L.GML.Geometry.extend({
   parse: function (element, options) {
     options = this.elementOptions(element, options);
     var coords = [];
-    for (var i = 0; i < element.childNodes.length; i++) {
-      //there can be exterior and interior, by GML standard and for leaflet its not significant
-      var child = element.childNodes[i];
-      if (child.nodeType === document.ELEMENT_NODE) {
-        coords.push(this.linearRingParser.parse(child.firstChild, options));
-      }
+    for (var i = 0; i < element.children.length; i++) {
+
+      // there can be exterior and interior, by GML standard and for leaflet its not significant
+      var child = element.children[i];
+      coords.push(this.linearRingParser.parse(child.firstElementChild, options));
     }
 
     return coords;
