@@ -8,15 +8,15 @@ describe('Filter', function () {
   it('should have childNode for single passed filter', function() {
     var resultA = document.createElement('a');
     var filter = L.filter({ toGml: function () { return resultA; } });
-    expect(filter.childNodes.length).to.be.equal(1);
-    expect(filter.childNodes[0]).to.be.equal(resultA);
+    expect(filter.children.length).to.be.equal(1);
+    expect(filter.children[0]).to.be.equal(resultA);
   });
 
   it('should have childNode for single passed gmlFilter', function() {
     var resultA = document.createElement('a');
     var filter = L.filter(resultA);
-    expect(filter.childNodes.length).to.be.equal(1);
-    expect(filter.childNodes[0]).to.be.equal(resultA);
+    expect(filter.children.length).to.be.equal(1);
+    expect(filter.children[0]).to.be.equal(resultA);
   });
 
   it('should have childNodes for array filters argument', function () {
@@ -28,10 +28,10 @@ describe('Filter', function () {
       { toGml: function () { return resultB; } },
       { toGml: function () { return resultC; } },
     ]);
-    expect(filter.childNodes.length).to.be.equal(3);
-    expect(filter.childNodes[0]).to.be.equal(resultA);
-    expect(filter.childNodes[1]).to.be.equal(resultB);
-    expect(filter.childNodes[2]).to.be.equal(resultC);
+    expect(filter.children.length).to.be.equal(3);
+    expect(filter.children[0]).to.be.equal(resultA);
+    expect(filter.children[1]).to.be.equal(resultB);
+    expect(filter.children[2]).to.be.equal(resultC);
   });
 
   it('should have childNodes for array gmlFilters/filters argument', function () {
@@ -43,9 +43,9 @@ describe('Filter', function () {
       resultB,
       { toGml: function () { return resultC; } },
     ]);
-    expect(filter.childNodes.length).to.be.equal(3);
-    expect(filter.childNodes[0]).to.be.equal(resultA);
-    expect(filter.childNodes[1]).to.be.equal(resultB);
-    expect(filter.childNodes[2]).to.be.equal(resultC);
+    expect(filter.children.length).to.be.equal(3);
+    expect(filter.children[0]).to.be.equal(resultA);
+    expect(filter.children[1]).to.be.equal(resultB);
+    expect(filter.children[2]).to.be.equal(resultC);
   });
 });

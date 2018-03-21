@@ -26,7 +26,7 @@ describe('L.LatLngBounds extensions', function () {
       var lowerCorner = crs.project(bounds.getSouthWest());
 
       var envelopeElement = gml;
-      var lowerCornerElement = envelopeElement.firstChild;
+      var lowerCornerElement = envelopeElement.firstElementChild;
 
       expect(lowerCornerElement.tagName).to.be.equal('gml:lowerCorner');
       expect(lowerCornerElement.textContent).to.be.equal(lowerCorner.x + ' ' + lowerCorner.y);
@@ -36,7 +36,7 @@ describe('L.LatLngBounds extensions', function () {
       var upperCorner = crs.project(bounds.getNorthEast());
 
       var envelopeElement = gml;
-      var upperCornerElement = envelopeElement.lastChild;
+      var upperCornerElement = envelopeElement.lastElementChild;
 
       expect(upperCornerElement.tagName).to.be.equal('gml:upperCorner');
       expect(upperCornerElement.textContent).to.be.equal(upperCorner.x + ' ' + upperCorner.y);

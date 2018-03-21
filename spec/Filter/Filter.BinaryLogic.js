@@ -19,10 +19,10 @@ describe('Filter.BinaryLogic', function () {
     });
 
     it('should contains passed filters as child elements', function () {
-      var firstFilter = filterElement.childNodes[0];
+      var firstFilter = filterElement.children[0];
       expect(firstFilter).to.be.equal(filter1);
 
-      var secondFilter = filterElement.childNodes[1];
+      var secondFilter = filterElement.children[1];
       expect(secondFilter).to.be.equal(filter2);
     });
   });

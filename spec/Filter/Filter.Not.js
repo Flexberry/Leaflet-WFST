@@ -6,8 +6,8 @@ describe('Filter.Not', function () {
       var filter = new L.Filter.Not(valueFilter);
       var filterElement = filter.toGml();
       expect(filterElement.tagName).to.be.equal('Not');
-      expect(filterElement.childNodes.length).to.be.equal(1);
-      expect(filterElement.childNodes[0]).to.be.equal(valueGml);
+      expect(filterElement.children.length).to.be.equal(1);
+      expect(filterElement.children[0]).to.be.equal(valueGml);
     });
   });
 });

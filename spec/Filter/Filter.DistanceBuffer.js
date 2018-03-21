@@ -35,18 +35,18 @@ describe('Filter.DistanceBuffer', function () {
     });
 
     it('must have first child element with tagName = ogc:PropertyName & content = geom', function () {
-      var propertyNameElement = filterElement.childNodes[0];
+      var propertyNameElement = filterElement.children[0];
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(geometryField);
     });
 
     it('must have second element describing layer geometry', function () {
-      var envelopeElement = filterElement.childNodes[1];
+      var envelopeElement = filterElement.children[1];
       expect(envelopeElement).to.be.equal(toGmlResult);
     });
 
     it('must have third element with tagName ogc:Distance & value & attribute unit with value', function () {
-      var distanceElement = filterElement.childNodes[2];
+      var distanceElement = filterElement.children[2];
       expect(distanceElement.tagName).to.be.equal('ogc:Distance');
       expect(distanceElement.textContent).to.be.equal(distance.toString());
       expect(distanceElement.attributes.units.value).to.be.equal(units);

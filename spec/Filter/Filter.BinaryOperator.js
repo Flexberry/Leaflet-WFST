@@ -23,14 +23,14 @@ describe('Filter.BinaryOperator', function () {
     });
 
     it('must have first child element with tagName = ogc:PropertyName & textContent = foobar', function () {
-      var propertyNameElement = filterElement.childNodes[0];
+      var propertyNameElement = filterElement.children[0];
 
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(propertyName);
     });
 
     it('must have child element with tagName = ogc:Literal & textContent = 100500', function () {
-      var propertyValueElement = filterElement.childNodes[1];
+      var propertyValueElement = filterElement.children[1];
 
       expect(propertyValueElement.tagName).to.be.equal('ogc:Literal');
       expect(Number(propertyValueElement.textContent)).to.be.equal(propertyValue);
@@ -52,12 +52,12 @@ describe('Filter.BinaryOperator', function () {
     });
 
     it('must have first child element equal to firstvalue', function () {
-      var firstValueElement = filterElement.childNodes[0];
+      var firstValueElement = filterElement.children[0];
       expect(firstValueElement).to.be.equal(firstValue);
     });
 
     it('must have second child element equal to secondvalue', function () {
-      var secondValueElement = filterElement.childNodes[1];
+      var secondValueElement = filterElement.children[1];
       expect(secondValueElement).to.be.equal(secondValue);
     });
   });
@@ -79,12 +79,12 @@ describe('Filter.BinaryOperator', function () {
     });
 
     it('must have first child element equal to firstvalue', function () {
-      var firstValueElement = filterElement.childNodes[0];
+      var firstValueElement = filterElement.children[0];
       expect(firstValueElement).to.be.equal(firstValue);
     });
 
     it('must have second child element equal to secondvalue', function () {
-      var secondValueElement = filterElement.childNodes[1];
+      var secondValueElement = filterElement.children[1];
       expect(secondValueElement).to.be.equal(secondValue);
     });
   });

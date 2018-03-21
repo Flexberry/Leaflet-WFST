@@ -37,10 +37,10 @@ describe("L.Polygon.toGml()", function () {
     });
 
     it('should have first child element gml:exterior with child element gml:LinearRing', function () {
-      var exterior = polygonGml.firstChild;
+      var exterior = polygonGml.firstElementChild;
       expect(exterior.tagName).to.be.equal('gml:exterior');
 
-      var linearRing = exterior.firstChild;
+      var linearRing = exterior.firstElementChild;
       expect(linearRing.tagName).to.be.equal('gml:LinearRing');
     });
 
@@ -48,7 +48,7 @@ describe("L.Polygon.toGml()", function () {
       var interiors = polygonGml.getElementsByTagName('gml:interior');
       for (var i = 0; i < interiors.length; i++) {
         var interior = interiors[i];
-        var linearRing = interior.firstChild;
+        var linearRing = interior.firstElementChild;
         expect(linearRing.tagName).to.be.equal('gml:LinearRing');
       }
     });
