@@ -37,7 +37,7 @@
   }, new L.Format.GeoJSON({crs: L.CRS.EPSG4326}))
     .addTo(map)
     .once('load', function () {
-      map.fitBounds(boundaries);
+      map.fitBounds(boundaries.getBounds());
     });
 
   var roads = new L.WFS({
