@@ -32,12 +32,13 @@
     geometryField: 'the_geom',
     style: {
       color: 'blue',
+      fillColor: 'transparent',
       weight: 2
     }
   }, new L.Format.GeoJSON({crs: L.CRS.EPSG4326}))
     .addTo(map)
     .once('load', function () {
-      map.fitBounds(boundaries);
+      map.fitBounds(boundaries.getBounds());
     });
 
   var roads = new L.WFS({

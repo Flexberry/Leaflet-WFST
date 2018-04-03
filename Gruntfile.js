@@ -107,42 +107,6 @@ module.exports = function (grunt) {
         }
       }
     },
-    copy: {
-      libs: {
-        files: [{
-          cwd: 'bower_components/',
-          expand: true,
-          flatten: true,
-          src: [
-            'spin.js/spin.js',
-
-            'Leaflet.toolbar/dist/leaflet.toolbar.css',
-            'Leaflet.toolbar/dist/leaflet.toolbar.js',
-
-            'Leaflet.label/dist/leaflet.label.css',
-            'Leaflet.label/dist/leaflet.label.js',
-
-            'leaflet.markercluster/dist/MarkerCluster.css',
-            'leaflet.markercluster/dist/MarkerCluster.Default.css',
-            'leaflet.markercluster/dist/leaflet.markercluster.js',
-
-            'leaflet-sidebar/src/L.Control.Sidebar.css',
-            'leaflet-sidebar/src/L.Control.Sidebar.js',
-
-            'leaflet.editable/src/Leaflet.Editable.js',
-
-            'proj4/dist/proj4.js',
-            'proj4leaflet/src/proj4leaflet.js'
-          ],
-          dest: '<%= libsPath %>'
-        }]
-      }
-    },
-    clean: {
-      libs: {
-        src: ['<%= libsPath %>/**/*']
-      }
-    },
     karma: {
       options: {
         configFile: 'karma.conf.js'
@@ -155,7 +119,7 @@ module.exports = function (grunt) {
       },
       continuous: {
         background: true,
-        browsers: ['PhantomJS']
+        browsers: ['PhantomJS', 'Chrome']
       }
     },
     watch: {

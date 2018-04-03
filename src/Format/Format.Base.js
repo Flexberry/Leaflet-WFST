@@ -1,8 +1,16 @@
 /**
- * Created by PRadostev on 10.06.2015.
+ *
+ * Base format description for parsing wfs responses
+ *
+ * @class Format.Base
+ * @extends L.Class
  */
 
 L.Format.Base = L.Class.extend({
+
+  /**
+   * @property defaultOptions
+   */
   defaultOptions: {
     crs: L.CRS.EPSG3857,
     coordsToLatLng: function (coords) {
@@ -37,11 +45,21 @@ L.Format.Base = L.Class.extend({
     }
   },
 
+  /**
+   * Generate feature description by response from DescribeFeatureType
+   *
+   * @method setFeatureDescription
+   * @param {Element} featureInfo response from WFS DescribeFeatureType request
+   */
   setFeatureDescription: function (featureInfo) {
     this.namespaceUri = featureInfo.attributes.targetNamespace.value;
     var schemeParser = new L.Format.Scheme({
       geometryField: this.options.geometryField
     });
     this.featureType = schemeParser.parse(featureInfo);
+  },
+
+  responseToLayers: function() {
+    throw "responseToLayers is abstract and should be implemented";
   }
 });

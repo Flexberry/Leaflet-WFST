@@ -1,5 +1,8 @@
 /**
- * Created by PRadostev on 28.01.2015.
+ * Leaflet layer for read-only WFS
+ *
+ * @class WFS
+ * @extends FeatureGroup
  */
 L.WFS = L.FeatureGroup.extend({
 

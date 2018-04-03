@@ -46,7 +46,7 @@
   }, new L.Format.GeoJSON({crs: L.CRS.EPSG4326}))
     .addTo(map)
     .once('load', function () {
-      map.fitBounds(wfst);
+      map.fitBounds(wfst.getBounds());
     });
 
   new L.Toolbar2.Control({

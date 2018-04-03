@@ -1,5 +1,5 @@
 /**
- * Created by PRadostev on 10.06.2015.
+ * @namespace GML
  */
 
 L.GML = L.GML || {};

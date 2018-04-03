@@ -41,7 +41,7 @@
     }
   }).addTo(map)
     .once('load', function () {
-      map.fitBounds(polygons);
+      map.fitBounds(polygons.getBounds());
     });
 
   var popup = L.popup();
