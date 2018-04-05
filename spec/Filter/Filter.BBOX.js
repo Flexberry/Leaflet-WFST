@@ -25,14 +25,14 @@ describe('Filter.BBOX', function () {
     });
 
     it('must have first child element with tagName = ogc:PropertyName & content = geom', function () {
-      var propertyNameElement = bboxElement.firstChild;
+      var propertyNameElement = bboxElement.firstElementChild;
 
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(geometryField);
     });
 
     it('must have last child element describing bounding box geometry', function () {
-      var envelopeElement = bboxElement.lastChild;
+      var envelopeElement = bboxElement.lastElementChild;
 
       expect(envelopeElement.outerHTML).to.be.equal(bounds.toGml(crs).outerHTML);
     });

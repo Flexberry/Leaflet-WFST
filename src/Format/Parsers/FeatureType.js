@@ -84,12 +84,8 @@ L.GML.FeatureType = L.Class.extend({
 
   parse: function (feature) {
     var properties = {};
-    for (var i = 0; i < feature.childNodes.length; i++) {
-      var node = feature.childNodes[i];
-      if (node.nodeType !== document.ELEMENT_NODE) {
-        continue;
-      }
-
+    for (var i = 0; i < feature.children.length; i++) {
+      var node = feature.children[i];
       var propertyName = node.tagName.split(':').pop();
       if (propertyName === this.options.geometryField) {
         continue;

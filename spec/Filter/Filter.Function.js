@@ -22,17 +22,17 @@ describe('Filter.Function', function () {
     });
 
     it('must have two child elements', function() {
-      expect(filterElement.childNodes.length).to.be.equal(2);
+      expect(filterElement.children.length).to.be.equal(2);
     });
 
     it('must have first child element with tagName ogc:propertyName and specified value', function() {
-      var firstChild = filterElement.firstChild;
+      var firstChild = filterElement.firstElementChild;
       expect(firstChild.tagName).to.be.equal('ogc:PropertyName');
       expect(firstChild.textContent).to.be.equal(propertyName);
     });
 
     it('must have second child element with tagName ogc:Literal and specified value', function() {
-      var firstChild = filterElement.childNodes[1];
+      var firstChild = filterElement.children[1];
       expect(firstChild.tagName).to.be.equal('ogc:Literal');
       expect(Number(firstChild.textContent)).to.be.equal(propertyValue);
     });
@@ -56,10 +56,10 @@ describe('Filter.Function', function () {
     });
 
     it('should have child elements for all passed parameters', function() {
-      expect(filterElement.childNodes.length).to.be.equal(3);
-      expect(filterElement.childNodes[0]).to.be.equal(filterValue1);
-      expect(filterElement.childNodes[1]).to.be.equal(filterValue2);
-      expect(filterElement.childNodes[2]).to.be.equal(filterValue3);
+      expect(filterElement.children.length).to.be.equal(3);
+      expect(filterElement.children[0]).to.be.equal(filterValue1);
+      expect(filterElement.children[1]).to.be.equal(filterValue2);
+      expect(filterElement.children[2]).to.be.equal(filterValue3);
     });
   });
 });

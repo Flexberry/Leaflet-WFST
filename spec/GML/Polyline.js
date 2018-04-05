@@ -27,7 +27,7 @@ describe("L.Polyline.toGml()", function () {
     });
 
     it('should have first child element gml:posList', function () {
-      var posList = polylineGml.firstChild;
+      var posList = polylineGml.firstElementChild;
       expect(posList.tagName).to.be.equal('gml:posList');
     });
   });
@@ -37,8 +37,8 @@ describe("L.Polyline.toGml()", function () {
 
     beforeEach(function () {
       multiGml = polyline.toGml(L.CRS.Simple, true);
-      collectionGml = multiGml.firstChild;
-      polylineGml = collectionGml.firstChild;
+      collectionGml = multiGml.firstElementChild;
+      polylineGml = collectionGml.firstElementChild;
     });
 
     it('should return Element object with tagName gml:MultiCurve', function () {
@@ -55,7 +55,7 @@ describe("L.Polyline.toGml()", function () {
     });
 
     it('gml:LineString element should have child element gml:posList', function () {
-      var posList = polylineGml.firstChild;
+      var posList = polylineGml.firstElementChild;
       expect(posList.tagName).to.be.equal('gml:posList');
     });
   });

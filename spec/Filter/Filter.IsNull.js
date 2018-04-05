@@ -19,7 +19,7 @@ describe('Filter.IsNull', function () {
     });
 
     it('should have child element with tagName ogc:PropertyName and specified value', function () {
-      var propertyNameElement = filterElement.firstChild;
+      var propertyNameElement = filterElement.firstElementChild;
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(propertyName);
     });

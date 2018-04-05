@@ -27,14 +27,14 @@ describe('Filter.Like', function () {
     });
 
     it('must have child element with tagName = ogc:PropertyName & textContent = foobar', function() {
-      var propertyNameElement = likeElement.firstChild;
+      var propertyNameElement = likeElement.firstElementChild;
 
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(propertyName);
     });
 
     it('must have child element with tagName = ogc:Literal & textContent = *100500*', function() {
-      var propertyValueElement = likeElement.lastChild;
+      var propertyValueElement = likeElement.lastElementChild;
 
       expect(propertyValueElement.tagName).to.be.equal('ogc:Literal');
       expect(propertyValueElement.textContent).to.be.equal(propertyValue);

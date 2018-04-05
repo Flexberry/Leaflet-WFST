@@ -3,15 +3,17 @@
  *
  * @class Format.GML
  * @extends Format.Base
+ * @uses GML.ParserContainerMixin
  */
 
 L.Format.GML = L.Format.Base.extend({
 
   includes: L.GML.ParserContainerMixin,
 
+  outputFormat: 'text/xml; subtype=gml/3.1.1',
+
   initialize: function (options) {
     L.Format.Base.prototype.initialize.call(this, options);
-    this.outputFormat = 'text/xml; subtype=gml/3.1.1';
     this.initializeParserContainer();
     this.appendParser(new L.GML.Point());
     this.appendParser(new L.GML.LineString());
@@ -36,7 +38,7 @@ L.Format.GML = L.Format.Base.extend({
     var featureCollection = xmlDoc.documentElement;
     var featureMemberNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMember');
     for (var i = 0; i < featureMemberNodes.length; i++) {
-      var feature = featureMemberNodes[i].firstChild;
+      var feature = featureMemberNodes[i].firstElementChild;
       var featureAsLayer = this.processFeature(feature);
       if (featureAsLayer) {
         layers.push(featureAsLayer);
@@ -45,13 +47,9 @@ L.Format.GML = L.Format.Base.extend({
 
     var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
     if (featureMembersNode.length > 0) {
-      var features = featureMembersNode[0].childNodes;
+      var features = featureMembersNode[0].children;
       for (var j = 0; j < features.length; j++) {
         var node = features[j];
-        if (node.nodeType !== document.ELEMENT_NODE) {
-          continue;
-        }
-
         var nodeAsLayer = this.processFeature(node);
         if (nodeAsLayer) {
           layers.push(nodeAsLayer);
@@ -98,6 +96,6 @@ L.Format.GML = L.Format.Base.extend({
       return null;
     }
 
-    return this.parseElement(geometryField.firstChild, this.options);
+    return this.parseElement(geometryField.firstElementChild, this.options);
   }
 });

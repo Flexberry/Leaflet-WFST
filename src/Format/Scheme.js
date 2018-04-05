@@ -17,19 +17,14 @@ L.Format.Scheme = L.Class.extend({
     });
     var complexTypeDefinition = element.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'complexType')[0];
     var properties = complexTypeDefinition.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'sequence')[0];
-    for (var i = 0; i < properties.childNodes.length; i++) {
-      var node = properties.childNodes[i];
-      if (node.nodeType !== document.ELEMENT_NODE) {
-        continue;
-      }
-
+    for (var i = 0; i < properties.children.length; i++) {
+      var node = properties.children[i];
       var propertyAttr = node.attributes.name;
       if (!propertyAttr) {
         continue;
       }
 
       var propertyName = node.attributes.name.value;
-
       var typeAttr = node.attributes.type;
       if (!typeAttr) {
         var restriction = node.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'restriction');

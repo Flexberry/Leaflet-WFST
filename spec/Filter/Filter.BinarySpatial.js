@@ -29,13 +29,13 @@ describe('Filter.BinarySpatial', function () {
     });
 
     it('must have first child element with tagName = ogc:PropertyName & content = geom', function () {
-      var propertyNameElement = filterElement.firstChild;
+      var propertyNameElement = filterElement.firstElementChild;
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(geometryField);
     });
 
     it('must have last child element describing layer geometry', function () {
-      var envelopeElement = filterElement.lastChild;
+      var envelopeElement = filterElement.lastElementChild;
       expect(envelopeElement).to.be.equal(toGmlResult);
     });
 
@@ -56,7 +56,7 @@ describe('Filter.BinarySpatial', function () {
     });
 
     it('must have last child element with tagName = ogc:propertyName & content = testSecondProperty', function () {
-      var propertyNameElement = filterElement.lastChild;
+      var propertyNameElement = filterElement.lastElementChild;
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(secondProperty);
     });

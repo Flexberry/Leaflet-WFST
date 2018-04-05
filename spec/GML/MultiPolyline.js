@@ -27,7 +27,7 @@ describe("L.MultiPolyline.toGml()", function () {
     ]);
 
     multiGml = multi.toGml(L.CRS.Simple);
-    members = multiGml.firstChild;
+    members = multiGml.firstElementChild;
   });
 
   it('should return Element object with tagName gml:MultiCurve', function () {
@@ -40,11 +40,11 @@ describe("L.MultiPolyline.toGml()", function () {
   });
 
   it('should have 3 child nodes of members', function () {
-    expect(members.childNodes.length).to.be.equal(3);
+    expect(members.children.length).to.be.equal(3);
   });
 
   it('all child elements of members shoud be a gml:LineString', function () {
-    var childs = members.childNodes;
+    var childs = members.children;
     for (var i = 0; i < childs; i++) {
       expect(childs[i].tagName).to.be.equal('gml:LineString');
     }

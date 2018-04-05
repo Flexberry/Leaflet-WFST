@@ -161,13 +161,13 @@ describe('WFS', function () {
     });
 
     it('should have child Element with tagName wfs:Query and attribute "typeName"', function () {
-      var query = feature.firstChild;
+      var query = feature.firstElementChild;
       expect(query.tagName).to.be.equal('wfs:Query');
       expect(query.getAttribute('typeName')).to.be.equal('topp:tasmania_cities');
     });
 
     it('should have ogc:Filter element as child of query', function () {
-      var filter = feature.firstChild.firstChild;
+      var filter = feature.firstElementChild.firstElementChild;
       expect(filter.tagName).to.be.equal('ogc:Filter');
     });
   });
@@ -559,7 +559,7 @@ describe('WFS', function () {
 
     it('should return node with ows:ServiceIdentification, ows:ServiceProvider, ows:OperationsMetadata, FeatureTypeList, ogc:Filter_Capabilities childnodes',
       function () {
-        var childnodes = capabilityElement.childNodes;
+        var childnodes = capabilityElement.children;
 
         // Check retrieved elements.
         for (var i = 0, len = childnodes.length; i < len; i++) {

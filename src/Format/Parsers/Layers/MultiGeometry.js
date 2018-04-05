@@ -49,14 +49,11 @@ L.GML.MultiGeometry = L.GML.Geometry.extend({
   parse: function (element, options) {
     options = this.elementOptions(element, options);
     var childObjects = [];
-    for (var i = 0; i < element.childNodes.length; i++) {
-      var geometryMember = element.childNodes[i];
-      if (geometryMember.nodeType !== document.ELEMENT_NODE) continue;
+    for (var i = 0; i < element.children.length; i++) {
+      var geometryMember = element.children[i];
 
-      for (var j = 0; j < geometryMember.childNodes.length; j++) {
-        var singleGeometry = geometryMember.childNodes[j];
-        if (singleGeometry.nodeType !== document.ELEMENT_NODE) continue;
-
+      for (var j = 0; j < geometryMember.children.length; j++) {
+        var singleGeometry = geometryMember.children[j];
         childObjects.push(this.parseElement(singleGeometry, options));
       }
     }

@@ -18,25 +18,25 @@ describe('Filter.IsBetween', function () {
     });
 
     it('should have child element with tagName ogc:PropertyName and specified value', function () {
-      var propertyNameElement = filterElement.firstChild;
+      var propertyNameElement = filterElement.firstElementChild;
       expect(propertyNameElement.tagName).to.be.equal('ogc:PropertyName');
       expect(propertyNameElement.textContent).to.be.equal(propertyName);
     });
 
     it('should have second element with tagName ogc:LowerBoundary and literal child with specified value', function() {
-      var lowerBoundaryElement = filterElement.childNodes[1];
+      var lowerBoundaryElement = filterElement.children[1];
       expect(lowerBoundaryElement.tagName).to.be.equal('ogc:LowerBoundary');
 
-      var valueElement = lowerBoundaryElement.firstChild;
+      var valueElement = lowerBoundaryElement.firstElementChild;
       expect(valueElement.tagName).to.be.equal('ogc:Literal');
       expect(valueElement.textContent).to.be.equal(lowerBoundary);
     });
 
     it('should have third element with tagName ogc:UpperBoundary and literal child with specified value', function() {
-      var upperBoundaryElement = filterElement.childNodes[2];
+      var upperBoundaryElement = filterElement.children[2];
       expect(upperBoundaryElement.tagName).to.be.equal('ogc:UpperBoundary');
 
-      var valueElement = upperBoundaryElement.firstChild;
+      var valueElement = upperBoundaryElement.firstElementChild;
       expect(valueElement.tagName).to.be.equal('ogc:Literal');
       expect(valueElement.textContent).to.be.equal(upperBoundary);
     });
@@ -57,19 +57,19 @@ describe('Filter.IsBetween', function () {
     });
 
     it('should have first child element equal to property expression', function() {
-      expect(filterElement.childNodes[0]).to.be.equal(propertyExp);
+      expect(filterElement.children[0]).to.be.equal(propertyExp);
     });
 
     it('should have second child element tagName ogc:LowerBoundary and child element equal to lowerBoundary expression', function() {
-      var lowerBoundaryElement = filterElement.childNodes[1];
+      var lowerBoundaryElement = filterElement.children[1];
       expect(lowerBoundaryElement.tagName).to.be.equal('ogc:LowerBoundary');
-      expect(lowerBoundaryElement.firstChild).to.be.equal(lowerBoundaryExp);
+      expect(lowerBoundaryElement.firstElementChild).to.be.equal(lowerBoundaryExp);
     });
 
     it('should have third element with tagName ogc:UpperBoundary and child element equal to upperBoundary expression', function() {
-      var upperBoundaryElement = filterElement.childNodes[2];
+      var upperBoundaryElement = filterElement.children[2];
       expect(upperBoundaryElement.tagName).to.be.equal('ogc:UpperBoundary');
-      expect(upperBoundaryElement.firstChild).to.be.equal(upperBoundaryExp);
+      expect(upperBoundaryElement.firstElementChild).to.be.equal(upperBoundaryExp);
     });
   });
 });

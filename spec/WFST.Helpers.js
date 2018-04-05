@@ -86,17 +86,17 @@ describe('WFST.Helpers', function () {
       var result = wfst.wfsProperty('propertyName', 'propertyValue');
       expect(result).to.be.instanceOf(Element);
       expect(result.tagName).to.be.equal('wfs:Property');
-      expect(result.childNodes.length).to.be.equal(2);
+      expect(result.children.length).to.be.equal(2);
     });
 
     it('should have first child element with tagName wfs:Name', function () {
       var result = wfst.wfsProperty('propertyName', 'propertyValue');
-      expect(result.firstChild.tagName).to.be.equal('wfs:Name');
+      expect(result.firstElementChild.tagName).to.be.equal('wfs:Name');
     });
 
     it('should have last child element with tagName wfs:Value', function () {
       var result = wfst.wfsProperty('propertyName', 'propertyValue');
-      expect(result.lastChild.tagName).to.be.equal('wfs:Value');
+      expect(result.lastElementChild.tagName).to.be.equal('wfs:Value');
     });
   });
 
