@@ -168,8 +168,6 @@ module.exports = function (grunt) {
     'jshint:specs',
     'concat',
     'uglify',
-    'clean:libs',
-    'copy:libs',
     'karma:single'
   ]);
 
