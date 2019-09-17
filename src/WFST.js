@@ -1,6 +1,7 @@
 L.WFST = L.WFS.extend({
   options: {
-    forceMulti: false
+    forceMulti: false,
+	withCredentials: true
   },
 
   initialize: function (options, readFormat) {
@@ -79,7 +80,7 @@ L.WFST = L.WFS.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(transaction),
       headers: this.options.headers || {},
-      withCredentials: true,
+      withCredentials: this.options.withCredentials,
       success: function (data) {
         var xmlDoc = L.XmlUtil.parseXml(data);
         var exception = L.XmlUtil.parseOwsExceptionReport(xmlDoc);
