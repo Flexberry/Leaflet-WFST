@@ -1,7 +1,6 @@
 L.WFST = L.WFS.extend({
   options: {
-    forceMulti: false,
-	withCredentials: true
+    forceMulti: false
   },
 
   initialize: function (options, readFormat) {
