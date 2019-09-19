@@ -758,12 +758,9 @@ describe('WFS', function () {
     });
   });
 
-  describe('#hhh', function () {
+  describe('#getCapabilities xhr option withCredentials', function () {
     var server;
-    var capabilityElement;
     var successCallback;
-    var wfs;
-    //var options
 
     beforeEach(function () {
 
@@ -776,10 +773,11 @@ describe('WFS', function () {
           'Content-Type': 'text/xml'
         }, describeFeaturesReponseText);
       });
-      var successCallback = sinon.spy();
+
+      successCallback = sinon.spy();
     });
 
-    it('withCredentials true', function () {
+    it('getCapabilities xhr option withCredentials true', function () {
       var options = {
         url: 'http://demo.opengeo.org/geoserver/ows',
         typeNS: 'topp',
@@ -790,40 +788,17 @@ describe('WFS', function () {
         withCredentials: true
       };
 
-      // Create layer & attach evens handlers.
-      // var onLoadEventHandler = sinon.spy();
-      // var onErrorEventHandler = sinon.spy();
       var wfs = new L.WFS(options);
-      // .on('load', onLoadEventHandler)
-      //.on('error', onErrorEventHandler);
-
-      // Prepare 'successCallback' callback.
-
       wfs.getCapabilities(successCallback);
 
       // Force fake server to respond on sended requests.
       server.respond();
 
-      //  capabilityElement = successCallback.getCall(0).args[0];
-
-      // console.log(capabilityElement);
-
-      // Check events handlers.
-      // expect(successCallback).to.be.not.notCalled;
-      //  expect(successCallback).to.be.calledOnce;
-
       var featureRequest = server.requests.pop();
-      // console.log(JSON.stringify(featureRequest));
       expect(featureRequest.withCredentials).to.be.equal(true);
-
-      // var eventObject = onErrorEventHandler.getCall(0).args[0];
-      // var error = eventObject.error;
-      // expect(error).to.be.instanceOf(Error).and.have.property('message', 'Not Found');
-
-
     });
 
-    it('withCredentials false', function () {
+    it('getCapabilities xhr option withCredentials false', function () {
       var options = {
         url: 'http://demo.opengeo.org/geoserver/ows',
         typeNS: 'topp',
@@ -834,38 +809,14 @@ describe('WFS', function () {
         withCredentials: false
       };
 
-
-      // Create layer & attach evens handlers.
-      // var onLoadEventHandler = sinon.spy();
-      // var onErrorEventHandler = sinon.spy();
       var wfs = new L.WFS(options);
-      // .on('load', onLoadEventHandler)
-      //.on('error', onErrorEventHandler);
-      // Prepare 'successCallback' callback.
-      // var  successCallback = sinon.spy();
-
       wfs.getCapabilities(successCallback);
 
       // Force fake server to respond on sended requests.
       server.respond();
 
-      //  capabilityElement = successCallback.getCall(0).args[0];
-
-      // console.log(capabilityElement);
-
-      // Check events handlers.
-      //  expect(successCallback).to.be.not.notCalled;
-      //  expect(successCallback).to.be.calledOnce;
-
       var featureRequest = server.requests.pop();
-      // console.log(JSON.stringify(featureRequest));
       expect(featureRequest.withCredentials).to.be.equal(false);
-
-      // var eventObject = onErrorEventHandler.getCall(0).args[0];
-      // var error = eventObject.error;
-      // expect(error).to.be.instanceOf(Error).and.have.property('message', 'Not Found');
-
-
     });
 
     afterEach(function () {
@@ -873,7 +824,5 @@ describe('WFS', function () {
       server.restore();
     });
 
-
   });
-
 });

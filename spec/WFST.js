@@ -115,7 +115,7 @@ describe('WFST', function () {
   });
 
   describe('#save xhr option withCredentials', function () {
-    it('save  xhr option withCredentials true', function () {
+    it('save xhr option withCredentials true', function () {
       wfst = new L.WFST({
         typeNS: 'typeNS',
         typeName: 'typeName',
@@ -127,7 +127,6 @@ describe('WFST', function () {
       wfst.save();
 
       var transactionRequest = this.requests.pop();
-      //expect(transactionRequest.requestBody.indexOf('<wfs:Transaction')).to.be.equal(0);
       transactionRequest.respond(200, { "Content-Type": "text/xml" },
         '<?xml version="1.0" encoding="UTF-8"?>' +
         '<wfs:TransactionResponse xmlns:xs="http://www.w3.org/2001/XMLSchema"' +
@@ -151,16 +150,7 @@ describe('WFST', function () {
         '</wfs:InsertResults>' +
         '</wfs:TransactionResponse>');
 
-      //  xhr.respond();
-
-
       var featureRequest = this.requests.pop();
-      //  console.log(JSON.stringify(featureRequest.requestBody));
-
-      // console.log(featureRequest.status);
-      //console.log(featureRequest.withCredentials);
-
-      //expect(featureRequest.status).to.be.equal(0);
       expect(featureRequest.withCredentials).to.be.equal(true);
     });
 
@@ -176,7 +166,6 @@ describe('WFST', function () {
       wfst.save();
 
       var transactionRequest = this.requests.pop();
-      //expect(transactionRequest.requestBody.indexOf('<wfs:Transaction')).to.be.equal(0);
       transactionRequest.respond(200, { "Content-Type": "text/xml" },
         '<?xml version="1.0" encoding="UTF-8"?>' +
         '<wfs:TransactionResponse xmlns:xs="http://www.w3.org/2001/XMLSchema"' +
@@ -200,16 +189,7 @@ describe('WFST', function () {
         '</wfs:InsertResults>' +
         '</wfs:TransactionResponse>');
 
-      //  console.log(JSON.stringify(transactionRequest));
-
-      // xhr.respond();
-
-
       var featureRequest = this.requests.pop();
-      // console.log(featureRequest.requestBody);
-      //console.log(featureRequest.withCredentials);
-
-      //expect(featureRequest.status).to.be.equal(200);
       expect(featureRequest.withCredentials).to.be.equal(false);
     });
   });
