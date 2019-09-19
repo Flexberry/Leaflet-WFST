@@ -32,7 +32,8 @@ where #v1.1.1 is version of specific [release](https://github.com/Flexberry/Leaf
         style: {
             color: 'black',
             weight: 1
-        }
+        },
+        withCredentials: false
     }
 
 ```
@@ -55,6 +56,7 @@ const wfstPointOptions = {
       weight: 1
     }
   },
+  withCredentials: false
 };
 const wfstPoint = new L.WFST(wfstPointOptions, new L.Format.GeoJSON({
   crs: L.CRS.EPSG4326,
@@ -82,6 +84,7 @@ wfstPoint.addTo(map);
 |style|-|leaflet vector style. function or object|
 |filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
+|withCredentials|false|option XMLHttpRequest Cross-Origin Resource Sharing (CORS)|
 
 # Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
 ```javascript
