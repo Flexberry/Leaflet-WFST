@@ -120,8 +120,7 @@ describe('WFS', function () {
     '</ows:ExceptionReport>';
 
   describe('#getFeature', function () {
-    var feature;
-    var describeFeatureTypeOriginalMethod;
+    var feature, describeFeatureTypeOriginalMethod;
 
     before(function () {
       var TestFilter = L.Filter.Abstract.extend({
@@ -439,8 +438,7 @@ describe('WFS', function () {
   });
 
   describe('#setOpacity', function () {
-    var options1;
-    var options2;
+    var options1, options2;
 
     beforeEach(function () {
       options1 = {
@@ -496,10 +494,7 @@ describe('WFS', function () {
   });
 
   describe('#getCapabilities', function () {
-    var server;
-    var capabilityElement;
-    var successCallback;
-    var wfs;
+    var server, capabilityElement, successCallback, wfs;
 
     beforeEach(function () {
       // Create fake XHR.
@@ -678,10 +673,7 @@ describe('WFS', function () {
   });
 
   describe('#getBoundingBox', function () {
-    var server;
-    var bounds;
-    var successCallback;
-    var wfs;
+    var server, bounds, successCallback, wfs;
 
     beforeEach(function () {
       // Create fake XHR.
@@ -759,8 +751,7 @@ describe('WFS', function () {
   });
 
   describe('#getCapabilities xhr option withCredentials', function () {
-    var server;
-    var successCallback;
+    var server, successCallback;
 
     beforeEach(function () {
 
@@ -823,6 +814,5 @@ describe('WFS', function () {
       // Restore original XHR.
       server.restore();
     });
-
   });
 });
