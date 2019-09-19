@@ -178,5 +178,8 @@ module.exports = function (grunt) {
   grunt.registerTask('publish', ['clean:libs', 'copy:libs', 'gh-pages:examples']);
 
   // CI build task
-  grunt.registerTask('build', ['concat', 'uglify', 'jshint:scripts']);
+  grunt.registerTask('build', ['concat', 'uglify', 'jshint:scripts', 'test']);
+  
+  // Run tests
+  grunt.registerTask('test', ['karma:single:single']);
 };
