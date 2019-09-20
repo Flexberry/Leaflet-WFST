@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 * Add xsi:nil attribute for non-value properties in transaction requests
 * Store geometryTypeName in featureType
 * Add parsing for double primitive
-* Add option XmlHttpRequest withCredentials
+* Add new option `withCredentials` to configure outgoing requests sending through XMLHttpRequest.
 
 ### Fixed
 * Transaction request represent dates as ISO formatted strings

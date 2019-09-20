@@ -138,7 +138,7 @@ describe('WFST', function () {
         '<ogc:FeatureId fid="test_feature_number.123"/>' +
         '</wfs:Feature>' +
         '</wfs:InsertResults>' +
-        '</wfs:TransactionResponse>'
+        '</wfs:TransactionResponse>';
     });
     it('save xhr option withCredentials true', function () {
       wfst = new L.WFST({
@@ -181,4 +181,3 @@ describe('WFST', function () {
     xhr.restore();
   });
 });
-

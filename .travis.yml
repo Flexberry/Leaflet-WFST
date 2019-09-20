@@ -10,7 +10,7 @@ install:
 - npm install
 - bower install
 before_script:
-- grunt build
+- grunt default
 deploy:
   skip_cleanup: true
   provider: npm

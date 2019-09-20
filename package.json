@@ -47,6 +47,5 @@
     "sinon-chai": "^2.9.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers Chrome_headless"
   }
 }
