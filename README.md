@@ -73,7 +73,7 @@ wfstPoint.addTo(map);
 |crs|L.CRS.EPSG3857|spatial reference system for layer, should implement [ICRS](http://leafletjs.com/reference.html#icrs), for example [Proj4Leaflet](https://github.com/kartena/Proj4Leaflet) |
 |showExisting|true|load existing features on create layer|
 |geometryField|'Shape'|field for storing geometries, for non transaction services may be ommited|
-|url|-|WFS url, for example http://demo.opengeo.org/geoserver/osm/ows
+|url|-|WFS url, for example http://geoserver.ics.perm.ru/geoserver/osm/ows
 |typeNS|-|type namespace|
 |typeName|-|type name|
 |typeNSName|-|type namespace name|
@@ -88,7 +88,7 @@ wfstPoint.addTo(map);
 var map = L.map('map').setView([0, 0], 2);
 
 var boundaries = new L.WFS({
-    url: 'http://demo.opengeo.org/geoserver/ows',
+    url: 'http://geoserver.ics.perm.ru/geoserver/ows',
     typeNS: 'topp',
     typeName: 'tasmania_state_boundaries',
     crs: L.CRS.EPSG4326,
