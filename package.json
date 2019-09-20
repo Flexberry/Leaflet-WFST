@@ -47,5 +47,6 @@
     "sinon-chai": "^2.9.0"
   },
   "scripts": {
+    "test": "grunt test"
   }
 }
