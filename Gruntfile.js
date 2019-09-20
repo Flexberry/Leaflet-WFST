@@ -162,7 +162,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-gh-pages');
 
-  // Default grunt task.
+  // Default task for single runs.
   grunt.registerTask('default', [
     'jshint:scripts',
     'jshint:specs',
@@ -171,12 +171,15 @@ module.exports = function (grunt) {
     'karma:single'
   ]);
 
-  // Watch tack with continuous tests running.
+  // Develop task with continuous rebuilds and tests running.
   grunt.registerTask('dev', ['karma:continuous:start', 'watch']);
 
   // Publish task for gh-pages.
   grunt.registerTask('publish', ['clean:libs', 'copy:libs', 'gh-pages:examples']);
 
-  // CI build task
-  grunt.registerTask('build', ['concat', 'uglify', 'jshint:scripts']);
+  // CI build task (see .travis.yml -> before_script).
+  grunt.registerTask('build', ['concat', 'uglify']);
+
+  // CI test task (see package.json -> scripts -> test).
+  grunt.registerTask('test', ['jshint:scripts', 'jshint:specs', 'karma:single']);
 };

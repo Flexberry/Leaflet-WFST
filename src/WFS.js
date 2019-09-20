@@ -29,7 +29,8 @@ L.WFS = L.FeatureGroup.extend({
       opacity: 1,
       fillOpacity: 1
     },
-    namespaceUri: ''
+    namespaceUri: '',
+    withCredentials: false
   },
 
   state: {},
@@ -83,6 +84,7 @@ L.WFS = L.FeatureGroup.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
       headers: this.options.headers || {},
+      withCredentials: this.options.withCredentials,
       success: function (data) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -137,6 +139,7 @@ L.WFS = L.FeatureGroup.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
       headers: this.options.headers || {},
+      withCredentials: this.options.withCredentials,
       success: function (responseText) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.
@@ -210,6 +213,7 @@ L.WFS = L.FeatureGroup.extend({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(requestData),
       headers: this.options.headers || {},
+      withCredentials: this.options.withCredentials,
       success: function (data) {
         // If some exception occur, WFS-service can response successfully, but with ExceptionReport,
         // and such situation must be handled.

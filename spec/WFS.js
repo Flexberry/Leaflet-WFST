@@ -120,13 +120,12 @@ describe('WFS', function () {
     '</ows:ExceptionReport>';
 
   describe('#getFeature', function () {
-    var feature;
-    var describeFeatureTypeOriginalMethod;
+    var feature, describeFeatureTypeOriginalMethod;
 
     before(function () {
       var TestFilter = L.Filter.Abstract.extend({
         tagName: 'testFilter',
-        buildFilterContent: function () {}
+        buildFilterContent: function () { }
       });
 
       var options = {
@@ -145,7 +144,7 @@ describe('WFS', function () {
       feature = wfs.getFeature(new TestFilter());
     });
 
-    after(function() {
+    after(function () {
       L.WFS.prototype.describeFeatureType = describeFeatureTypeOriginalMethod;
     });
 
@@ -208,6 +207,7 @@ describe('WFS', function () {
         }
 
         throw new Error('Unexpected request');
+
       });
 
       // Create layer & attach evens handlers.
@@ -270,6 +270,7 @@ describe('WFS', function () {
 
       var eventObject = onErrorEventHandler.getCall(0).args[0];
       var error = eventObject.error;
+
       expect(error).to.be.instanceOf(Error).and.have.property('message', '404 - Not Found');
     });
 
@@ -437,8 +438,7 @@ describe('WFS', function () {
   });
 
   describe('#setOpacity', function () {
-    var options1;
-    var options2;
+    var options1, options2;
 
     beforeEach(function () {
       options1 = {
@@ -494,10 +494,7 @@ describe('WFS', function () {
   });
 
   describe('#getCapabilities', function () {
-    var server;
-    var capabilityElement;
-    var successCallback;
-    var wfs;
+    var server, capabilityElement, successCallback, wfs;
 
     beforeEach(function () {
       // Create fake XHR.
@@ -676,10 +673,7 @@ describe('WFS', function () {
   });
 
   describe('#getBoundingBox', function () {
-    var server;
-    var bounds;
-    var successCallback;
-    var wfs;
+    var server, bounds, successCallback, wfs;
 
     beforeEach(function () {
       // Create fake XHR.
@@ -753,6 +747,72 @@ describe('WFS', function () {
 
       expect(successCallback.calledTwice).to.be.equal(true);
       expect(bounds).to.be.deep.equal(bounds2);
+    });
+  });
+
+  describe('#getCapabilities xhr option withCredentials', function () {
+    var server, successCallback;
+
+    beforeEach(function () {
+
+      // Create fake XHR.
+      server = sinon.fakeServer.create();
+
+      // Prepare a handler for fake server possible requests.
+      server.respondWith(function (xhr, id) {
+        xhr.respond(200, {
+          'Content-Type': 'text/xml'
+        }, describeFeaturesReponseText);
+      });
+
+      successCallback = sinon.spy();
+    });
+
+    it('getCapabilities xhr option withCredentials true', function () {
+      var options = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000,
+        withCredentials: true
+      };
+
+      var wfs = new L.WFS(options);
+      wfs.getCapabilities(successCallback);
+
+      // Force fake server to respond on sended requests.
+      server.respond();
+
+      var featureRequest = server.requests.pop();
+      expect(featureRequest.withCredentials).to.be.equal(true);
+    });
+
+    it('getCapabilities xhr option withCredentials false', function () {
+      var options = {
+        url: 'http://demo.opengeo.org/geoserver/ows',
+        typeNS: 'topp',
+        typeName: 'tasmania_cities',
+        geometryField: 'the_geom',
+        namespaceUri: 'testUri',
+        maxFeatures: 5000,
+        withCredentials: false
+      };
+
+      var wfs = new L.WFS(options);
+      wfs.getCapabilities(successCallback);
+
+      // Force fake server to respond on sended requests.
+      server.respond();
+
+      var featureRequest = server.requests.pop();
+      expect(featureRequest.withCredentials).to.be.equal(false);
+    });
+
+    afterEach(function () {
+      // Restore original XHR.
+      server.restore();
     });
   });
 });

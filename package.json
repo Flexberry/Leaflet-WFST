@@ -1,6 +1,6 @@
 {
   "name": "leaflet-wfst",
-  "version": "2.0.1-beta.21",
+  "version": "2.0.1-beta.22",
   "description": "WFST plugin for Leaflet",
   "main": "dist/leaflet-wfst.src.js",
   "directories": {
@@ -47,6 +47,6 @@
     "sinon-chai": "^2.9.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers Chrome_headless"
+    "test": "grunt test"
   }
 }

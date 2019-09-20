@@ -14,7 +14,7 @@ Via [Bower](https://bower.io/):
 ```
 From [GitHub](https://github.com/):
 ```
-  npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.1
+  npm i -S git://github.com/Flexberry/Leaflet-WFST.git#v1.1.1F
 ```
 where #v1.1.1 is version of specific [release](https://github.com/Flexberry/Leaflet-WFST/releases).
 
@@ -54,7 +54,7 @@ const wfstPointOptions = {
       color: 'black',
       weight: 1
     }
-  },
+  }
 };
 const wfstPoint = new L.WFST(wfstPointOptions, new L.Format.GeoJSON({
   crs: L.CRS.EPSG4326,
@@ -82,6 +82,7 @@ wfstPoint.addTo(map);
 |style|-|leaflet vector style. function or object|
 |filter|-|any filter. see [filter](#filter)|
 |maxFeatures|-|limit the amount of features returned|
+|withCredentials|false|option to configure outgoing requests sending through [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials)|
 
 # Basic WFS example - [view](http://flexberry.github.io/Leaflet-WFST/examples/tasmania.html)
 ```javascript
