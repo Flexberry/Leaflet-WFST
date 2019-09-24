@@ -12,7 +12,7 @@ describe('WFS', function () {
     'xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' +
     'elementFormDefault="qualified" ' +
     'targetNamespace="http://www.openplans.org/topp"> ' +
-    '<xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://demo.opengeo.org:80/geoserver/schemas/gml/3.1.1/base/gml.xsd"/>' +
+    '<xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://geoserver.ics.perm.ru:80/geoserver/schemas/gml/3.1.1/base/gml.xsd"/>' +
     '<xsd:complexType name="tasmania_citiesType">' +
     '<xsd:complexContent>' +
     '<xsd:extension base="gml:AbstractFeatureType">' +
@@ -129,7 +129,7 @@ describe('WFS', function () {
       });
 
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         geometryField: 'the_geom',
@@ -186,7 +186,7 @@ describe('WFS', function () {
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request failed', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -231,7 +231,7 @@ describe('WFS', function () {
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request succeed but with ExceptionReport', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -276,7 +276,7 @@ describe('WFS', function () {
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request succeed, but \'GetFeature\' request failed', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -329,7 +329,7 @@ describe('WFS', function () {
 
     it('should trigger \'error\' event if \'DescribeFeatureType\' request succeed, but \'GetFeature\' request succeed with ExceptionReport', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -382,7 +382,7 @@ describe('WFS', function () {
 
     it('should trigger \'load\' event if \'DescribeFeatureType\' request succeed, and \'GetFeature\' request succeed', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -442,7 +442,7 @@ describe('WFS', function () {
 
     beforeEach(function () {
       options1 = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         geometryField: 'the_geom',
@@ -451,7 +451,7 @@ describe('WFS', function () {
       };
 
       options2 = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         geometryField: 'the_geom',
@@ -501,7 +501,7 @@ describe('WFS', function () {
       server = sinon.fakeServer.create();
 
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         geometryField: 'the_geom',
@@ -591,7 +591,7 @@ describe('WFS', function () {
 
     it('should trigger \'errorCallback\' if \'GetCapabilities\' request failed', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -632,7 +632,7 @@ describe('WFS', function () {
 
     it('should trigger \'errorCallback\' if \'GetCapabilities\' request succeed but with ExceptionReport', function () {
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'topp',
         typeName: 'tasmania_cities',
         crs: L.CRS.EPSG4326,
@@ -680,7 +680,7 @@ describe('WFS', function () {
       server = sinon.fakeServer.create();
 
       var options = {
-        url: 'http://demo.opengeo.org/geoserver/ows',
+        url: 'http://geoserver.ics.perm.ru/geoserver/ows',
         typeNS: 'ics',
         typeName: 'zayavki',
         geometryField: 'the_geom',
