@@ -58,6 +58,8 @@ L.WFS = L.FeatureGroup.extend({
     this.describeFeatureType(function () {
       if (that.options.showExisting) {
         that.loadFeatures(that.options.filter);
+      } else {
+        that.fire('load', {});
       }
     }, function (errorMessage) {
       that.fire('error', {
