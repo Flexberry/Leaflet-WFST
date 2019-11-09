@@ -178,7 +178,8 @@ L.WFS = L.FeatureGroup.extend({
         }
 
         that.fire('load', {
-          responseText: responseText
+          responseText: responseText,
+          layers: layers
         });
 
         return that;

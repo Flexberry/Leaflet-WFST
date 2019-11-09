@@ -100,8 +100,8 @@ L.WFST = L.WFS.extend({
           L.FeatureGroup.prototype.removeLayer.call(that, layer);
         });
 
-        that.once('load', function () {
-          that.fire('save:success');
+        that.once('load', function (e) {
+          that.fire('save:success', { layers: e.layers });
           that.changes = {};
         });
 
