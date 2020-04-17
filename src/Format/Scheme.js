@@ -36,7 +36,13 @@ L.Format.Scheme = L.Class.extend({
       var typeAttr = node.attributes.type;
       if (!typeAttr) {
         var restriction = node.getElementsByTagNameNS(L.XmlUtil.namespaces.xsd, 'restriction');
-        typeAttr = restriction.attributes.base;
+        if (restriction.hasOwnProperty('attributes')) {
+          typeAttr = restriction.attributes.base;
+        } else if (restriction.length === 1) {
+          typeAttr = restriction[0].attributes.base;
+        } else {
+          console.log('cannot parse restriction');
+        }
       }
 
       if (!typeAttr) {
