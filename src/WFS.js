@@ -31,6 +31,8 @@ L.WFS = L.FeatureGroup.extend({
 
   state: {},
 
+  xhr: null,
+
   initialize: function (options, readFormat) {
     L.setOptions(this, options);
 
@@ -53,7 +55,7 @@ L.WFS = L.FeatureGroup.extend({
     var that = this;
     this.describeFeatureType(function () {
       if (that.options.showExisting) {
-        that.loadFeatures(that.options.filter);
+        that.xhr = that.loadFeatures(that.options.filter);
       }
     }, function (errorMessage) {
       that.fire('error', {
@@ -130,7 +132,7 @@ L.WFS = L.FeatureGroup.extend({
 
   loadFeatures: function (filter) {
     var that = this;
-    L.Util.request({
+    return L.Util.request({
       url: this.options.url,
       data: L.XmlUtil.serializeXmlDocumentString(that.getFeature(filter)),
       headers: this.options.headers || {},

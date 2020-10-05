@@ -97,7 +97,7 @@ L.WFST = L.WFS.extend({
           that.changes = {};
         });
 
-        that.loadFeatures(insertedIds);
+        that.xhr = that.loadFeatures(insertedIds);
       },
       error: function (data) {
         that.fire('save:failed', data);

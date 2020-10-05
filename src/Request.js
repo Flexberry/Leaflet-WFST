@@ -43,4 +43,6 @@ L.Util.request = function (options) {
   }
 
   xhr.send(options.data);
+
+  return xhr;
 };
