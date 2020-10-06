@@ -35,6 +35,8 @@ L.WFS = L.FeatureGroup.extend({
 
   state: {},
 
+  xhr: null,
+
   initialize: function (options, readFormat) {
     L.setOptions(this, options);
 
@@ -191,6 +193,8 @@ L.WFS = L.FeatureGroup.extend({
 
         return that;
       }
+    }, function(xhr) {
+      that.xhr = xhr;
     });
   },
 
