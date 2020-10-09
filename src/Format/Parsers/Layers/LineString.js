@@ -7,6 +7,8 @@
 
 L.GML.LineString = L.GML.LineStringNode.extend({
 
+  elementTag: 'gml:LineString',
+
   includes: L.GML.CoordsToLatLngMixin,
 
   /**

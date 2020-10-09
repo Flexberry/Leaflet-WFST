@@ -169,7 +169,14 @@ L.WFS = L.FeatureGroup.extend({
             if (element.setStyle) {
               element.setStyle(that.options.style(element));
             }
-            that.addLayer(element);
+
+            if (Array.isArray(element)) {
+              for (var i = 0 ; i < element.length ; i++) {
+                that.addLayer(element[i]);
+              }
+            } else {
+              that.addLayer(element);
+            }
           });
         } else {
           layers.forEach(function (element) {
