@@ -20,6 +20,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
+    viewParams: null,
     filter: null,
     opacity: 1,
     fillOpacity: 1,
@@ -120,6 +121,7 @@ L.WFS = L.FeatureGroup.extend({
       service: 'WFS',
       version: this.options.version,
       maxFeatures: this.options.maxFeatures,
+      viewParams: this.options.viewParams,
       outputFormat: this.readFormat.outputFormat
     });
 
