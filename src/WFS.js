@@ -20,6 +20,7 @@ L.WFS = L.FeatureGroup.extend({
     typeName: '',
     typeNSName: '',
     maxFeatures: null,
+    vendorOptions: null,
     filter: null,
     opacity: 1,
     fillOpacity: 1,
@@ -116,12 +117,20 @@ L.WFS = L.FeatureGroup.extend({
   },
 
   getFeature: function (filter) {
-    var request = L.XmlUtil.createElementNS('wfs:GetFeature', {
+    var values = {
       service: 'WFS',
       version: this.options.version,
       maxFeatures: this.options.maxFeatures,
       outputFormat: this.readFormat.outputFormat
-    });
+    };
+
+    if (this.options.vendorOptions) {
+      for (var key in this.options.vendorOptions) {
+        values[key] = this.options.vendorOptions[key];
+      }
+    }
+
+    var request = L.XmlUtil.createElementNS('wfs:GetFeature', values);
 
     var query = request.appendChild(L.XmlUtil.createElementNS('wfs:Query', {
       typeName: this.options.typeNSName,

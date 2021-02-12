@@ -134,7 +134,11 @@ describe('WFS', function () {
         typeName: 'tasmania_cities',
         geometryField: 'the_geom',
         namespaceUri: 'testUri',
-        maxFeatures: 5000
+        maxFeatures: 5000,
+        vendorOptions: {
+          viewParams: 'from:20210201;to:20210213',
+          foo: 'bar'
+        }
       };
 
       describeFeatureTypeOriginalMethod = L.WFS.prototype.describeFeatureType;
@@ -157,6 +161,11 @@ describe('WFS', function () {
 
     it('should return value of maxFeatures', function () {
       expect(feature.getAttribute('maxFeatures')).to.be.equal('5000');
+    });
+
+    it('should return value of vendorOptions attributes', function () {
+      expect(feature.getAttribute('viewParams')).to.be.equal('from:20210201;to:20210213');
+      expect(feature.getAttribute('foo')).to.be.equal('bar');
     });
 
     it('should have child Element with tagName wfs:Query and attribute "typeName"', function () {
