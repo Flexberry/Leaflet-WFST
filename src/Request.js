@@ -2,7 +2,7 @@
  * Created by PRadostev on 02.02.2015.
  */
 
-L.Util.request = function (options) {
+L.Util.request = function (options, xhrReferenceCallback) {
   options = L.extend({
     async: true,
     method: 'POST',
@@ -24,6 +24,10 @@ L.Util.request = function (options) {
 
   // good bye IE 6,7
   var xhr = new XMLHttpRequest();
+
+  if (xhrReferenceCallback) {
+    xhrReferenceCallback(xhr);
+  }
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
