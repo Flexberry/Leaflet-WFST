@@ -61,6 +61,10 @@ L.WFST = L.WFS.extend({
   save: function () {
     var transaction = L.XmlUtil.createElementNS('wfs:Transaction', { service: 'WFS', version: this.options.version });
 
+    if ((this.options.typeNS != null) && (this.options.namespaceUri != null)) {
+      transaction.setAttribute("xmlns:" + this.options.typeNS, this.options.namespaceUri);
+    }
+    
     var inserted = [];
 
     for (var id in this.changes) {
