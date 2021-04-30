@@ -32,10 +32,16 @@
  */
 
 L.GML.MultiGeometry = L.GML.Geometry.extend({
+
+  elementTag: 'gml:MultiGeometry',
+
   includes: [L.GML.ParserContainerMixin, L.GML.CoordsToLatLngMixin],
 
   initialize: function () {
     this.initializeParserContainer();
+    this.appendParser(new L.GML.Point());
+    this.appendParser(new L.GML.LineString());
+    this.appendParser(new L.GML.Polygon());
   },
 
   /**
@@ -58,6 +64,6 @@ L.GML.MultiGeometry = L.GML.Geometry.extend({
       }
     }
 
-    return this.transform(childObjects, options);
+    return childObjects;
   }
 });
