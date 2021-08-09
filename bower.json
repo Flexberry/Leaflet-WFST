@@ -1,6 +1,6 @@
 {
   "name": "leaflet-wfst",
-  "version": "2.0.1-beta.26",
+  "version": "2.0.1-beta.27",
   "homepage": "https://github.com/Flexberry/Leaflet-WFST",
   "description": "WFST plugin for Leaflet",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "wfst"
   ],
   "dependencies": {
-    "leaflet": "1.3.1"
+    "leaflet": "1.7.1"
   },
   "devDependencies": {
     "proj4leaflet": "~0.7.0",
@@ -32,7 +32,7 @@
     "Leaflet.toolbar": "yohanboniface/Leaflet.toolbar#leaflet1.0-compat"
   },
   "resolutions": {
-    "leaflet": "1.3.1"
+    "leaflet": "1.7.1"
   },
   "repository": {
     "type": "git",
