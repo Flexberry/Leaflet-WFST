@@ -23,6 +23,7 @@ L.Format.GML = L.Format.Base.extend({
     this.appendParser(new L.GML.MultiCurve());
     this.appendParser(new L.GML.MultiSurface());
     this.appendParser(new L.GML.MultiPoint());
+    this.appendParser(new L.GML.MultiGeometry());
   },
 
   /**
