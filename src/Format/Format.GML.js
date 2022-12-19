@@ -23,6 +23,7 @@ L.Format.GML = L.Format.Base.extend({
     this.appendParser(new L.GML.MultiCurve());
     this.appendParser(new L.GML.MultiSurface());
     this.appendParser(new L.GML.MultiPoint());
+    this.appendParser(new L.GML.MultiGeometry());
   },
 
   /**
@@ -88,12 +89,9 @@ L.Format.GML = L.Format.Base.extend({
    */
   generateLayer: function (feature) {
     var geometryField = feature.getElementsByTagNameNS(this.namespaceUri, this.options.geometryField)[0];
-    if (!geometryField) {
-      console.log(
-        'Geometry field \'' + this.options.geometryField + '\' doesn\' exist inside received feature: \'' + feature.innerHTML + '\', ' +
-        'so feature will be skipped and won\'t be converted into leaflet layer');
-
-      return null;
+    if (!geometryField || !geometryField.firstElementChild) {
+      throw 'Geometry field \'' + this.options.geometryField + '\' doesn\' exist inside received feature: \'' + feature.innerHTML + '\', ' +
+        'so feature will be skipped and won\'t be converted into leaflet layer';
     }
 
     return this.parseElement(geometryField.firstElementChild, this.options);
