@@ -8,7 +8,7 @@
 L.GML.LineString = L.GML.LineStringNode.extend({
 
   includes: L.GML.CoordsToLatLngMixin,
-
+  elementTag: 'gml:LineString',
   /**
    * Get layer from passed element
    *

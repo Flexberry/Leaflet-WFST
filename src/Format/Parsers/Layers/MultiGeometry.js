@@ -33,6 +33,7 @@
 
 L.GML.MultiGeometry = L.GML.Geometry.extend({
   includes: [L.GML.ParserContainerMixin, L.GML.CoordsToLatLngMixin],
+  elementTag: 'gml:MultiGeometry',
 
   initialize: function () {
     this.initializeParserContainer();
