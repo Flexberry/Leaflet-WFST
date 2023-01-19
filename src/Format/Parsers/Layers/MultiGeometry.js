@@ -37,6 +37,14 @@ L.GML.MultiGeometry = L.GML.Geometry.extend({
 
   initialize: function () {
     this.initializeParserContainer();
+    this.appendParser(new L.GML.Point());
+    this.appendParser(new L.GML.LineString());
+    this.appendParser(new L.GML.Polygon());
+    this.appendParser(new L.GML.MultiLineString());
+    this.appendParser(new L.GML.MultiPolygon());
+    this.appendParser(new L.GML.MultiCurve());
+    this.appendParser(new L.GML.MultiSurface());
+    this.appendParser(new L.GML.MultiPoint());
   },
 
   /**
