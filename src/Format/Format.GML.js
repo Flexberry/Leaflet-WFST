@@ -46,16 +46,24 @@ L.Format.GML = L.Format.Base.extend({
       }
     }
 
-    var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
-    if (featureMembersNode.length > 0) {
-      var features = featureMembersNode[0].children;
-      for (var j = 0; j < features.length; j++) {
-        var node = features[j];
-        var nodeAsLayer = this.processFeature(node);
-        if (nodeAsLayer) {
-          layers.push(nodeAsLayer);
-        }
-      }
+    var featureMembersNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
+    if (featureMembersNodes.length > 0) {
+      Array.from(featureMembersNodes)
+        .forEach(featureMembersNode => Array.from(featureMembersNode.children))
+        .forEach(child => {
+            var nodeAsLayer = this.processFeature(child);
+
+            if (!nodeAsLayer) {
+              console.error(`${child} process function ended with an error!`)
+              return;
+            }
+
+            if (Array.isArray(nodeAsLayer)) {
+              layers.push(...nodeAsLayer);
+            } else {
+              layers.push(nodeAsLayer);
+            }
+          })
     }
 
     return layers;

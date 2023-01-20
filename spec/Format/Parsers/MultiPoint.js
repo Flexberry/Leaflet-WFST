@@ -19,7 +19,7 @@ describe("L.GML.MultiPoint", function () {
   });
 
   it('should return L.FeatureGroup object', function () {
-    var stub = sinon.stub(L.GML.MultiGeometry.prototype, 'parse').returns([[0, 0]]);
+    var stub = sinon.stub(L.GML.AbstractMultiGeometry.prototype, 'parse').returns([[0, 0]]);
     var result = parser.parse({});
     expect(result).to.be.instanceOf(L.FeatureGroup);
     stub.restore();

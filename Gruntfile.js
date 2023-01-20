@@ -61,6 +61,7 @@ module.exports = function (grunt) {
           '<%= srcPath %>/Format/Parsers/Layers/Point.js',
           '<%= srcPath %>/Format/Parsers/Layers/LineString.js',
           '<%= srcPath %>/Format/Parsers/Layers/Polygon.js',
+          '<%= srcPath %>/Format/Parsers/Layers/AbstractMultiGeometry.js',
           '<%= srcPath %>/Format/Parsers/Layers/MultiGeometry.js',
           '<%= srcPath %>/Format/Parsers/Layers/AbstractMultiPolyline.js',
           '<%= srcPath %>/Format/Parsers/Layers/AbstractMultiPolygon.js',
