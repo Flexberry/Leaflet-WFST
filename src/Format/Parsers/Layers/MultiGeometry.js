@@ -19,4 +19,4 @@ L.GML.MultiGeometry = L.GML.AbstractMultiGeometry.extend({
     this.appendParser(new L.GML.MultiSurface());
     this.appendParser(new L.GML.MultiPoint());
   }
-})
+});

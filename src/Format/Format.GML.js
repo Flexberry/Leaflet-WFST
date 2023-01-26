@@ -50,20 +50,20 @@ L.Format.GML = L.Format.Base.extend({
     if (featureMembersNode.length > 0) {
       if (!featureMembersNode[0].children) {
         return layers;
-      };
+      }
 
-      for (var i = 0; i < featureMembersNode[0].children.length; i++) {
-        var childNode = featureMembersNode[0].children[i];
+      for (var j = 0; j < featureMembersNode[0].children.length; j++) {
+        var childNode = featureMembersNode[0].children[j];
         var nodeAsLayer = this.processFeature(childNode);
 
         if (!nodeAsLayer) {
           console.error('feature process function ended with an error!');
           break;
-        };
+        }
 
         if (Array.isArray(nodeAsLayer)) {
-          for (var j = 0; j < nodeAsLayer.length; j++) {
-            layers.push(nodeAsLayer[j]);
+          for (var l = 0; l < nodeAsLayer.length; l++) {
+            layers.push(nodeAsLayer[l]);
           }
         } else {
           layers.push(nodeAsLayer);
