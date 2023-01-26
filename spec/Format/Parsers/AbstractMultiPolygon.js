@@ -5,7 +5,7 @@
 describe("L.GML.AbstractMultiPolygon", function () {
   var parser;
   var options;
-before(function () {
+  before(function () {
     parser = new L.GML.AbstractMultiPolygon();
     options = {
       coordsToLatLng : function(coordinates) {
