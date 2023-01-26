@@ -46,31 +46,31 @@ L.Format.GML = L.Format.Base.extend({
       }
     }
 
-    var featureMembersNodes = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
-    if (featureMembersNodes.length > 0) {
+    var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
+    if (featureMembersNode.length > 0) {
       var that = this;
-      Array.from(featureMembersNodes).forEach(function (featureMembersNode) {
-        if (!featureMembersNode.children) {
-          return;
-        };
 
-        Array.from(featureMembersNode.children).forEach(function (childNode) {
-            var nodeAsLayer = that.processFeature(childNode);
+      if (!featureMembersNode[0].children) {
+        return layers;
+      };
 
-            if (!nodeAsLayer) {
-              console.error('feature process function ended with an error!');
-              return;
-            };
+      Array.from(featureMembersNode[0].children).forEach(function (childNode) {
+          var nodeAsLayer = that.processFeature(childNode);
 
-            if (Array.isArray(nodeAsLayer)) {
-              nodeAsLayer.forEach(function(node) {
-                layers.push(node);
-              });
-            } else {
-              layers.push(nodeAsLayer);
-            }
-        })
+          if (!nodeAsLayer) {
+            console.error('feature process function ended with an error!');
+            return;
+          };
+
+          if (Array.isArray(nodeAsLayer)) {
+            nodeAsLayer.forEach(function(node) {
+              layers.push(node);
+            });
+          } else {
+            layers.push(nodeAsLayer);
+          }
       })
+
     }
     return layers;
   },

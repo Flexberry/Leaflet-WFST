@@ -11,7 +11,7 @@ L.GML.AbstractMultiPolyline = L.GML.MultiGeometry.extend({
 
   parse: function (element, options) {
     var coordinates = L.GML.AbstractMultiGeometry.prototype.parse.call(this, element, options);
-    var latLngs = L.GML.AbstractMultiGeometry.prototype.transform.call(this, coordinates, options);
+    var latLngs =this.transform(coordinates, options);
     var layer = new L.Polyline([]);
     layer.setLatLngs(latLngs);
     return layer;

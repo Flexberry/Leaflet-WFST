@@ -15,7 +15,7 @@ L.GML.MultiPoint = L.GML.AbstractMultiGeometry.extend({
 
   parse: function (element, options) {
     var coordinates = L.GML.AbstractMultiGeometry.prototype.parse.call(this, element, options);
-    var latLngs = L.GML.AbstractMultiGeometry.prototype.transform.call(this, coordinates, options);
+    var latLngs = this.transform(coordinates, options);
     var multiPoint = new L.FeatureGroup();
     for (var i = 0; i < latLngs.length; i++) {
       var point = new L.Marker();

@@ -27,7 +27,7 @@
  * <gml:Multi%Something%>
  * ```
  *
- * @class GML.MultiGeometry
+ * @class GML.AbstractMultiGeometry
  * @extends L.GML.Geometry
  */
 
