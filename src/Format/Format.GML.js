@@ -58,7 +58,7 @@ L.Format.GML = L.Format.Base.extend({
 
         if (!nodeAsLayer) {
           console.error('feature process function ended with an error!');
-          break;
+          continue;
         }
 
         if (Array.isArray(nodeAsLayer)) {

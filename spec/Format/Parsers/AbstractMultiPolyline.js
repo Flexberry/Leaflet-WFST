@@ -30,5 +30,7 @@ describe("L.GML.AbstractMultiPolyline", function () {
     '</gml:MultiCurve>');
     var result = parser.parse(element, options);
     expect(result).to.be.instanceOf(L.Polyline);
+    expect(result.getLatLngs().flat(1)[0].lat).to.be.equal(42);
+    expect(result.getLatLngs().flat(1)[0].lng).to.be.equal(64);
   });
 });
