@@ -29,6 +29,5 @@ before(function () {
 
     var result = parser.parse(element, options);
     expect(result).to.be.instanceOf(L.Polygon);
-    //stub.restore();
   });
 });
