@@ -11,21 +11,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node: [10, 16, 18]
 
     steps:
 
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node }}
 
-    # - name: Start google chrome
-    #   run: |
-    #     sudo chown root /opt/google/chrome/chrome-sandbox
-    #     sudo sudo chmod 4755 /opt/google/chrome/chrome-sandbox
-    #     google-chrome-stable --headless --disable-gpu --no-sandbox --remote-debugging-port=9222 http://localhost &
     - name: Install grunt-cli and npm/bower dependencies
       run: |
         set -x
@@ -34,6 +29,8 @@ jobs:
         npm install -g bower
         npm install
         bower install
+
     - name: Grunt build, karma tests
       run: |
-        grunt build
+         grunt build
+         grunt test
