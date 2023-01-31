@@ -48,16 +48,28 @@ L.Format.GML = L.Format.Base.extend({
 
     var featureMembersNode = featureCollection.getElementsByTagNameNS(L.XmlUtil.namespaces.gml, 'featureMembers');
     if (featureMembersNode.length > 0) {
-      var features = featureMembersNode[0].children;
-      for (var j = 0; j < features.length; j++) {
-        var node = features[j];
-        var nodeAsLayer = this.processFeature(node);
-        if (nodeAsLayer) {
+      if (!featureMembersNode[0].children) {
+        return layers;
+      }
+
+      for (var j = 0; j < featureMembersNode[0].children.length; j++) {
+        var childNode = featureMembersNode[0].children[j];
+        var nodeAsLayer = this.processFeature(childNode);
+
+        if (!nodeAsLayer) {
+          console.error('feature process function ended with an error!');
+          continue;
+        }
+
+        if (Array.isArray(nodeAsLayer)) {
+          for (var l = 0; l < nodeAsLayer.length; l++) {
+            layers.push(nodeAsLayer[l]);
+          }
+        } else {
           layers.push(nodeAsLayer);
         }
       }
     }
-
     return layers;
   },
 

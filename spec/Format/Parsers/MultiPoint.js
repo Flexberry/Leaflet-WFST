@@ -4,9 +4,15 @@
 
 describe("L.GML.MultiPoint", function () {
   var parser;
+  var options;
 
   before(function () {
     parser = new L.GML.MultiPoint();
+    options = {
+      coordsToLatLng : function(coordinates) {
+        return coordinates;
+      }
+    };
   });
 
   it('should parse gml:MultiPoint element', function () {
@@ -19,8 +25,8 @@ describe("L.GML.MultiPoint", function () {
   });
 
   it('should return L.FeatureGroup object', function () {
-    var stub = sinon.stub(L.GML.MultiGeometry.prototype, 'parse').returns([[0, 0]]);
-    var result = parser.parse({});
+    var stub = sinon.stub(L.GML.AbstractMultiGeometry.prototype, 'parse').returns([[[[0, 0]]]]);
+    var result = parser.parse(null, options);
     expect(result).to.be.instanceOf(L.FeatureGroup);
     stub.restore();
   });
