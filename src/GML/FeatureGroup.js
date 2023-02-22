@@ -15,7 +15,7 @@ L.FeatureGroup.include({
     *    </gml:pointMembers>
     *  </gml:MultiPoint>
     */
-    toGml: function (crs, forceMulti) {
+    toGml: function (crs) {
         var gmlElements = [];
         this.eachLayer(function(layer) {
             if (layer instanceof L.Marker) {
@@ -24,10 +24,6 @@ L.FeatureGroup.include({
                 throw('Not implemented toGml function for featureGroup, only FeatureGroup that is MultiPoint');
             }
         });
-
-        if (gmlElements.length === 1 && !forceMulti) {
-            return gmlElements[0];
-        }
 
         var multi = L.XmlUtil.createElementNS('gml:MultiPoint', { srsName: crs.code, srsDimension: 2 });
         var collection = multi.appendChild(L.XmlUtil.createElementNS('gml:pointMembers'));
