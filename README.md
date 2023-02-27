@@ -337,6 +337,16 @@ layer.setProperties({
 //delete properties
 layer.deleteProperties(['a','b','c']);
 ```
+# Build
+```
+  grunt build 
+```
+
+# Tests
+```
+  grunt karma:single   
+```
+located in <b>spec</b> folder
 
 # Demo
 demos for GML read format
