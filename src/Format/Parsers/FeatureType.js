@@ -17,9 +17,9 @@ L.GML.FeatureType = L.Class.extend({
         input = String.prototype.trim.call(input || '');
         return input === '' ? null : Number(input);
       },
-      validate: function (parsedValue) {
+      validate: function (parsedValue, required) {
         // Invalid number can be detected by isNaN check.
-        return !isNaN(parsedValue);
+        return !isNaN(parsedValue) && (!required || parsedValue !== null);
       },
       type: 'number'
     },
@@ -28,9 +28,9 @@ L.GML.FeatureType = L.Class.extend({
       parse: function (input) {
         return input;
       },
-      validate: function (parsedValue) {
+      validate: function (parsedValue, required) {
         // Any value is valid for 'string' type.
-        return true;
+        return !required || parsedValue;
       },
       type: 'string'
     },
@@ -40,7 +40,7 @@ L.GML.FeatureType = L.Class.extend({
         input = String.prototype.trim.call(input || '').toLowerCase();
         return input !== 'false';
       },
-      validate: function (parsedValue) {
+      validate: function (parsedValue, required) {
         // Any value is valid for 'boolean' type if parser parses it like so: input !== 'false'.
         return true;
       },
@@ -52,9 +52,9 @@ L.GML.FeatureType = L.Class.extend({
         input = String.prototype.trim.call(input || '');
         return input === '' ? null : new Date(input);
       },
-      validate: function (parsedValue) {
+      validate: function (parsedValue, required) {
         // Invalid date also can be detected by isNaN check.
-        return !isNaN(parsedValue);
+        return !isNaN(parsedValue) && (!required || parsedValue !== null);
       },
       type: 'date'
     }
@@ -67,17 +67,19 @@ L.GML.FeatureType = L.Class.extend({
     this.fieldValidators = {};
     this.fieldTypes = {};
     this.geometryFields = {};
+    this.requiredFields = {};
   },
 
-  appendField: function (name, type) {
+  appendField: function (name, type, required) {
     var that = this;
     type = String.prototype.toLowerCase.call(type || '');
 
     this.primitives.forEach(function (primitive) {
       if (primitive.types.indexOf(type) !== -1) {
         that.fields[name] = primitive.parse;
-        that.fieldValidators[name] = primitive.validate;
+        that.fieldValidators[name] = function(parsedValue) { return primitive.validate(parsedValue, required); }
         that.fieldTypes[name] = primitive.type;
+        that.requiredFields[name] = required || false;
       }
     });
   },
