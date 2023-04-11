@@ -77,7 +77,7 @@ L.GML.FeatureType = L.Class.extend({
     this.primitives.forEach(function (primitive) {
       if (primitive.types.indexOf(type) !== -1) {
         that.fields[name] = primitive.parse;
-        that.fieldValidators[name] = function(parsedValue) { return primitive.validate(parsedValue, required); }
+        that.fieldValidators[name] = function(parsedValue) { return primitive.validate(parsedValue, required); };
         that.fieldTypes[name] = primitive.type;
         that.requiredFields[name] = required || false;
       }
