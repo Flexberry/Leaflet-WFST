@@ -42,7 +42,10 @@ L.Format.Scheme = L.Class.extend({
         continue;
       }
 
-      featureType.appendField(propertyName, typeName);
+      var nillableAttr = node.attributes.nillable;
+      var required = nillableAttr && nillableAttr.value === 'false';
+
+      featureType.appendField(propertyName, typeName, required);
     }
 
     return featureType;
