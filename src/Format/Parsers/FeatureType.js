@@ -9,16 +9,36 @@ L.GML.FeatureType = L.Class.extend({
 
   primitives: [
     {
-      types: ['byte', 'short', 'int', 'integer', 'long', 'float', 'double', 'decimal', 'number'],
+      types: ['byte', 'short', 'long', 'float', 'double', 'decimal'],
       parse: function (input) {
         if (input === 0) {
           return 0;
         }
         input = String.prototype.trim.call(input || '');
-        return input === '' ? null : Number(input);
+        return input === '' ? null : Number(input.replace(',','.'));
       },
       validate: function (parsedValue, required) {
         // Invalid number can be detected by isNaN check.
+        return !isNaN(parsedValue) && (!required || parsedValue !== null);
+      },
+      type: 'number'
+    },
+    {
+      types: ['int', 'integer', 'number'],
+      parse: function (input) {
+        input = String.prototype.trim.call(input || '');
+        
+        if (!input)
+          return null;
+        
+        const intRegex = /^\d+([.,]0+)?$/;
+        
+        if (!intRegex.test(input))
+          return NaN;
+        
+        return Number(input.replace(',','.'));
+      },
+      validate: function (parsedValue, required) {
         return !isNaN(parsedValue) && (!required || parsedValue !== null);
       },
       type: 'number'
