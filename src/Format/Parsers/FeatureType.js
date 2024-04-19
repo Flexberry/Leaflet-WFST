@@ -31,7 +31,7 @@ L.GML.FeatureType = L.Class.extend({
         if (!input)
           return null;
         
-        const intRegex = /^-?\d+([.,]0+)?$/;
+        var intRegex = /^-?\d+([.,]0+)?$/;
         
         if (!intRegex.test(input))
           return NaN;
