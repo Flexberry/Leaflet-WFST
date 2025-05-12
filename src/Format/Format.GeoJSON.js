@@ -33,11 +33,11 @@ L.Format.GeoJSON = L.Format.Base.extend({
 
   responseToMetrics:function (rawData) {
     var metrics = {};
-    var dataGeoJson = JSON.parse(rawData)
+    var dataGeoJson = JSON.parse(rawData);
     var totalFeatures = Number(dataGeoJson.totalFeatures);
 
     metrics.totalFeatures = isNaN(totalFeatures) ? 0 : totalFeatures;
-    return metrics
+    return metrics;
   },
 
   /**
