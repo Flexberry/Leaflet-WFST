@@ -30,6 +30,16 @@ L.Format.GeoJSON = L.Format.Base.extend({
     return layers;
   },
 
+
+  responseToMetrics:function (rawData) {
+    var metrics = {};
+    var dataGeoJson = JSON.parse(rawData)
+    var totalFeatures = Number(dataGeoJson.totalFeatures);
+
+    metrics.totalFeatures = isNaN(totalFeatures) ? 0 : totalFeatures;
+    return metrics
+  },
+
   /**
    * Create layer and set its properties from geoJson feature
    *
