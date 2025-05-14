@@ -61,5 +61,9 @@ L.Format.Base = L.Class.extend({
 
   responseToLayers: function() {
     throw "responseToLayers is abstract and should be implemented";
-  }
+  },
+
+  responseToMetrics:function () {
+    throw "responseToMetrics is abstract and should be implemented";
+  },
 });

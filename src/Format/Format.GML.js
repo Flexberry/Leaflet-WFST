@@ -73,6 +73,26 @@ L.Format.GML = L.Format.Base.extend({
     return layers;
   },
 
+  responseToMetrics:function (rawData) {
+    var xmlDoc = L.XmlUtil.parseXml(rawData);
+    var featureCollection = xmlDoc.documentElement;
+    var wfsNamespace = featureCollection.getAttribute("xmlns:wfs");
+    var metrics = {};
+    var totalFeatures = 0;
+
+    if (wfsNamespace.includes("/2.0")) {
+        // WFS 2.0.0
+        totalFeatures = Number(featureCollection.getAttribute("totalFeatures"));
+    } else {
+        // WFS 1.1.0
+        totalFeatures = Number(featureCollection.getAttribute("numberOfFeatures"));
+    }
+
+    metrics.totalFeatures = isNaN(totalFeatures) ? 0 : totalFeatures;
+
+   return metrics;
+  },
+
   /**
    * Create layer and set its properties from xml feature element
    *

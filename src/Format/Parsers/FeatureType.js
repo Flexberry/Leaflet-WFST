@@ -9,16 +9,36 @@ L.GML.FeatureType = L.Class.extend({
 
   primitives: [
     {
-      types: ['byte', 'short', 'int', 'integer', 'long', 'float', 'double', 'decimal', 'number'],
+      types: ['byte', 'short', 'long', 'float', 'double', 'decimal'],
       parse: function (input) {
         if (input === 0) {
           return 0;
         }
         input = String.prototype.trim.call(input || '');
-        return input === '' ? null : Number(input);
+        return input === '' ? null : Number(input.replace(',','.'));
       },
       validate: function (parsedValue, required) {
         // Invalid number can be detected by isNaN check.
+        return !isNaN(parsedValue) && (!required || parsedValue !== null);
+      },
+      type: 'number'
+    },
+    {
+      types: ['int', 'integer', 'number'],
+      parse: function (input) {
+        input = String.prototype.trim.call(input || '');
+
+        if (!input)
+          return null;
+
+        var intRegex = /^-?\d+([.,]0+)?$/;
+
+        if (!intRegex.test(input))
+          return NaN;
+
+        return Number(input.replace(',','.'));
+      },
+      validate: function (parsedValue, required) {
         return !isNaN(parsedValue) && (!required || parsedValue !== null);
       },
       type: 'number'
@@ -47,7 +67,7 @@ L.GML.FeatureType = L.Class.extend({
       type: 'boolean'
     },
     {
-      types: ['date', 'time', 'datetime'],
+      types: ['date'],
       parse: function (input) {
         input = String.prototype.trim.call(input || '');
         return input === '' ? null : new Date(input);
@@ -57,7 +77,31 @@ L.GML.FeatureType = L.Class.extend({
         return !isNaN(parsedValue) && (!required || parsedValue !== null);
       },
       type: 'date'
-    }
+    },
+    {
+      types: ['datetime'],
+      parse: function (input) {
+        input = String.prototype.trim.call(input || '');
+        return input === '' ? null : new Date(input);
+      },
+      validate: function (parsedValue, required) {
+        // Invalid date also can be detected by isNaN check.
+        return !isNaN(parsedValue) && (!required || parsedValue !== null);
+      },
+      type: 'dateTime'
+    },
+    {
+      types: ['time'],
+      parse: function (input) {
+        input = String.prototype.trim.call(input || '');
+        return input === '' ? null : new Date(input);
+      },
+      validate: function (parsedValue, required) {
+        // Invalid date also can be detected by isNaN check.
+        return !isNaN(parsedValue) && (!required || parsedValue !== null);
+      },
+      type: 'time'
+    },
   ],
 
   initialize: function (options) {
